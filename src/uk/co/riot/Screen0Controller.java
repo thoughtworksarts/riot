@@ -46,11 +46,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.facialrecognition.FacialRecognitionAPI;
-import com.synthbot.jasiohost.AsioDriver;
-import com.synthbot.jasiohost.SimpleAudioPlayer;
+import com.facialrecognition.FacialRecognitionV2API;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -60,7 +57,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
@@ -110,13 +106,14 @@ public class Screen0Controller implements Initializable, ControlledScreen {
     public void initEverything() {   	
     	Config config = XmlReader.readXmlConfig("config.xml");
     	ApplicationData.getSingleton().setConfig(config);
-    	FacialRecognitionAPI frAPI = new FacialRecognitionAPI();
-    	frAPI.Initialise();
+    	//FacialRecognitionWindowsAPI frAPI = new FacialRecognitionWindowsAPI();
+		FacialRecognitionV2API frAPI = new FacialRecognitionV2API();
+		frAPI.Initialise();
     	ApplicationData.getSingleton().setFacialRecognitionAPI(frAPI);
-    	SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
+    	//SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
     	try {
-    		audioPlayer.Initialise((String) mChoiceBox.getSelectionModel().getSelectedItem(), config.getAudioFilepath());
-    		ApplicationData.getSingleton().setAudioPlayer(audioPlayer);
+    		//audioPlayer.Initialise((String) mChoiceBox.getSelectionModel().getSelectedItem(), config.getAudioFilepath());
+    		//ApplicationData.getSingleton().setAudioPlayer(audioPlayer);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,7 +1,8 @@
 package uk.co.riot;
 
 import java.util.ArrayList;
-import com.facialrecognition.FacialRecognitionAPI;
+import com.facialrecognition.FacialRecognitionWindowsAPI;
+import com.facialrecognition.IFacialRecognitionAPI;
 import com.synthbot.jasiohost.SimpleAudioPlayer;
 
 import javafx.scene.media.MediaPlayer;
@@ -12,7 +13,7 @@ public class ApplicationData {
 	private static ApplicationData singleton;
 	
 	private Config mConfig;
-	private FacialRecognitionAPI mFacialRecognitionAPI;
+	private IFacialRecognitionAPI mFacialRecognitionAPI;
 	private SimpleAudioPlayer mAudioPlayer;
 	private MediaPlayer mVideoPlayer;
 	private ArrayList<EmotionsRecord> mEmotionsRecords;
@@ -50,11 +51,11 @@ public class ApplicationData {
 		this.mVideoPlayer = player;
 	}
 	
-	public FacialRecognitionAPI getFacialRecognitionAPI() {
+	public IFacialRecognitionAPI getFacialRecognitionAPI() {
 		return mFacialRecognitionAPI;
 	}
 	
-	public void setFacialRecognitionAPI(FacialRecognitionAPI api) {
+	public void setFacialRecognitionAPI(IFacialRecognitionAPI api) {
 		this.mFacialRecognitionAPI = api;
 	}
 	

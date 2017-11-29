@@ -18,7 +18,7 @@
             <Font size="50.0" />
          </font>
       </Label>
-      <Button fx:id="mNextButton" layoutX="1632.0" layoutY="862.0" mnemonicParsing="false" text="Next">
+      <Button fx:id="mNextButton" layoutX="632.0" layoutY="662.0" mnemonicParsing="false" text="Next">
          <font>
             <Font size="50.0" />
          </font>

@@ -1,19 +1,18 @@
 package uk.co.riot;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import com.facialrecognition.FacialRecognitionAPI;
+import com.facialrecognition.FacialRecognitionWindowsAPI;
+import com.facialrecognition.IFacialRecognitionAPI;
 
 public class FacialRecognitionInterface implements EmotionDetectorInterface {
 	
-	private FacialRecognitionAPI mFacialRecognitionAPI;
+	private IFacialRecognitionAPI mFacialRecognitionAPI;
 	private ArrayList<EmotionsRecord> mEmotionsRecord;
 	private Thread mThread;
 	private boolean mMeasuring;
 	
-	public FacialRecognitionInterface(FacialRecognitionAPI api) {
+	public FacialRecognitionInterface(IFacialRecognitionAPI api) {
 		this.mFacialRecognitionAPI = api;
 		mEmotionsRecord = new ArrayList<EmotionsRecord>();
 	}

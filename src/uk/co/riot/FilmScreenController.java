@@ -41,7 +41,8 @@ package uk.co.riot;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import com.facialrecognition.FacialRecognitionAPI;
+import com.facialrecognition.FacialRecognitionWindowsAPI;
+import com.facialrecognition.IFacialRecognitionAPI;
 import com.synthbot.jasiohost.SimpleAudioPlayer;
 
 import javafx.application.Platform;
@@ -86,11 +87,11 @@ public class FilmScreenController implements Initializable, ControlledScreen {
     public void initialize(URL url, ResourceBundle rb) { 
     	mConfig = ApplicationData.getSingleton().getConfig();
     	mAudioPlayer = ApplicationData.getSingleton().getAudioPlayer();
-    	FacialRecognitionAPI frAPI = ApplicationData.getSingleton().getFacialRecognitionAPI();
+    	IFacialRecognitionAPI frAPI = ApplicationData.getSingleton().getFacialRecognitionAPI();
     	mEmotionDetectorInterface = new FacialRecognitionInterface(frAPI);
         setUpVideoPlayer();
 		mVideoPlayer.play();
-		mAudioPlayer.Resume();
+		//mAudioPlayer.Resume();
     }
     
     /**

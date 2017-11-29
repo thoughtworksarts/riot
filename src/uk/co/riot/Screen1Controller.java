@@ -42,11 +42,6 @@ package uk.co.riot;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.facialrecognition.FacialRecognitionAPI;
-import com.synthbot.jasiohost.SimpleAudioPlayer;
 
 import javafx.application.Platform;
 import javafx.fxml.Initializable;

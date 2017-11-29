@@ -77,7 +77,7 @@ public class ExampleHost extends JFrame
 
                     // "C:\\Temp\\8track_1min_helicopter.wav"
                     // "C:\\Temp\\8channel.wav"
-                    String wavFile = "C:\\Temp\\___ambi_to_cube_mix171.wav";
+                    String wavFile = "media/RIOT_II_binarual_master_03.wav";
                     try
                     {
                         audioPlayer.Initialise(driverName, wavFile);

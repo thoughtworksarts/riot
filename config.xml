@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<media>
-	    <video>media/film.m4v</video>
-	    <audio>media/ambient.wav</audio>
+		<video>Resources/media/film.m4v</video>
+		<audio>Resources/media/RIOT_II_binarual_master_03.wav</audio>
 	</media>
 	
 	<workflow>
