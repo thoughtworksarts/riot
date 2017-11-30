@@ -25,7 +25,7 @@ class DeepLearningProcessorTest {
         // SETUP
         BufferedImage image = null;
         String imageFile = "TestResources/testimage.png";
-
+        System.out.println(System.getProperty("java.library.path"));
         try {
             image = ImageIO.read(new File(imageFile));
         } catch (IOException e) {
