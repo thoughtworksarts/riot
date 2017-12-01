@@ -38,7 +38,7 @@ public class DeepLearningProcessor {
         } catch (UnsupportedKerasConfigurationException e) {
             e.printStackTrace();
         }
-        Evaluation evaluation = new Evaluation(3);
+        //Evaluation evaluation = new Evaluation(3);
         INDArray output = null;
         try {
             output = model.output(imageLoader.asMatrix( new File(imgFile)));
