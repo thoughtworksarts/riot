@@ -21,3 +21,13 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.idea
+.gradle/
+output
+riot.iml
+src/main/resources/media/film.m4v
+build/
+out
+src/main/resources/media/RIOT_II_binarual_master_03.wav
+src/main/resources/trainingmodels/inception_v3_model_dl4j.json
+src/main/resources/trainingmodels/inception_v3_weights_dl4j.h5

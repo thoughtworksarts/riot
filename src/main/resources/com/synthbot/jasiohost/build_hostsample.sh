@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash a.b
 
 gcc -mno-cygwin -D__int64="long long" -o jasiohost.exe -O3 -w -Wl,--add-stdcall-alias \
 -I. \
