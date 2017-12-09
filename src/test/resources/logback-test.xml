@@ -7,7 +7,7 @@
     </appender>
 
 
-    <logger name="io.thoughtworksarts.riot" level="DEBUG"/>
+    <logger name="io.thoughtworksarts.riot" level="INFO"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

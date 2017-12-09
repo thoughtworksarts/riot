@@ -1,6 +1,8 @@
 package com.facialrecognition;
 
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -10,6 +12,7 @@ import java.io.File;
 class DeepLearningProcessorTest {
 
     @Test
+    @Disabled
     void shouldBeAbleToImportKerasModel() throws Exception {
         // given
         String fileName = this.getCompleteFileName("testimage.png");
