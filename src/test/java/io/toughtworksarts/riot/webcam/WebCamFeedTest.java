@@ -3,7 +3,6 @@ package io.toughtworksarts.riot.webcam;
 import com.github.sarxos.webcam.Webcam;
 import io.thoughtworksarts.riot.WebcamFeed;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -28,10 +27,11 @@ public class WebCamFeedTest {
         double actual = highestResolutionAvailable.getHeight() * highestResolutionAvailable.getWidth();
 
         // then
-        Arrays.asList(Webcam.getDefault().getViewSizes())
-                .stream()
-                .map(this::toArea)
+        boolean isHighestResolution = Arrays.stream(Webcam.getDefault().getViewSizes())
+                .map(this::getResolution)
                 .allMatch(area -> area <= actual);
+
+        assertThat(isHighestResolution).isTrue();
     }
 
     @Test
@@ -49,14 +49,21 @@ public class WebCamFeedTest {
         assertThat(file).exists();
 
         BufferedImage bufferedImage = ImageIO.read(file);
-        int resolution = bufferedImage.getWidth() * bufferedImage.getHeight();
         Dimension highestResolutionAvailable = webcamFeed.getHighestResolutionAvailable();
-        Double expected = highestResolutionAvailable.getHeight() * highestResolutionAvailable.getWidth();
-        Assertions.assertThat(resolution).isEqualTo(expected.intValue());
+
+        int actualResolution = this.getResolution(bufferedImage);
+        int expectedResolution = this.getResolution(highestResolutionAvailable);
+
+        assertThat(actualResolution).isEqualTo(expectedResolution);
     }
 
-    public double toArea(Dimension dimension) {
-        return dimension.getWidth() * dimension.getHeight();
+    private int getResolution(Dimension dimension) {
+        Double area = dimension.getWidth() * dimension.getHeight();
+        return area.intValue();
+    }
+
+    private int getResolution(BufferedImage bufferedImage) {
+        return bufferedImage.getWidth() * bufferedImage.getHeight();
     }
 
 
