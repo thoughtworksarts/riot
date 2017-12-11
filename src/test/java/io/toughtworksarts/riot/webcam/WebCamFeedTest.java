@@ -3,9 +3,12 @@ package io.toughtworksarts.riot.webcam;
 import com.github.sarxos.webcam.Webcam;
 import io.thoughtworksarts.riot.WebcamFeed;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 
@@ -32,7 +35,7 @@ public class WebCamFeedTest {
     }
 
     @Test
-    public void shouldBeAbleToLoadImageFromWebCam() throws Exception {
+    public void shouldCreatePictureFileWithProperResolution() throws Exception {
         // given
         WebcamFeed webcamFeed = new WebcamFeed();
 
@@ -42,9 +45,14 @@ public class WebCamFeedTest {
 
         // then
         log.info("File created: '{}'", file.getCanonicalPath());
-        assertThat(file)
-                .exists();
 
+        assertThat(file).exists();
+
+        BufferedImage bufferedImage = ImageIO.read(file);
+        int resolution = bufferedImage.getWidth() * bufferedImage.getHeight();
+        Dimension highestResolutionAvailable = webcamFeed.getHighestResolutionAvailable();
+        Double expected = highestResolutionAvailable.getHeight() * highestResolutionAvailable.getWidth();
+        Assertions.assertThat(resolution).isEqualTo(expected.intValue());
     }
 
     public double toArea(Dimension dimension) {
