@@ -1,26 +1,26 @@
 package uk.co.riot;
 
 public class EmotionsRecord {
-	private float mAnger;
-	private float mFear;
-	private float mCalm;
+	private float anger;
+	private float fear;
+	private float calm;
 	
 	public EmotionsRecord(float anger, float fear, float calm) {
-		this.mAnger = anger;
-		this.mFear = fear;
-		this.mCalm = calm;
+		this.anger = anger;
+		this.fear = fear;
+		this.calm = calm;
 	}
 
 	public float getAnger() {
-		return mAnger;
+		return anger;
 	}
 
 	public float getFear() {
-		return mFear;
+		return fear;
 	}
 
 	public float getCalm() {
-		return mCalm;
+		return calm;
 	}
 	
 	
