@@ -32,3 +32,6 @@ out
 *.h5
 *.wav
 *.m4v
+
+# Audio Dependency
+audio/
