@@ -44,8 +44,10 @@ compileJava {
     dependsOn downloadAsioDependency
 }
 
-test {
-    jvmArgs "-Djava.library.path=audio"
+junitPlatformTest {
+    def canonicalPathToLib = new File('audio/').getCanonicalPath();
+    println "Canonical Path: 2 '$canonicalPathToLib'"
+    systemProperty 'java.library.path', "$canonicalPathToLib"
 }
 
 dependencies {
