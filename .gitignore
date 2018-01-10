@@ -35,3 +35,7 @@ out
 
 # Audio Dependency
 audio/
+
+# Eclipse
+.classpath
+.project
