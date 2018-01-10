@@ -27,10 +27,7 @@ public class FacialRecognitionInterface implements EmotionDetectorInterface {
 			@Override
 			public void run() {
 				while(mMeasuring) {
-					mFacialRecognitionAPI.CaptureImage();
-					EmotionsRecord record = new EmotionsRecord(mFacialRecognitionAPI.GetAnger(), mFacialRecognitionAPI.GetFear(), mFacialRecognitionAPI.GetCalm());	
-					System.out.println("Anger: " + record.getAnger() + "\nFear: " + record.getFear() + "\nCalm: " + record.getCalm());
-					mEmotionsRecord.add(record);
+					EmotionsRecord record = measure();
 					ApplicationData.getSingleton().addEmotionsRecord(record);
 					try {
 						Thread.sleep(3000);
@@ -46,17 +43,36 @@ public class FacialRecognitionInterface implements EmotionDetectorInterface {
 	public void stopMeasure() {
 		mMeasuring = false;
 	}
+	
+	protected float getTotalAnger() {
+		float totalAnger = 0;
+		for(EmotionsRecord record : mEmotionsRecord) {
+    		totalAnger += record.getAnger();
+    	}
+		return totalAnger;
+	}
+	
+	protected float getTotalFear() {
+		float totalFear = 0;
+		for(EmotionsRecord record : mEmotionsRecord) {
+			totalFear += record.getFear();
+    	}
+		return totalFear;
+	}
+	
+	protected float getTotalCalm() {
+		float totalCalm = 0;
+		for(EmotionsRecord record : mEmotionsRecord) {
+    		totalCalm += record.getCalm();
+    	}
+		return totalCalm;
+	}
 
 	@Override
 	public String getEmotion() {
-    	float totalAnger = 0;
-    	float totalFear = 0;
-    	float totalCalm = 0;
-    	for(EmotionsRecord record : mEmotionsRecord) {
-    		totalAnger += record.getAnger();
-    		totalFear += record.getFear();
-    		totalCalm += record.getCalm();
-    	}
+    	float totalAnger = getTotalAnger();
+    	float totalFear = getTotalFear();
+    	float totalCalm = getTotalCalm();
 		System.out.println("Determining dominant emotion over last measure.");
 		System.out.println("Fear: " + totalFear + "\nAnger: " + totalAnger + "\nCalm: " + totalCalm);
 				
@@ -74,5 +90,13 @@ public class FacialRecognitionInterface implements EmotionDetectorInterface {
 		}
 		System.out.println("Dominant emotion was CALM");
 		return "calm";
+	}
+
+	protected EmotionsRecord measure() {
+		mFacialRecognitionAPI.CaptureImage();
+		EmotionsRecord record = new EmotionsRecord(mFacialRecognitionAPI.GetAnger(), mFacialRecognitionAPI.GetFear(), mFacialRecognitionAPI.GetCalm());	
+		System.out.println("Anger: " + record.getAnger() + "\nFear: " + record.getFear() + "\nCalm: " + record.getCalm());
+		mEmotionsRecord.add(record);
+		return record;
 	}
 }
