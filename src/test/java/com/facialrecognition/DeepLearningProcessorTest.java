@@ -1,18 +1,23 @@
 package com.facialrecognition;
 
+import org.deeplearning4j.datasets.iterator.DoublesDataSetIterator;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 import javax.imageio.ImageIO;
+
+import static org.junit.Assert.assertEquals;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 class DeepLearningProcessorTest {
 
     @Test
-    @Disabled
     void shouldBeAbleToImportKerasModel() throws Exception {
         // given
         String fileName = this.getCompleteFileName("testimage.png");
@@ -24,9 +29,11 @@ class DeepLearningProcessorTest {
         BufferedImage image = ImageIO.read(imageFile);
 
         // when
-        KerasModelImport.importKerasModelAndWeights(jsonFile, h5File);
+        ComputationGraph model = KerasModelImport.importKerasModelAndWeights(jsonFile, h5File);
 
         // then ????
+        DataSetIterator iterator = new DoublesDataSetIterator(null, 0);
+        assertEquals("123", model.evaluate(iterator).stats());
     }
 
     private String getCompleteFileName(String relativePath) {
