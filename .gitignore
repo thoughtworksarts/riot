@@ -39,3 +39,4 @@ audio/
 # Eclipse
 .classpath
 .project
+.settings/
