@@ -1,5 +1,7 @@
 # Riot Arts Residency Project
 
+[![Build Status](https://travis-ci.org/thoughtworksarts/riot.svg?branch=master)](https://travis-ci.org/thoughtworksarts/riot)
+
 # Before you start
 ### On Windows
 
