@@ -18,6 +18,7 @@ import java.io.File;
 class DeepLearningProcessorTest {
 
     @Test
+    @Disabled
     void shouldBeAbleToImportKerasModel() throws Exception {
         // given
         String fileName = this.getCompleteFileName("testimage.png");
