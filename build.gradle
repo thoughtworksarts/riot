@@ -35,7 +35,11 @@ def asioFiles = [
         [name: 'jAsioHostDll', dest: 'asio/jasiohost64.dll',
             url: 'https://github.com/mhroth/jasiohost/raw/master/jasiohost64.dll' ],
         [name: 'asioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
-            url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ]
+            url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ],
+        [name: 'film', dest: 'src/main/resources/film.m4v',
+            url: 'https://cloud.eldermael.io/s/Z32zvOg0TWI3poQ/download'],
+        [name: 'audio', dest: 'src/main/resources/audio.wav',
+            url: 'https://cloud.eldermael.io/s/2cIhm9WXMVNYQpU/download']
 ]
 
 asioFiles.each {
