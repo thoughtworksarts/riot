@@ -24,7 +24,7 @@ public class WindowsAudioTest {
         // then
         String libraryPath = System.getProperty("java.library.path");
         log.info("Library Path: {}", libraryPath);
-        assertThat(libraryPath).contains("audio");
+        assertThat(libraryPath).contains("asio");
 
         // then
         log.info("Windows");
