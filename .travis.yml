@@ -11,4 +11,4 @@ cache:
      - src/main/resources/audio/
 
 script:
-  - ./gradlew clean test
+  - travis_wait 30 ./gradlew clean test
