@@ -18,7 +18,7 @@ public class LinuxAudioTest {
     public void shouldPlayFile() throws Exception {
         // given
         assumeTrue(this.isLinuxOrMac());
-        File testAudioFile = getTestAudioFile("audio.wav");
+        File testAudioFile = getTestAudioFile("audio/audio.wav");
         String source = testAudioFile.toURI().toURL().toString();
         LinuxAudio linuxAudio = new LinuxAudio(source);
 

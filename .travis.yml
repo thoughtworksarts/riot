@@ -3,5 +3,12 @@ language: java
 jdk:
   - oraclejdk8
 
+cache:
+    directories:
+     - .gradle/
+     - asio/
+     - src/main/resources/video/
+     - src/main/resources/audio/
+
 script:
   - ./gradlew clean test
