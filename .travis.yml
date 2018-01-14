@@ -5,7 +5,6 @@ jdk:
 
 cache:
     directories:
-     - .gradle/
      - $HOME/.gradle/caches/
      - $HOME/.gradle/wrapper/
      - asio/
