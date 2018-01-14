@@ -6,6 +6,8 @@ jdk:
 cache:
     directories:
      - .gradle/
+     - $HOME/.gradle/caches/
+     - $HOME/.gradle/wrapper/
      - asio/
      - src/main/resources/video/
      - src/main/resources/audio/
