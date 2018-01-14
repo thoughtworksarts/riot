@@ -12,5 +12,7 @@ cache:
      - src/main/resources/video/
      - src/main/resources/audio/
 
+install: travis_wait 30 ./gradlew assemble
+
 script:
-  - travis_wait 30 ./gradlew clean test
+  - travis_wait 30 ./gradlew test
