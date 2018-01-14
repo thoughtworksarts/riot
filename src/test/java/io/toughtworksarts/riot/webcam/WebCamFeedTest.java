@@ -23,15 +23,18 @@ public class WebCamFeedTest {
 
     @BeforeAll
     public static void assumeHardwareIsAvailable() {
+        log.info("Checking if we have the necessary hardware.");
+
         try {
             Optional<Webcam> webcam = Optional.ofNullable(Webcam.getDefault());
             assumeTrue(webcam.isPresent());
-        } catch (MediaException e) {
+        } catch (Exception e) {
+            log.info("Failed to retrieve default webcam: {}", e.getMessage(), e);
             throw new TestAbortedException("Webcam is not available", e);
         }
+
     }
-
-
+    
     @Test
     public void shouldGetHighestResolutionAvailable() {
 
