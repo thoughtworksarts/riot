@@ -46,9 +46,7 @@ downloads.each {
     def file = it.get('name')
     def url = it.get('url')
     def destination = it.get('dest')
-
-    println "Creating task 'download$file'"
-
+    
     task "download$file"(type: Download) {
         src url
         dest destination
@@ -60,7 +58,6 @@ compileJava.dependsOn tasks.withType(Download)
 
 junitPlatformTest {
     def canonicalPathToLib = new File('asio/').getCanonicalPath();
-    println "Canonical Path: 2 '$canonicalPathToLib'"
     systemProperty 'java.library.path', "$canonicalPathToLib"
 }
 
