@@ -1,4 +1,4 @@
-package com.facialrecognition;
+package io.thoughtworksarts.riot.facialrecognition;
 
 import org.deeplearning4j.datasets.iterator.DoublesDataSetIterator;
 import org.deeplearning4j.nn.graph.ComputationGraph;
