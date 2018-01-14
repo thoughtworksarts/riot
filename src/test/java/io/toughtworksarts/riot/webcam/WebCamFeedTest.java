@@ -26,8 +26,8 @@ public class WebCamFeedTest {
         try {
             Optional<Webcam> webcam = Optional.ofNullable(Webcam.getDefault());
             assumeTrue(webcam.isPresent());
-        } catch (MediaException) {
-            throw new TestAbortedException("Webcam is not available");
+        } catch (MediaException e) {
+            throw new TestAbortedException("Webcam is not available", e);
         }
     }
 
