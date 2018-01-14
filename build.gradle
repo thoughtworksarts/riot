@@ -29,20 +29,20 @@ repositories {
 
 import de.undercouch.gradle.tasks.download.Download
 
-def asioFiles = [
-        [name: 'jAsioHost', dest: 'asio/JAsioHost.jar',
+def downloads = [
+        [name: 'AsioHost', dest: 'asio/JAsioHost.jar',
             url: 'https://github.com/mhroth/jasiohost/raw/master/JAsioHost.jar' ],
-        [name: 'jAsioHostDll', dest: 'asio/jasiohost64.dll',
+        [name: 'AsioHostDll', dest: 'asio/jasiohost64.dll',
             url: 'https://github.com/mhroth/jasiohost/raw/master/jasiohost64.dll' ],
-        [name: 'asioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
+        [name: 'AsioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
             url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ],
-        [name: 'film', dest: 'src/main/resources/video/film.m4v',
+        [name: 'Film', dest: 'src/main/resources/video/film.m4v',
             url: 'https://cloud.eldermael.io/s/Z32zvOg0TWI3poQ/download'],
-        [name: 'audio', dest: 'src/main/resources/audio/audio.wav',
+        [name: 'Audio', dest: 'src/main/resources/audio/audio.wav',
             url: 'https://cloud.eldermael.io/s/2cIhm9WXMVNYQpU/download']
 ]
 
-asioFiles.each {
+downloads.each {
     def file = it.get('name')
     def url = it.get('url')
     def destination = it.get('dest')

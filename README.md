@@ -8,15 +8,17 @@
 You need to execute the gradle task to download the audio dependency,
 DLL and Driver for windows.
 
-    gradlew downloadAsioDependency
+    gradlew assemble
 
 After that, you need to execute and install the driver (you can also
 download directly from the provider as the URL is in the `build.gradle` file.)
 
+You can find the downloaded files in the newly created directory `asio` once you have finished
+executing the task.
+
 ## Run the application
 
     ./gradlew run
-
 
 ## Build locally
 
