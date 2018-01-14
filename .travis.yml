@@ -1,5 +1,8 @@
 language: java
 
+notifications:
+  slack: thoughtworks:TcUOfE06tLUKjmvtY4RmI4F8
+
 jdk:
   - oraclejdk8
 
