@@ -1,4 +1,4 @@
-package com.facialrecognition;
+package io.thoughtworksarts.riot;
 
 import com.github.sarxos.webcam.Webcam;
 

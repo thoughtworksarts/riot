@@ -1,4 +1,4 @@
-package io.toughtworksarts.riot.webcam;
+package io.thoughtworksarts.riot.webcam;
 
 import com.github.sarxos.webcam.Webcam;
 import io.thoughtworksarts.riot.WebcamFeed;

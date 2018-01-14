@@ -1,4 +1,4 @@
-package io.toughtworksarts.riot.webcam;
+package io.thoughtworksarts.riot.webcam;
 
 
 import com.synthbot.jasiohost.ExampleHost;

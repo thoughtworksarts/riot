@@ -1,4 +1,4 @@
-package com.facialrecognition;
+package io.thoughtworksarts.riot;
 
 public interface IFacialRecognitionAPI {
     void Initialise();

@@ -1,4 +1,4 @@
-package io.toughtworksarts.riot.webcam;
+package io.thoughtworksarts.riot.webcam;
 
 import io.thoughtworksarts.riot.LinuxAudio;
 import org.apache.commons.lang3.SystemUtils;
