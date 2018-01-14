@@ -2,25 +2,33 @@ package io.toughtworksarts.riot.webcam;
 
 import com.github.sarxos.webcam.Webcam;
 import io.thoughtworksarts.riot.WebcamFeed;
+import javafx.scene.media.MediaException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Slf4j
 public class WebCamFeedTest {
 
     @BeforeAll
     public static void assumeHardwareIsAvailable() {
-        assumeFalse(Webcam.getWebcams().isEmpty());
+        try {
+            Optional<Webcam> webcam = Optional.ofNullable(Webcam.getDefault());
+            assumeTrue(webcam.isPresent());
+        } catch (MediaException) {
+            throw new TestAbortedException("Webcam is not available");
+        }
     }
 
 
