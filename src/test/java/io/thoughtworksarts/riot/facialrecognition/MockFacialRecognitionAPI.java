@@ -1,7 +1,5 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
-import io.thoughtworksarts.riot.IFacialRecognitionAPI;
-
 public class MockFacialRecognitionAPI implements IFacialRecognitionAPI {
 	float calm;
 	float fear;

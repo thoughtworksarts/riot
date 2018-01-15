@@ -1,4 +1,4 @@
-package io.thoughtworksarts.riot;
+package io.thoughtworksarts.riot.facialrecognition;
 
 public class FacialRecognitionWindowsAPI implements IFacialRecognitionAPI
 {

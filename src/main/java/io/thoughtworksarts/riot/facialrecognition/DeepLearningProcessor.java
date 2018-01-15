@@ -1,4 +1,4 @@
-package io.thoughtworksarts.riot;
+package io.thoughtworksarts.riot.facialrecognition;
 
 
 import org.datavec.image.loader.ImageLoader;
