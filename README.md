@@ -18,6 +18,9 @@ executing the task.
 
 ## Run the application
 
+In the `src/main/resources/media/` directory add a .m4v video and corresponding .wav audio file.
+Create directory `src/main/resources/trainingModels/` and add a .h5  and corresponding .json file.
+
     ./gradlew run
 
 ## Build locally
