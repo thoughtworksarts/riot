@@ -1,7 +1,7 @@
 language: java
 
 notifications:
-  slack: thoughtworks:TcUOfE06tLUKjmvtY4RmI4F8
+  slack: thoughtworksarts:RdQaWk8I3BpwUpyw7Dyri2Hj
 
 jdk:
   - oraclejdk8
