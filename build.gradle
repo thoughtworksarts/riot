@@ -37,9 +37,9 @@ def downloads = [
         [name: 'AsioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
             url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ],
         [name: 'Film', dest: 'src/main/resources/video/film.m4v',
-            url: 'https://artifactory.eldermael.io/artifactory/binaries/media/film.m4v'],
+            url: 'https://artifactory.eldermael.io/artifactory/binaries/film.m4v'],
         [name: 'Audio', dest: 'src/main/resources/audio/audio.wav',
-            url: 'https://artifactory.eldermael.io/artifactory/binaries/media/RIOT_II_binarual_master_03.wav']
+            url: 'https://artifactory.eldermael.io/artifactory/binaries/RIOT_II_binarual_master_03.wav']
 ]
 
 downloads.each {
