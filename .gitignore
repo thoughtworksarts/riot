@@ -16,3 +16,9 @@ build/
 *.iml
 .gradle/
 .idea/
+
+# Eclipse, also an IDE
+.classpath
+.project
+.settings/
+bin/
