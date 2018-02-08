@@ -1,6 +1,6 @@
 package io.thoughtworksarts.riot.sound;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AsioDriverConnectorTest {
 
-    @Test
+    @Ignore
     public void asioDriverConnectorShouldPlayAudioFile() {
         SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
         String wavFile = "src/main/resources/audio/audio.wav";
