@@ -65,7 +65,7 @@ public class ExampleHost extends JFrame {
             if (audioPlayer == null) {
                 audioPlayer = new SimpleAudioPlayer();
                 String driverName = comboBox.getSelectedItem().toString();
-                String wavFile = "media/RIOT_II_binarual_master_03.wav";
+                String wavFile = "src/main/resources/audio/audio.wav";
                 try {
                     audioPlayer.initialise(driverName, wavFile);
                 } catch (Exception e) {

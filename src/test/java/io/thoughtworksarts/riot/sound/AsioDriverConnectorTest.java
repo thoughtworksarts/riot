@@ -11,7 +11,7 @@ public class AsioDriverConnectorTest {
     @Test
     public void asioDriverConnectorShouldPlayAudioFile() {
         SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
-        String wavFile = "media/RIOT_II_binarual_master_03.wav";
+        String wavFile = "src/main/resources/audio/audio.wav";
         try {
             audioPlayer.initialise("ASIO4ALL v2", wavFile);
             AsioDriverConnector driverConnector = new AsioDriverConnector(audioPlayer);
