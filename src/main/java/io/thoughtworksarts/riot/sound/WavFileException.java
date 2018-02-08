@@ -1,10 +1,6 @@
 package io.thoughtworksarts.riot.sound;
 
-public class WavFileException extends Exception
-{
-	/**
-	 * 
-	 */
+public class WavFileException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public WavFileException()

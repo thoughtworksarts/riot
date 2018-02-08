@@ -11,12 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-public class AsioSound implements AsioDriverListener {
+public class AsioDriverConnector implements AsioDriverListener {
 
     @Getter private int bufferSize;
-    private int sampleIndex;
-    private float[] output;
-    private double sampleRate;
 
     private AsioDriver asioDriver;
     private Set<AsioChannel> activeChannels;
@@ -24,7 +21,7 @@ public class AsioSound implements AsioDriverListener {
     private final SimpleAudioPlayer audioPlayer;
     private final AsioDriverListener host = this;
 
-    public AsioSound(SimpleAudioPlayer audioPlayer) {
+    public AsioDriverConnector(SimpleAudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         activeChannels = new HashSet<>();
     }
@@ -47,14 +44,11 @@ public class AsioSound implements AsioDriverListener {
     public void initialize(String driverName, int numChannels, int newSampleRate) {
         asioDriver = AsioDriver.getDriver(driverName);
         asioDriver.addAsioDriverListener(host);
+        bufferSize = asioDriver.getBufferPreferredSize();
+        asioDriver.setSampleRate(newSampleRate);
         for (int i = 0; i < numChannels; i++) {
             activeChannels.add(asioDriver.getChannelOutput(i));
         }
-        sampleIndex = 0;
-        bufferSize = asioDriver.getBufferPreferredSize();
-        asioDriver.setSampleRate(newSampleRate);
-        sampleRate = asioDriver.getSampleRate();
-        output = new float[bufferSize];
         asioDriver.createBuffers(activeChannels);
     }
 

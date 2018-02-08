@@ -4,82 +4,74 @@ import com.synthbot.jasiohost.AsioChannel;
 
 import java.util.Set;
 
-public class SimpleAudioPlayer implements IAudioFetchCallback {
+public class SimpleAudioPlayer{
 
     private int bufferSize;
     private int sampleRate;
     private float[][] outputPerChannel;
     private float [] silentChannelBuffer;
-    WavSource source;
-    AsioSound asioSound;
+    private WavSource source;
+    private AsioDriverConnector asioDriverConnector;
     
     enum State {
         Paused,
         Playing,
     }
-    
+
     State playbackState = State.Paused;
 
-    public SimpleAudioPlayer() { }
-
-    // Initialise the player with the specified driver name and wav file.
+    // initialise the player with the specified driver name and wav file.
     // 
     // We load the wav file and determine the playback rate, number of channels and samples. 
     // We then initialise the driver with the playback rate and number of channels.
     //
     // After this, the system is primed and ready to start playing back the wav file at the beginning,
-    // but will not actually start playing till we call Resume().
+    // but will not actually start playing till we call resume().
     // 
-    // Note: You MUST call Shutdown after calling Initialise - if you do not you will probably have to reboot your
+    // Note: You MUST call shutdown after calling initialise - if you do not you will probably have to reboot your
     // PC! Because Asio drivers are awesome like that.
     // 
     // Note: Enumerate Asio driver instances like this: AsioDriver.getDriverNames().toArray()
-    public void Initialise(String driverName, String wavFile) throws Exception {
+    public void initialise(String driverName, String wavFile) throws Exception {
         source = new WavSource(wavFile);
 
-        int numChannels = (int)source.getNumChannels();
+        int numChannels = source.getNumChannels();
         sampleRate = (int)source.getSampleRate();
         
-        asioSound = new AsioSound(this);
-        asioSound.initialize("ASIO4ALL v2", numChannels, sampleRate);
+        asioDriverConnector = new AsioDriverConnector(this);
+        asioDriverConnector.initialize("ASIO4ALL v2", numChannels, sampleRate);
 
-        bufferSize = asioSound.getBufferSize();
+        bufferSize = asioDriverConnector.getBufferSize();
 
         outputPerChannel = new float[numChannels][bufferSize];
         silentChannelBuffer = new float[bufferSize];
 
-        asioSound.start();
+        asioDriverConnector.start();
     }
 
     // Shut down the Asio driver. You MUST do this before closing the application, or you'll probably get no
     // audio output till you reboot your PC
-    public void Shutdown() {
-        if (asioSound != null) {
-            asioSound.shutdown();
+    public void shutdown() {
+        if (asioDriverConnector != null) {
+            asioDriverConnector.shutdown();
         }
     }
 
-    // Seek to the current position, in seconds
-    public void Seek(double seekTimeSeconds)
-    {
-        source.Seek(seekTimeSeconds);
+    public void seek(double seekTimeSeconds) {
+        source.seek(seekTimeSeconds);
     }
     
-    // Get the current playback position, in seconds
-    public double CurrentTime()
+    public double currentTime()
     {
         return source.CurrentTime();
     }
-    
-    // Pause playback
-    public void Pause()
+
+    public void pause()
     {
         playbackState = State.Paused;
     }
-    
-    // Resume playback
-    public void Resume()
-    {
+
+    public void resume() {
         playbackState = State.Playing;
     }
 
@@ -87,14 +79,12 @@ public class SimpleAudioPlayer implements IAudioFetchCallback {
     public void bufferSwitch(long systemTime, long samplePosition, Set<AsioChannel> channels) {
         // If we're playing get data from the file
         if (playbackState == State.Playing) {
-            int numFramesRead = source.ReadFrames(bufferSize, outputPerChannel);
-            
-            //System.out.printf("bufferSwitch() returned %d bytes.\r\n", numFramesRead);
-            
+            source.ReadFrames(bufferSize, outputPerChannel);
+
             int index = 0;
             for (AsioChannel channelInfo : channels) {
                 float [] channel = outputPerChannel[index++];
-    
+
                 channelInfo.write(channel);
             }
         }

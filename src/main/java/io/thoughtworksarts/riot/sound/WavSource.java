@@ -1,15 +1,19 @@
 package io.thoughtworksarts.riot.sound;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 
 // Simple class to handle audio playback from a wav file
 public class WavSource {
-	int numChannels;
-	int numFrames;
-	float[] buffer;
-	long sampleRate;
-	int readCurrentFrame = 0;
+
+	private int numFrames;
+	private float[] buffer;
+	private int readCurrentFrame;
+
+	@Getter private int numChannels;
+	@Getter private long sampleRate;
 
 	WavSource(String path) throws IOException, WavFileException {
 		// Open the wav file specified as the first argument
@@ -63,7 +67,7 @@ public class WavSource {
 		return numFramesToRead;
 	}
 	
-    public void Seek(double seekTimeSeconds) {
+    public void seek(double seekTimeSeconds) {
         int seekTimeFrames = (int)(seekTimeSeconds * sampleRate);
         if (seekTimeFrames < 0) {
             seekTimeFrames = 0;
@@ -78,14 +82,6 @@ public class WavSource {
     {
         return (double)readCurrentFrame/(double)sampleRate;
     }
+
     
-    public long getSampleRate()
-    {
-        return sampleRate;
-    }
-    
-    public long getNumChannels()
-    {
-        return numChannels;
-    }
 }

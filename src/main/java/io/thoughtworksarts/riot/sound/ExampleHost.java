@@ -1,6 +1,6 @@
 /*
  *  Copyright 2009,2010 Martin Roth (mhroth@gmail.com)
- * 
+ *
  *  This file is part of JAsioHost.
  *
  *  JAsioHost is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with JAsioHost.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -22,8 +22,6 @@ package io.thoughtworksarts.riot.sound;
 
 import com.synthbot.jasiohost.AsioDriver;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -43,15 +41,13 @@ import javax.swing.WindowConstants;
  * unloads the driver. The <i>Control Panel</i> button opens the driver's
  * control panel for any additional configuration.
  */
-public class ExampleHost extends JFrame
-{
+public class ExampleHost extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
     SimpleAudioPlayer audioPlayer;
 
-    public ExampleHost()
-    {
+    public ExampleHost() {
         super("JAsioHost Example");
 
         final JComboBox comboBox = new JComboBox(AsioDriver.getDriverNames().toArray());
@@ -62,110 +58,65 @@ public class ExampleHost extends JFrame
         final JButton buttonForward1Sec = new JButton("Forward 1 sec");
         final JButton buttonPause = new JButton("Pause");
         final JButton buttonResume = new JButton("Resume");
-        
+
         final JButton buttonControlPanel = new JButton("Control Panel");
 
-        buttonStart.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer == null)
-                {
-                    audioPlayer = new SimpleAudioPlayer();
-                    String driverName = comboBox.getSelectedItem().toString();
-
-                    // "C:\\Temp\\8track_1min_helicopter.wav"
-                    // "C:\\Temp\\8channel.wav"
-                    String wavFile = "media/RIOT_II_binarual_master_03.wav";
-                    try
-                    {
-                        audioPlayer.Initialise(driverName, wavFile);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+        buttonStart.addActionListener((event) -> {
+            if (audioPlayer == null) {
+                audioPlayer = new SimpleAudioPlayer();
+                String driverName = comboBox.getSelectedItem().toString();
+                String wavFile = "media/RIOT_II_binarual_master_03.wav";
+                try {
+                    audioPlayer.initialise(driverName, wavFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        buttonStop.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Shutdown();
-                    audioPlayer = null;
-                }
+        buttonStop.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.shutdown();
+                audioPlayer = null;
             }
         });
 
-        buttonControlPanel.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                /*
-                 * if (asioDriver != null &&
-                 * asioDriver.getCurrentState().ordinal() >=
-                 * AsioDriverState.INITIALIZED.ordinal()) {
-                 * asioDriver.openControlPanel(); }
-                 */
+        buttonControlPanel.addActionListener((event) -> {
+            /*
+             * if (asioDriver != null &&
+             * asioDriver.getCurrentState().ordinal() >=
+             * AsioDriverState.INITIALIZED.ordinal()) {
+             * asioDriver.openControlPanel(); }
+             */
+        });
+
+        buttonRewindBeginning.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.seek(0.0);
             }
         });
 
-        buttonRewindBeginning.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Seek(0.0);
-                }
+        buttonBack1Sec.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.seek(audioPlayer.currentTime() - 1.0);
             }
         });
 
-        buttonBack1Sec.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Seek(audioPlayer.CurrentTime() - 1.0);
-                }
+        buttonForward1Sec.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.seek(audioPlayer.currentTime() + 1.0);
             }
         });
 
-        buttonForward1Sec.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Seek(audioPlayer.CurrentTime() + 1.0);
-                }
+        buttonPause.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.pause();
             }
         });
 
-        buttonPause.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Pause();
-                }
-            }
-        });
-
-        buttonResume.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Resume();
-                }
+        buttonResume.addActionListener((event) -> {
+            if (audioPlayer != null) {
+                audioPlayer.resume();
             }
         });
 
@@ -195,14 +146,11 @@ public class ExampleHost extends JFrame
         this.add(panel);
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter()
-        {
+        this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent event)
-            {
-                if (audioPlayer != null)
-                {
-                    audioPlayer.Shutdown();
+            public void windowClosing(WindowEvent event) {
+                if (audioPlayer != null) {
+                    audioPlayer.shutdown();
                     audioPlayer = null;
                 }
             }
@@ -213,8 +161,7 @@ public class ExampleHost extends JFrame
         this.setVisible(true);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         @SuppressWarnings("unused")
         ExampleHost host = new ExampleHost();
     }

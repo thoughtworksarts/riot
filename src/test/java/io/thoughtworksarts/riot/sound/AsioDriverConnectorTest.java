@@ -1,0 +1,29 @@
+package io.thoughtworksarts.riot.sound;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class AsioDriverConnectorTest {
+
+    @Test
+    public void asioDriverConnectorShouldPlayAudioFile() {
+        SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
+        String wavFile = "media/RIOT_II_binarual_master_03.wav";
+        try {
+            audioPlayer.initialise("ASIO4ALL v2", wavFile);
+            AsioDriverConnector driverConnector = new AsioDriverConnector(audioPlayer);
+            driverConnector.start();
+            audioPlayer.resume();
+            TimeUnit.SECONDS.sleep(3);
+            driverConnector.shutdown();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        audioPlayer.shutdown();
+    }
+}
