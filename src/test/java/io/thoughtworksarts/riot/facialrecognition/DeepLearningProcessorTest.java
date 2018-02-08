@@ -1,40 +1,35 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
-import org.deeplearning4j.datasets.iterator.DoublesDataSetIterator;
-import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
-import org.junit.Ignore;
-import org.junit.jupiter.api.Disabled;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.junit.jupiter.api.Test;
-import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 import javax.imageio.ImageIO;
-
-import static org.junit.Assert.assertEquals;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DeepLearningProcessorTest {
 
     @Test
-    @Disabled
     void shouldBeAbleToImportKerasModel() throws Exception {
         // given
         String fileName = this.getCompleteFileName("testimage.png");
-        String h5File = this.getCompleteFileName("inception_v3_weights_dl4j.h5");
-        String jsonFile = this.getCompleteFileName("inception_v3_model_dl4j.json");
+        String h5File = this.getCompleteFileName("conv2d_weights.h5");
+        String jsonFile = this.getCompleteFileName("conv2d_model.json");
+        List<String> layerNames = Arrays.asList("convolution2d_1", "convolution2d_2", "maxpooling2d_1", "convolution2d_3", "convolution2d_4", "maxpooling2d_2", "dense_1");
 
         File imageFile = new File(fileName);
-
         BufferedImage image = ImageIO.read(imageFile);
 
         // when
-        ComputationGraph model = KerasModelImport.importKerasModelAndWeights(jsonFile, h5File);
+        MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(jsonFile, h5File);
 
-        // then ????
-        DataSetIterator iterator = new DoublesDataSetIterator(null, 0);
-        assertEquals("123", model.evaluate(iterator).stats());
+        // then
+        assertEquals(layerNames, model.getLayerNames());
     }
 
     private String getCompleteFileName(String relativePath) {
