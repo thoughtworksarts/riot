@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DeepLearningProcessorTest {
 
+    public static final int RGB_CHANNEL_COUNT = 3;
+    public static final int PIXEL_COUNT = 3;
     private String h5File;
     private String jsonFile;
     private MultiLayerNetwork model;
@@ -50,15 +52,16 @@ public class DeepLearningProcessorTest {
 
         ImageLoader imageLoader = new ImageLoader();
         int[][] imageData = imageLoader.fromFile(imageFile);
-        int[] actualPixels = new int[9];
+        int[] actualPixels = new int[PIXEL_COUNT * RGB_CHANNEL_COUNT];
         // Only looks at first 3 pixels of 4096 pixels
-        for (int i = 0; i < 3; i++) {
-            actualPixels[i*3] = this.getRPixelValue(imageData[0][i]);
-            actualPixels[(i*3)+1] = this.getGPixelValue(imageData[0][i]);
-            actualPixels[(i*3)+2] = this.getBPixelValue(imageData[0][i]);
+        for (int pixelIndex = 0; pixelIndex < RGB_CHANNEL_COUNT; pixelIndex++) {
+            actualPixels[pixelIndex*RGB_CHANNEL_COUNT] = this.getRPixelValue(imageData[0][pixelIndex]);
+            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+1] = this.getGPixelValue(imageData[0][pixelIndex]);
+            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+2] = this.getBPixelValue(imageData[0][pixelIndex]);
         }
         assertArrayEquals(expectedPixels, actualPixels);
     }
+
 
     private int getRPixelValue(int pixel) {
         return (pixel >> 16) & 0xff;
