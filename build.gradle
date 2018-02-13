@@ -67,6 +67,8 @@ dependencies {
 
     compile 'com.github.sarxos:webcam-capture:0.3.11'
 
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'ch.qos.logback:logback-classic:1.0.13'
 

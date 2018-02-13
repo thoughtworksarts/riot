@@ -44,7 +44,7 @@ public class WavSource {
 		System.out.printf("Channels: %d Frames: %d\n", numChannels, numFrames);
 	}
 
-	public int ReadFrames(int numFramesRequested, float[][] outBuffer) {
+	public int readFrames(int numFramesRequested, float[][] outBuffer) {
 		int numFramesLeft = numFrames - readCurrentFrame;
 		int numFramesToRead = Math.min(numFramesLeft, numFramesRequested);
 
@@ -78,7 +78,7 @@ public class WavSource {
         readCurrentFrame = seekTimeFrames;
     }
     
-    public double CurrentTime()
+    public double currentTime()
     {
         return (double)readCurrentFrame/(double)sampleRate;
     }

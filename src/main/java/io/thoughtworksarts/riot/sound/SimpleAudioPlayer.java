@@ -63,7 +63,7 @@ public class SimpleAudioPlayer{
     
     public double currentTime()
     {
-        return source.CurrentTime();
+        return source.currentTime();
     }
 
     public void pause()
@@ -79,7 +79,7 @@ public class SimpleAudioPlayer{
     public void bufferSwitch(long systemTime, long samplePosition, Set<AsioChannel> channels) {
         // If we're playing get data from the file
         if (playbackState == State.Playing) {
-            source.ReadFrames(bufferSize, outputPerChannel);
+            source.readFrames(bufferSize, outputPerChannel);
 
             int index = 0;
             for (AsioChannel channelInfo : channels) {
