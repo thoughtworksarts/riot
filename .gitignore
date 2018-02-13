@@ -2,7 +2,7 @@
 asio/
 
 # Media files
-*.json
+trainingModels/
 *.h5
 *.wav
 *.m4v
