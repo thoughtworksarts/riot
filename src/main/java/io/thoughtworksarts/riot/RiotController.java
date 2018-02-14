@@ -3,7 +3,7 @@ package io.thoughtworksarts.riot;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionV2API;
-import io.thoughtworksarts.riot.sound.AudioPlayer;
+import io.thoughtworksarts.riot.audio.AudioPlayer;
 
 import java.util.Timer;
 
