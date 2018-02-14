@@ -1,7 +1,7 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
 import org.datavec.image.loader.ImageLoader;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ImageProcessorTest {
@@ -18,39 +19,50 @@ public class ImageProcessorTest {
     public static final int RGB_CHANNEL_COUNT = 3;
     public static final int PIXEL_COUNT = 3;
     private ImageProcessor imageProcessor;
-    private File imageFile;
     private BufferedImage colorImage;
-    private BufferedImage grayImage;
+    private File imageFile;
 
-    @BeforeAll
+    @BeforeEach
     void setup() throws IOException {
         imageProcessor = new ImageProcessor();
-
         String fileName = this.getCompleteFileName("testimage.png");
         imageFile = new File(fileName);
         colorImage = imageProcessor.loadImage(imageFile);
     }
 
     @Test
-    void shouldFindSameRawPixelValuesInTestImage() throws IOException {
+    void shouldFindSameRawPixelValuesInTestImage() {
         int[] expectedPixels = new int[]{255, 251, 226, 255, 251, 230, 255, 254, 236};
         int[] actualPixels = getRGBImagePixelSubset();
+
         assertArrayEquals(expectedPixels, actualPixels);
     }
 
     @Test
-    void shouldFindSamePixelValuesAfterTransformingImageToGrayscale() throws IOException {
+    void shouldFindSamePixelValuesAfterTransformingImageToGrayscale() {
         int[] expectedPixels = new int[]{250, 250, 252, 243, 216, 242, 255, 255, 255, 255};
-
-        grayImage = imageProcessor.convertImageToGrayscale(colorImage);
+        BufferedImage grayImage = imageProcessor.convertImageToGrayscale(colorImage);
         int[] actualPixels = this.getGrayImagePixelSubset(10, grayImage);
 
         assertArrayEquals(expectedPixels, actualPixels);
     }
 
+    @Test
+    void shouldFindSamePixelValuesAfterResizeImage() {
+        int[] expectedPixels = new int[]{251, 237, 242, 255, 254, 255, 255, 255, 255, 255};
+        BufferedImage grayImage = imageProcessor.convertImageToGrayscale(colorImage);
+        BufferedImage resizedImage = imageProcessor.resizeImage(grayImage, 64, 64);
+
+        for (int i = 0; i < 10; i++) {
+            int actualPixel = resizedImage.getRaster().getSample(0, i, 0);
+            int expectedPixel = expectedPixels[i];
+            assertTrue(Math.abs(actualPixel-expectedPixel) <= 1);
+        }
+    }
+
     private int[] getRGBImagePixelSubset() {
         int[] actualPixels = new int[PIXEL_COUNT * RGB_CHANNEL_COUNT];
-        // Only looks at first 3 pixels of 4096 pixels
+        // Only returns first 3 pixels of 4096 pixels
         for (int pixelIndex = 0; pixelIndex < RGB_CHANNEL_COUNT; pixelIndex++) {
             actualPixels[pixelIndex*RGB_CHANNEL_COUNT] = imageProcessor.getRPixelValue(colorImage.getRGB(0, pixelIndex));
             actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+1] = imageProcessor.getGPixelValue(colorImage.getRGB(0, pixelIndex));

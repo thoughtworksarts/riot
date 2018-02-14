@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class ImageProcessor {
 
-    public BufferedImage convertImageToGrayscale(BufferedImage colorImage) throws IOException {
+    public BufferedImage convertImageToGrayscale(BufferedImage colorImage) {
         BufferedImage grayImage = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         for (int rowIndex = 0; rowIndex < colorImage.getWidth(); ++rowIndex) {
             for (int colIndex = 0; colIndex < colorImage.getHeight(); ++colIndex) {
@@ -27,11 +27,10 @@ public class ImageProcessor {
     }
 
     public BufferedImage resizeImage(BufferedImage originalImage, int newW, int newH) {
-        BufferedImage resizedImage = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
+        BufferedImage resizedImage = new BufferedImage(newW, newH, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g2d = resizedImage.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.drawImage(originalImage, 0, 0, null);
+        g2d.drawImage(originalImage, 0, 0, newW, newH, null);
         g2d.dispose();
 
         return resizedImage;
