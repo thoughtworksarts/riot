@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -20,9 +18,9 @@ public class ImageProcessorTest {
     public static final int RGB_CHANNEL_COUNT = 3;
     public static final int PIXEL_COUNT = 3;
     private ImageProcessor imageProcessor;
-    private int[][] imageData;
-    private float[] grayImageData;
     private File imageFile;
+    private BufferedImage colorImage;
+    private BufferedImage grayImage;
 
     @BeforeAll
     void setup() throws IOException {
@@ -30,33 +28,43 @@ public class ImageProcessorTest {
 
         String fileName = this.getCompleteFileName("testimage.png");
         imageFile = new File(fileName);
-        ImageLoader imageLoader = new ImageLoader();
-        imageData = imageLoader.fromFile(imageFile);
+        colorImage = imageProcessor.loadImage(imageFile);
     }
 
     @Test
     void shouldFindSameRawPixelValuesInTestImage() throws IOException {
         int[] expectedPixels = new int[]{255, 251, 226, 255, 251, 230, 255, 254, 236};
-        int[] actualPixels = new int[PIXEL_COUNT * RGB_CHANNEL_COUNT];
-        // Only looks at first 3 pixels of 4096 pixels
-        for (int pixelIndex = 0; pixelIndex < RGB_CHANNEL_COUNT; pixelIndex++) {
-            actualPixels[pixelIndex*RGB_CHANNEL_COUNT] = imageProcessor.getRPixelValue(imageData[0][pixelIndex]);
-            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+1] = imageProcessor.getGPixelValue(imageData[0][pixelIndex]);
-            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+2] = imageProcessor.getBPixelValue(imageData[0][pixelIndex]);
-        }
+        int[] actualPixels = getRGBImagePixelSubset();
         assertArrayEquals(expectedPixels, actualPixels);
     }
 
     @Test
     void shouldFindSamePixelValuesAfterTransformingImageToGrayscale() throws IOException {
-        float[] expectedPixels = new float[]{0.980578431373f, 0.981709411765f, 0.991822352941f, 0.954831764706f, 0.849507058824f, 0.950403529412f, 1.0f, 1.0f, 1.0f, 1.0f};
+        int[] expectedPixels = new int[]{250, 250, 252, 243, 216, 242, 255, 255, 255, 255};
 
-        grayImageData = imageProcessor.convertImageToGrayscale(imageFile);
-        //only looks at first 10 pixels
-        float[] actualPixels = Arrays.copyOfRange(grayImageData, 0, 10);
+        grayImage = imageProcessor.convertImageToGrayscale(colorImage);
+        int[] actualPixels = this.getGrayImagePixelSubset(10, grayImage);
 
-        float delta = 0.0001f;
-        assertArrayEquals(expectedPixels, actualPixels, delta);
+        assertArrayEquals(expectedPixels, actualPixels);
+    }
+
+    private int[] getRGBImagePixelSubset() {
+        int[] actualPixels = new int[PIXEL_COUNT * RGB_CHANNEL_COUNT];
+        // Only looks at first 3 pixels of 4096 pixels
+        for (int pixelIndex = 0; pixelIndex < RGB_CHANNEL_COUNT; pixelIndex++) {
+            actualPixels[pixelIndex*RGB_CHANNEL_COUNT] = imageProcessor.getRPixelValue(colorImage.getRGB(0, pixelIndex));
+            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+1] = imageProcessor.getGPixelValue(colorImage.getRGB(0, pixelIndex));
+            actualPixels[(pixelIndex*RGB_CHANNEL_COUNT)+2] = imageProcessor.getBPixelValue(colorImage.getRGB(0, pixelIndex));
+        }
+        return actualPixels;
+    }
+
+    private int[] getGrayImagePixelSubset(int pixelCount, BufferedImage image) {
+        int[] pixelSubset = new int[pixelCount];
+        for (int pixelCol = 0; pixelCol < pixelCount; pixelCol++) {
+            pixelSubset[pixelCol] = image.getRaster().getSample(0, pixelCol, 0);
+        }
+        return pixelSubset;
     }
 
     private INDArray prepareImageForNet(BufferedImage image) {
@@ -66,17 +74,6 @@ public class ImageProcessorTest {
         int[] shape = new int[]{1, 1, 64, 64};
         test_data = test_data.reshape(shape);
         return test_data;
-    }
-
-    private static BufferedImage resize(BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = dimg.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-
-        return dimg;
     }
 
     private String getCompleteFileName(String relativePath) {
