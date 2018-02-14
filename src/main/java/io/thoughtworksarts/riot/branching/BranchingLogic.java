@@ -10,19 +10,19 @@ import java.io.FileReader;
 @Slf4j
 public class BranchingLogic {
 
-    @Getter private XmlConfigRoot root;
+    @Getter private ConfigRoot root;
 
-    public XmlConfigRoot createLogicTree(String pathToConfig) throws Exception {
+    public ConfigRoot createLogicTree(String pathToConfig) throws Exception {
         String jsonConfig = readFile(pathToConfig);
         ObjectMapper objectMapper = new ObjectMapper();
-        root = objectMapper.readValue(jsonConfig, XmlConfigRoot.class);
+        root = objectMapper.readValue(jsonConfig, ConfigRoot.class);
         return root;
     }
 
     public Level getOutcome(Emotion currentEmotion) {
-        int outcome = currentEmotion.outcome;
+        int outcome = currentEmotion.getOutcome();
         if ( outcome == 0 ) return null;
-        return root.levels[outcome - 1];
+        return root.getLevels()[outcome - 1];
     }
 
     private String readFile(String filename) {

@@ -45,7 +45,7 @@ public class ExampleHost extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    SimpleAudioPlayer audioPlayer;
+    AudioPlayer audioPlayer;
 
     public ExampleHost() {
         super("JAsioHost Example");
@@ -63,7 +63,7 @@ public class ExampleHost extends JFrame {
 
         buttonStart.addActionListener((event) -> {
             if (audioPlayer == null) {
-                audioPlayer = new SimpleAudioPlayer();
+                audioPlayer = new AudioPlayer();
                 String driverName = comboBox.getSelectedItem().toString();
                 String wavFile = "src/main/resources/audio/audio.wav";
                 try {

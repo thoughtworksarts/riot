@@ -4,7 +4,7 @@ import com.synthbot.jasiohost.AsioChannel;
 
 import java.util.Set;
 
-public class SimpleAudioPlayer{
+public class AudioPlayer {
 
     private int bufferSize;
     private int sampleRate;
@@ -39,7 +39,7 @@ public class SimpleAudioPlayer{
         sampleRate = (int)source.getSampleRate();
         
         asioDriverConnector = new AsioDriverConnector(this);
-        asioDriverConnector.initialize("ASIO4ALL v2", numChannels, sampleRate);
+        asioDriverConnector.initialize(driverName, numChannels, sampleRate);
 
         bufferSize = asioDriverConnector.getBufferSize();
 

@@ -10,7 +10,7 @@ public class AsioDriverConnectorTest {
 
     @Ignore
     public void asioDriverConnectorShouldPlayAudioFile() {
-        SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
+        AudioPlayer audioPlayer = new AudioPlayer();
         String wavFile = "src/main/resources/audio/audio.wav";
         try {
             audioPlayer.initialise("ASIO4ALL v2", wavFile);

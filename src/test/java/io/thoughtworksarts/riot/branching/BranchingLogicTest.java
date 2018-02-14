@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BranchingLogicTest {
 
-    private XmlConfigRoot root;
+    private ConfigRoot root;
     private BranchingLogic branchingLogic;
 
     @BeforeEach
@@ -23,12 +23,12 @@ class BranchingLogicTest {
     @Test
     void createLogicTreeShouldCreateXMLConfigRoot() throws Exception {
         assertNotNull(root);
-        assertEquals(root.getClass(), XmlConfigRoot.class);
+        assertEquals(root.getClass(), ConfigRoot.class);
     }
 
     @Test
     void createLogicTreeShouldContainCorrectPathToVideoFile() throws Exception {
-        String videoPath = root.media.video;
+        String videoPath = root.getMedia().getVideo();
 
         assertTrue(videoPath.contains(".m4v"));
         File file = new File(videoPath);
@@ -42,9 +42,9 @@ class BranchingLogicTest {
 
     @Test
     void createLogicTreeShouldContainCorrectPathToAudioFile() throws Exception {
-        String audioPath = root.media.audio;
+        String audioPath = root.getMedia().getAudio();
 
-        assertTrue(root.media.audio.contains(".wav"));
+        assertTrue(audioPath.contains(".wav"));
         File file = new File(audioPath);
 
         try{
@@ -56,7 +56,7 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldEndIfEmotionIsFear() {
-        Emotion fearEmotion = root.levels[0].branch.fear;
+        Emotion fearEmotion = root.getLevels()[0].getBranch().getFear();
         Level fearOutcome = branchingLogic.getOutcome(fearEmotion);
 
         assertNull(fearOutcome);
@@ -64,7 +64,7 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldEndIfEmotionIsAnger() {
-        Emotion angerEmotion = root.levels[0].branch.anger;
+        Emotion angerEmotion = root.getLevels()[0].getBranch().getAnger();
         Level angerOutcome = branchingLogic.getOutcome(angerEmotion);
 
         assertNull(angerOutcome);
@@ -72,11 +72,11 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldContinueIfEmotionIsCalm() {
-        Emotion calmEmotion = root.levels[0].branch.calm;
+        Emotion calmEmotion = root.getLevels()[0].getBranch().getCalm();
         Level calmOutcome = branchingLogic.getOutcome(calmEmotion);
 
         assertNotNull(calmOutcome);
-        assertTrue(calmOutcome.branch.calm.outcome != 0);
+        assertTrue(calmOutcome.getBranch().getCalm().getOutcome() != 0);
     }
 
 }

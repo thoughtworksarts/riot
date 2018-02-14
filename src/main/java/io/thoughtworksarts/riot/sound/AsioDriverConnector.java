@@ -18,10 +18,10 @@ public class AsioDriverConnector implements AsioDriverListener {
     private AsioDriver asioDriver;
     private Set<AsioChannel> activeChannels;
 
-    private final SimpleAudioPlayer audioPlayer;
+    private final AudioPlayer audioPlayer;
     private final AsioDriverListener host = this;
 
-    public AsioDriverConnector(SimpleAudioPlayer audioPlayer) {
+    public AsioDriverConnector(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         activeChannels = new HashSet<>();
     }
