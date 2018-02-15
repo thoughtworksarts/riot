@@ -12,23 +12,23 @@ import java.io.IOException;
 public class ImageProcessor {
 
     public INDArray prepareImageForNet(File imageFile, int targetWidth, int targetHeight, int[] targetDataShape) throws IOException {
-        BufferedImage colorImage = this.loadImage(imageFile);
-        BufferedImage grayImage = this.convertImageToGrayscale(colorImage);
-        BufferedImage resizedImage = this.resizeImage(grayImage, targetWidth, targetHeight);
-        INDArray imageData = this.normalizeData(resizedImage);
-
+        BufferedImage image = loadImage(imageFile);
+        image = convertImageToGrayscale(image);
+        image = resizeImage(image, targetWidth, targetHeight);
+        INDArray imageData = normalizeImageData(image);
         return imageData.reshape(targetDataShape);
     }
 
-    private INDArray normalizeData(BufferedImage image) {
-        INDArray normalizedData = Nd4j.zeros(image.getWidth(), image.getHeight());
-        for (int rowIdx = 0; rowIdx < image.getWidth(); rowIdx++){
-            for (int colIdx = 0; colIdx < image.getHeight(); colIdx++){
-                float normalizedValue = (image.getRaster().getSample(rowIdx, colIdx, 0)) / 255.0f;
-                normalizedData.put(rowIdx, colIdx, normalizedValue);
+    public BufferedImage loadImage(File imageFile) throws IOException {
+        ImageLoader imageLoader = new ImageLoader();
+        int[][] colorImageData = imageLoader.fromFile(imageFile);
+        BufferedImage colorImage = new BufferedImage(colorImageData.length, colorImageData[0].length, BufferedImage.TYPE_INT_ARGB);
+        for (int pixelRow = 0; pixelRow < colorImage.getWidth(); pixelRow++) {
+            for (int pixelCol = 0; pixelCol < colorImage.getHeight(); pixelCol++) {
+                colorImage.setRGB(pixelRow, pixelCol, colorImageData[pixelRow][pixelCol]);
             }
         }
-        return normalizedData;
+        return colorImage;
     }
 
     public BufferedImage convertImageToGrayscale(BufferedImage colorImage) {
@@ -36,12 +36,7 @@ public class ImageProcessor {
         for (int rowIndex = 0; rowIndex < colorImage.getWidth(); ++rowIndex) {
             for (int colIndex = 0; colIndex < colorImage.getHeight(); ++colIndex) {
                 int rgb = colorImage.getRGB(rowIndex, colIndex);
-                int r = getRPixelValue(rgb);
-                int g = getGPixelValue(rgb);
-                int b = getBPixelValue(rgb);
-
-                // uses rgb to grayscale formula from Python skimage color library method rgb2gray()
-                int grayPixel = (int)Math.floor((r * 0.2125f) + (g * 0.7154f) + (b * 0.0721f));
+                int grayPixel = getGrayPixelValue(rgb);
                 grayImage.getRaster().setSample(rowIndex, colIndex, 0, grayPixel);
             }
         }
@@ -58,6 +53,25 @@ public class ImageProcessor {
         return resizedImage;
     }
 
+    private INDArray normalizeImageData(BufferedImage image) {
+        INDArray normalizedData = Nd4j.zeros(image.getWidth(), image.getHeight());
+        for (int rowIdx = 0; rowIdx < image.getWidth(); rowIdx++){
+            for (int colIdx = 0; colIdx < image.getHeight(); colIdx++){
+                float normalizedValue = getNormalizedPixelValue(image, rowIdx, colIdx);
+                normalizedData.put(rowIdx, colIdx, normalizedValue);
+            }
+        }
+        return normalizedData;
+    }
+
+    private int getGrayPixelValue(int rgb) {
+        int r = getRPixelValue(rgb);
+        int g = getGPixelValue(rgb);
+        int b = getBPixelValue(rgb);
+        // uses rgb to grayscale formula from Python skimage color library method rgb2gray()
+        return (int)Math.floor((r * 0.2125f) + (g * 0.7154f) + (b * 0.0721f));
+    }
+
     public int getRPixelValue(int pixel) {
         return (pixel >> 16) & 0xff;
     }
@@ -70,15 +84,7 @@ public class ImageProcessor {
         return (pixel) & 0xff;
     }
 
-    public BufferedImage loadImage(File imageFile) throws IOException {
-        ImageLoader imageLoader = new ImageLoader();
-        int[][] colorImageData = imageLoader.fromFile(imageFile);
-        BufferedImage colorImage = new BufferedImage(colorImageData.length, colorImageData[0].length, BufferedImage.TYPE_INT_ARGB);
-        for (int pixelRow = 0; pixelRow < colorImage.getWidth(); pixelRow++) {
-            for (int pixelCol = 0; pixelCol < colorImage.getHeight(); pixelCol++) {
-                colorImage.setRGB(pixelRow, pixelCol, colorImageData[pixelRow][pixelCol]);
-            }
-        }
-        return colorImage;
+    private float getNormalizedPixelValue(BufferedImage image, int rowIdx, int colIdx) {
+        return (image.getRaster().getSample(rowIdx, colIdx, 0)) / 255.0f;
     }
 }
