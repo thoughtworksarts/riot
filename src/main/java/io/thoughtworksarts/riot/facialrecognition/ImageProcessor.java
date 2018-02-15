@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ImageProcessor {
 
-    public INDArray prepareImageForNet(File imageFile, int targetWidth, int targetHeight, int[] targetDataShape) throws IOException {
+    public INDArray prepareImageForNet(File imageFile, int targetWidth, int targetHeight, int[] targetDataShape) {
         BufferedImage image = loadImage(imageFile);
         image = convertImageToGrayscale(image);
         image = resizeImage(image, targetWidth, targetHeight);
@@ -19,9 +19,15 @@ public class ImageProcessor {
         return imageData.reshape(targetDataShape);
     }
 
-    public BufferedImage loadImage(File imageFile) throws IOException {
+    public BufferedImage loadImage(File imageFile) {
         ImageLoader imageLoader = new ImageLoader();
-        int[][] colorImageData = imageLoader.fromFile(imageFile);
+        int[][] colorImageData = new int[0][];
+        try {
+            colorImageData = imageLoader.fromFile(imageFile);
+        } catch (IOException e) {
+            System.out.println("Unable to read data from test image file.");
+            e.printStackTrace();
+        }
         BufferedImage colorImage = new BufferedImage(colorImageData.length, colorImageData[0].length, BufferedImage.TYPE_INT_ARGB);
         for (int pixelRow = 0; pixelRow < colorImage.getWidth(); pixelRow++) {
             for (int pixelCol = 0; pixelCol < colorImage.getHeight(); pixelCol++) {

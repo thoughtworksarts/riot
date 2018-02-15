@@ -6,7 +6,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,13 +43,7 @@ public class DeepLearningProcessorTest {
         float[] expectedPrediction = new float[]{0.0f, 0.24070886f, 0.0920638f};
 
         int[] dataShape = new int[]{1, 1, 64, 64};
-        INDArray imageData = null;
-        try {
-            imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
-        } catch (IOException e) {
-            System.out.println("Unable to load and process test image.");
-            e.printStackTrace();
-        }
+        INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
         float[] actualPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
 
         float delta = 0.001f;
