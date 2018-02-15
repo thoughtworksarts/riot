@@ -8,7 +8,7 @@ trainingModels/
 *.m4v
 
 # Audio Dependency
-audio/
+resources/audio/
 
 # IDE,
 out/
