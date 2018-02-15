@@ -1,6 +1,5 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
-import org.datavec.image.loader.ImageLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -9,6 +8,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,6 +60,18 @@ public class ImageProcessorTest {
         }
     }
 
+    @Test
+    void shouldFindSameValuesInPreppedDataAsInPython() throws IOException {
+        int[] dataShape = new int[]{1, 64, 64, 1};
+        INDArray data = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
+
+        float[] expectedValues = new float[]{0.988151985294f, 0.932896623775f, 0.951524050245f, 1.0f, 0.999845373775f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+        float[] actualValues = Arrays.copyOfRange(data.ravel().data().asFloat(), 0, 10);
+
+        float delta = 0.01f;
+        assertArrayEquals(expectedValues, actualValues, delta);
+    }
+
     private int[] getRGBImagePixelSubset() {
         int[] actualPixels = new int[PIXEL_COUNT * RGB_CHANNEL_COUNT];
         // Only returns first 3 pixels of 4096 pixels
@@ -77,15 +89,6 @@ public class ImageProcessorTest {
             pixelSubset[pixelCol] = image.getRaster().getSample(0, pixelCol, 0);
         }
         return pixelSubset;
-    }
-
-    private INDArray prepareImageForNet(BufferedImage image) {
-        ImageLoader imageLoader = new ImageLoader();
-        INDArray image_array = imageLoader.asMatrix(image);
-        INDArray test_data = image_array.ravel();
-        int[] shape = new int[]{1, 1, 64, 64};
-        test_data = test_data.reshape(shape);
-        return test_data;
     }
 
     private String getCompleteFileName(String relativePath) {

@@ -1,6 +1,8 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
 import org.datavec.image.loader.ImageLoader;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,6 +10,26 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImageProcessor {
+
+    public INDArray prepareImageForNet(File imageFile, int targetWidth, int targetHeight, int[] targetDataShape) throws IOException {
+        BufferedImage colorImage = this.loadImage(imageFile);
+        BufferedImage grayImage = this.convertImageToGrayscale(colorImage);
+        BufferedImage resizedImage = this.resizeImage(grayImage, targetWidth, targetHeight);
+        INDArray imageData = this.normalizeData(resizedImage);
+
+        return imageData.reshape(targetDataShape);
+    }
+
+    private INDArray normalizeData(BufferedImage image) {
+        INDArray normalizedData = Nd4j.zeros(image.getWidth(), image.getHeight());
+        for (int rowIdx = 0; rowIdx < image.getWidth(); rowIdx++){
+            for (int colIdx = 0; colIdx < image.getHeight(); colIdx++){
+                float normalizedValue = (image.getRaster().getSample(rowIdx, colIdx, 0)) / 255.0f;
+                normalizedData.put(rowIdx, colIdx, normalizedValue);
+            }
+        }
+        return normalizedData;
+    }
 
     public BufferedImage convertImageToGrayscale(BufferedImage colorImage) {
         BufferedImage grayImage = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
@@ -26,11 +48,11 @@ public class ImageProcessor {
         return grayImage;
     }
 
-    public BufferedImage resizeImage(BufferedImage originalImage, int newW, int newH) {
-        BufferedImage resizedImage = new BufferedImage(newW, newH, BufferedImage.TYPE_BYTE_GRAY);
+    public BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g2d = resizedImage.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.drawImage(originalImage, 0, 0, newW, newH, null);
+        g2d.drawImage(originalImage, 0, 0, width, height, null);
         g2d.dispose();
 
         return resizedImage;
