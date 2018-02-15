@@ -1,15 +1,12 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
 
-import org.datavec.image.loader.ImageLoader;
 import org.deeplearning4j.nn.modelimport.keras.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.UnsupportedKerasConfigurationException;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,21 +34,9 @@ public class DeepLearningProcessor {
         }
     }
 
-    public int GetEmotionValue(BufferedImage image, String imgFile)
-    {
-        ImageLoader imageLoader = new ImageLoader();
-
-        //Evaluation evaluation = new Evaluation(3);
-        INDArray output = null;
-        try {
-            output = model.output(imageLoader.asMatrix( new File(imgFile)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int[] predictions = model.predict(output);
-        return predictions[0];
-
+    public float[] getEmotionPrediction(INDArray imageData) {
+        INDArray prediction = model.output(imageData);
+        return prediction.data().asFloat();
     }
 
     public List<String> getModelLayerNames() {
