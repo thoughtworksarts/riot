@@ -1,14 +1,13 @@
 package io.thoughtworksarts.riot;
 
+import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionV2API;
-import io.thoughtworksarts.riot.audio.AudioPlayer;
+import io.thoughtworksarts.riot.video.MoviePlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-
-import java.util.Timer;
 
 import static io.thoughtworksarts.riot.RiotController.DRIVER_NAME;
 import static io.thoughtworksarts.riot.RiotController.PATH_TO_CONFIG;
@@ -23,17 +22,16 @@ class RiotControllerTest {
 
     @Mock private BranchingLogic branchingLogic;
     @Mock private AudioPlayer audioPlayer;
+    @Mock private MoviePlayer moviePlayer;
     @Mock private FacialRecognitionV2API facialRecognition;
     @Mock private ConfigRoot root;
-    @Mock private Timer timer;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
-        this.controller = new RiotController(audioPlayer,
+        this.controller = new RiotController(audioPlayer, moviePlayer,
                 branchingLogic,
-                facialRecognition,
-                timer);
+                facialRecognition);
     }
 
     @Test
@@ -53,6 +51,7 @@ class RiotControllerTest {
         controller.runRiot();
 
         verify(audioPlayer).resume();
+        verify(moviePlayer).play();
     }
 
     @Test
@@ -60,6 +59,7 @@ class RiotControllerTest {
         controller.pauseRiot();
 
         verify(audioPlayer).pause();
+        verify(moviePlayer).pause();
     }
 
     @Test
@@ -67,6 +67,7 @@ class RiotControllerTest {
         controller.resumeRiot();
 
         verify(audioPlayer).resume();
+        verify(moviePlayer).play();
     }
 
     @Test
@@ -74,6 +75,7 @@ class RiotControllerTest {
         controller.repeatRiot();
 
         verify(audioPlayer).seek(0.0);
+        verify(moviePlayer).seek(0.0);
     }
 
     @Test
@@ -81,5 +83,6 @@ class RiotControllerTest {
         controller.endRiot();
 
         verify(audioPlayer).shutdown();
+        verify(moviePlayer).shutdown();
     }
 }

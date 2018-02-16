@@ -8,15 +8,22 @@ import javafx.scene.media.MediaView;
 public class MediaControl extends BorderPane {
 
     private MediaView mediaView;
+    private MediaPlayer player;
+    private Pane pane;
     private final boolean repeat = false;
 
-    public MediaControl(final MediaPlayer mp) {
-        mediaView = new MediaView(mp);
-        Pane mvPane = new Pane();
-        mvPane.getChildren().add(mediaView);
-        mvPane.setStyle("-fx-background-color: black;");
-        setCenter(mvPane);
+    public MediaControl(MediaPlayer player) {
+        this.player = player;
+        this.mediaView = new MediaView(player);
+        this.pane = new Pane();
+        setUpPane();
+    }
 
-        mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
+    private void setUpPane() {
+        pane.getChildren().add(mediaView);
+        pane.setStyle("-fx-background-color: black;");
+        setCenter(pane);
+
+        player.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
     }
 }

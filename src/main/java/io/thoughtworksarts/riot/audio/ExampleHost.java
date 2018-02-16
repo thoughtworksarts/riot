@@ -22,15 +22,9 @@ package io.thoughtworksarts.riot.audio;
 
 import com.synthbot.jasiohost.AsioDriver;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 /**
  * The <code>ExampleHost</code> demonstrates how to use an
