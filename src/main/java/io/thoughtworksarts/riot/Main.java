@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main extends Application {
 
+    private RiotController riotController;
 
     public static void main(String... args) {
         log.info("Starting Riot...");
@@ -24,8 +25,15 @@ public class Main extends Application {
         BranchingLogic branchingLogic = new BranchingLogic();
         FacialRecognitionAPI facialRecognition = new FacialRecognitionAPI();
 
-        RiotController riotController = new RiotController(audioPlayer, moviePlayer, branchingLogic, facialRecognition);
+        riotController = new RiotController(audioPlayer, moviePlayer, branchingLogic, facialRecognition);
         riotController.initRiot();
         riotController.runRiot();
     }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        riotController.endRiot();
+    }
+
 }

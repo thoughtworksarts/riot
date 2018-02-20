@@ -4,7 +4,9 @@ import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionAPI;
+import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
+import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -25,10 +27,12 @@ class RiotControllerTest {
     @Mock private MoviePlayer moviePlayer;
     @Mock private FacialRecognitionAPI facialRecognition;
     @Mock private ConfigRoot root;
+    @Mock private MediaControl mediaControl;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
+        when(moviePlayer.getMediaControl()).thenReturn(mediaControl);
         this.controller = new RiotController(audioPlayer, moviePlayer,
                 branchingLogic,
                 facialRecognition);
@@ -51,7 +55,7 @@ class RiotControllerTest {
         controller.runRiot();
 
         verify(audioPlayer).resume();
-        verify(moviePlayer).play();
+        verify(mediaControl).play();
     }
 
     @Test
@@ -59,7 +63,7 @@ class RiotControllerTest {
         controller.pauseRiot();
 
         verify(audioPlayer).pause();
-        verify(moviePlayer).pause();
+        verify(mediaControl).pause();
     }
 
     @Test
@@ -67,7 +71,7 @@ class RiotControllerTest {
         controller.resumeRiot();
 
         verify(audioPlayer).resume();
-        verify(moviePlayer).play();
+        verify(mediaControl).play();
     }
 
     @Test
@@ -75,7 +79,7 @@ class RiotControllerTest {
         controller.repeatRiot();
 
         verify(audioPlayer).seek(0.0);
-        verify(moviePlayer).seek(0.0);
+        verify(mediaControl).seek(new Duration(0.0));
     }
 
     @Test
@@ -83,6 +87,6 @@ class RiotControllerTest {
         controller.endRiot();
 
         verify(audioPlayer).shutdown();
-        verify(moviePlayer).shutdown();
+        verify(mediaControl).shutdown();
     }
 }

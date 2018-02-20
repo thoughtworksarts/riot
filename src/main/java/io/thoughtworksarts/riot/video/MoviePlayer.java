@@ -1,19 +1,23 @@
 package io.thoughtworksarts.riot.video;
 
+import javafx.collections.ObservableMap;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.net.MalformedURLException;
 
+@Slf4j
 public class MoviePlayer {
 
-    private MediaPlayer mediaPlayer;
+    public MediaControl mediaControl;
     private String pathToFilm;
+    private Media media;
 
     public MoviePlayer(Stage primaryStage) throws MalformedURLException {
         init(primaryStage);
@@ -26,11 +30,13 @@ public class MoviePlayer {
         Group root = new Group();
         Scene scene = new Scene(root, 1200, 800);
 
-        Media media = new Media (pathToFilm);
-        mediaPlayer = new MediaPlayer(media);
+        media = new Media(pathToFilm);
+
+
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setAutoPlay(false);
 
-        MediaControl mediaControl = new MediaControl(mediaPlayer);
+        mediaControl = new MediaControl(mediaPlayer);
         scene.setRoot(mediaControl);
 
         primaryStage.setScene(scene);
@@ -38,19 +44,11 @@ public class MoviePlayer {
         primaryStage.show();
     }
 
-    public void play(){
-        mediaPlayer.play();
+    public ObservableMap<String,Duration> getMarkers() {
+        return media.getMarkers();
     }
 
-    public void pause(){
-        mediaPlayer.pause();
-    }
-
-    public void shutdown(){
-        mediaPlayer.stop();
-    }
-
-    public void seek(double time) {
-        mediaPlayer.seek(Duration.millis(time));
+    public MediaControl getMediaControl() {
+        return mediaControl;
     }
 }
