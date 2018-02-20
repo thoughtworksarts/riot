@@ -62,11 +62,11 @@ public class FacialRecognitionAPI {
     }
 
     public float getFear() {
-        return -1;
+        return emotionProbabilities[emotionMap.get(Emotion.FEAR)];
     }
 
     public float getAnger() {
-        return -1;
+        return emotionProbabilities[emotionMap.get(Emotion.ANGER)];
     }
 
     private String getCompleteFileName(String relativePath) {
