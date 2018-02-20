@@ -7,7 +7,6 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -23,7 +22,7 @@ public class ImageProcessorTest {
     private File imageFile;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         imageProcessor = new ImageProcessor();
         String fileName = this.getCompleteFileName("testimage.png");
         imageFile = new File(fileName);
@@ -61,7 +60,7 @@ public class ImageProcessorTest {
     }
 
     @Test
-    void shouldFindSameValuesInPreppedDataAsInPython() throws IOException {
+    void shouldFindSameValuesInPreppedDataAsInPython() {
         int[] dataShape = new int[]{1, 64, 64, 1};
         INDArray data = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
 

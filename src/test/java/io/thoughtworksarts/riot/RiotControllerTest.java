@@ -3,7 +3,7 @@ package io.thoughtworksarts.riot;
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
-import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionV2API;
+import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionAPI;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class RiotControllerTest {
     @Mock private BranchingLogic branchingLogic;
     @Mock private AudioPlayer audioPlayer;
     @Mock private MoviePlayer moviePlayer;
-    @Mock private FacialRecognitionV2API facialRecognition;
+    @Mock private FacialRecognitionAPI facialRecognition;
     @Mock private ConfigRoot root;
 
     @BeforeEach
@@ -43,7 +43,7 @@ class RiotControllerTest {
 
         verify(branchingLogic).createLogicTree(PATH_TO_CONFIG);
         verify(audioPlayer).initialise(DRIVER_NAME, root.getAudio());
-        verify(facialRecognition).Initialise();
+        verify(facialRecognition).initialise();
     }
 
     @Test

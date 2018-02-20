@@ -1,41 +1,40 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
-public class MockFacialRecognitionAPI implements IFacialRecognitionAPI {
-	float calm;
-	float fear;
-	float anger;
-	
-	public MockFacialRecognitionAPI(float calm, float fear, float anger) {
-		setEmotions(calm,fear,anger);
-	}
-	
-	public void setEmotions(float calm, float fear, float anger) {
-		this.calm = calm;
-		this.fear = fear;
-		this.anger = anger;
-	}
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-	@Override
-	public void Initialise() {
-	}
+public class MockFacialRecognitionAPI extends FacialRecognitionAPI {
 
-	@Override
-	public void CaptureImage() {
-	}
+    DeepLearningProcessor deepLearningProcessor;
+    ImageProcessor imageProcessor;
+    Map<Emotion, Integer> emotionMap;
 
-	@Override
-	public float GetCalm() {
-		return calm;
-	}
+    public MockFacialRecognitionAPI() {
+        Map<Emotion, Integer> emotionMap = new HashMap<>();
+        emotionMap.put(Emotion.ANGER, 0);
+        emotionMap.put(Emotion.CALM, 1);
+        emotionMap.put(Emotion.FEAR, 2);
+        this.emotionMap = emotionMap;
+    }
 
-	@Override
-	public float GetFear() {
-		return fear;
-	}
+    public MockFacialRecognitionAPI(DeepLearningProcessor deepLearningProcessor, ImageProcessor imageProcessor) {
+        this();
+        this.deepLearningProcessor = deepLearningProcessor;
+        this.imageProcessor = imageProcessor;
+    }
 
-	@Override
-	public float GetAnger() {
-		return anger;
-	}
+    @Override
+    public File captureImage() {
+        String fileName = this.getCompleteFileName("testimage.png");
+        return new File(fileName);
+    }
 
+    private String getCompleteFileName(String relativePath) {
+        return Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResource(relativePath)
+                .getFile();
+    }
 }

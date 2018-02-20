@@ -3,7 +3,7 @@ package io.thoughtworksarts.riot;
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
-import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionV2API;
+import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionAPI;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 
 public class RiotController {
@@ -15,12 +15,12 @@ public class RiotController {
     private MoviePlayer moviePlayer;
     private BranchingLogic branchingLogic;
     private ConfigRoot root;
-    private FacialRecognitionV2API facialRecognition;
+    private FacialRecognitionAPI facialRecognition;
 
     public RiotController(AudioPlayer audioPlayer,
                           MoviePlayer moviePlayer,
                           BranchingLogic branchingLogic,
-                          FacialRecognitionV2API facialRecognition) {
+                          FacialRecognitionAPI facialRecognition) {
         this.audioPlayer = audioPlayer;
         this.moviePlayer = moviePlayer;
         this.branchingLogic = branchingLogic;
@@ -30,7 +30,7 @@ public class RiotController {
     public void initRiot() throws Exception {
         root = branchingLogic.createLogicTree(PATH_TO_CONFIG);
         audioPlayer.initialise(DRIVER_NAME, root.getAudio());
-        facialRecognition.Initialise();
+        facialRecognition.initialise();
         //init movie
     }
 
