@@ -3,6 +3,7 @@ package io.thoughtworksarts.riot;
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
+import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main extends Application {
 
-    private RiotController riotController;
+    private MediaControl mediaControl;
 
     public static void main(String... args) {
         log.info("Starting Riot...");
@@ -20,20 +21,21 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage);
-        AudioPlayer audioPlayer = new AudioPlayer();
         BranchingLogic branchingLogic = new BranchingLogic();
+        AudioPlayer audioPlayer = new AudioPlayer();
         DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI();
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, facialRecognition);
 
-        riotController = new RiotController(audioPlayer, moviePlayer, branchingLogic, facialRecognition);
-        riotController.initRiot();
-        riotController.runRiot();
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
+        moviePlayer.initialise();
+        mediaControl.initialise();
+        mediaControl.play();
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        riotController.endRiot();
+        mediaControl.shutdown();
     }
 
 }

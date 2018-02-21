@@ -12,6 +12,9 @@ public class ConfigRoot {
     public String getAudio() {
         return media.getAudio();
     }
+    public String getVideo() {
+        return media.getVideo();
+    }
 }
 
 class Media {

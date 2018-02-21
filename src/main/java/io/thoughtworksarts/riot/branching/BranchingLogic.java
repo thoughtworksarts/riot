@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.TimeZone;
 
 @Slf4j
@@ -48,15 +49,24 @@ public class BranchingLogic {
     }
 
     public void recordMarkers(ObservableMap<String, Duration> markers) throws ParseException {
-        Level[] levels = root.getLevels();
-        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        for(int i = 0; i < levels.length; i++ ) {
-            Level level = levels[i];
+        SimpleDateFormat format = new SimpleDateFormat("mm:ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            long levelEnd = sdf.parse(level.getEnd()).getTime();
-            markers.put(level.getLevel()+"", new Duration(levelEnd));
+        for(Level level: root.getLevels()) {
+            long levelEnd = format.parse(level.getEnd()).getTime();
+            markers.put("level:" + level.getLevel(), new Duration(levelEnd));
+
+            Map<String, Emotion> branch = level.getBranch();
+            branch.forEach((branchKey, emotion) -> {
+                long branchEnd = 0;
+                try {
+                    branchEnd = format.parse(emotion.getEnd()).getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                markers.put("emotion:" + level.getLevel() +":"+ branchKey, new Duration(branchEnd));
+            });
         }
     }
 }
