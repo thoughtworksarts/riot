@@ -1,0 +1,4 @@
+{
+  "weights_file": "conv2d_weights.h5",
+  "model_file": "conv2d_model.json"
+}

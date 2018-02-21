@@ -1,5 +1,6 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
@@ -7,19 +8,43 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.thoughtworksarts.riot.facialrecognition.Emotion.*;
 
-public class FacialRecognitionAPI {
+public class FacialEmotionRecognitionAPI {
 
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
     private float[] emotionProbabilities;
+    private String jsonModelFile;
+    private String h5WeightsFile;
+    Map<Emotion, Integer> emotionMap;
+
+    public FacialEmotionRecognitionAPI() {
+        Map<Emotion, Integer> emotionMap = new HashMap<>();
+        emotionMap.put(Emotion.ANGER, 0);
+        emotionMap.put(Emotion.CALM, 1);
+        emotionMap.put(Emotion.FEAR, 2);
+        this.emotionMap = emotionMap;
+    }
+
+    public FacialEmotionRecognitionAPI(String configPath) {
+        this();
+        File configFile = new File(getCompleteFileName(configPath));
+        HashMap<String,Object> result = null;
+        try {
+            result = new ObjectMapper().readValue(configFile, HashMap.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        jsonModelFile = getCompleteFileName((String)result.get("model_file"));
+        h5WeightsFile = getCompleteFileName((String)result.get("weights_file"));
+    }
 
     public void initialise() {
-        String h5File = this.getCompleteFileName("conv2d_weights.h5");
-        String jsonFile = this.getCompleteFileName("conv2d_model.json");
-        deepLearningProcessor = new DeepLearningProcessor(jsonFile, h5File);
+        deepLearningProcessor = new DeepLearningProcessor(jsonModelFile, h5WeightsFile);
         imageProcessor = new ImageProcessor();
         recordEmotionProbabilities();
     }
@@ -37,7 +62,7 @@ public class FacialRecognitionAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        webcam.close();
         return imageFile;
     }
 
