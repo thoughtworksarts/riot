@@ -2,7 +2,7 @@ package io.thoughtworksarts.riot;
 
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
-import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionAPI;
+import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -23,7 +23,7 @@ public class Main extends Application {
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage);
         AudioPlayer audioPlayer = new AudioPlayer();
         BranchingLogic branchingLogic = new BranchingLogic();
-        FacialRecognitionAPI facialRecognition = new FacialRecognitionAPI();
+        DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI();
 
         riotController = new RiotController(audioPlayer, moviePlayer, branchingLogic, facialRecognition);
         riotController.initRiot();

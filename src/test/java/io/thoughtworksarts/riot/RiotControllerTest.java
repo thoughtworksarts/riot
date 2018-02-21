@@ -3,7 +3,7 @@ package io.thoughtworksarts.riot;
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
-import io.thoughtworksarts.riot.facialrecognition.FacialRecognitionAPI;
+import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.util.Duration;
@@ -26,7 +26,7 @@ class RiotControllerTest {
     @Mock private BranchingLogic branchingLogic;
     @Mock private AudioPlayer audioPlayer;
     @Mock private MoviePlayer moviePlayer;
-    @Mock private FacialRecognitionAPI facialRecognition;
+    @Mock private DummyFacialRecognitionAPI facialRecognition;
     @Mock private ConfigRoot root;
     @Mock private MediaControl mediaControl;
 
