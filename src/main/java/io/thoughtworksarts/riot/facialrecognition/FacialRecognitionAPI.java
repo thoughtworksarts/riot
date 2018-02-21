@@ -7,23 +7,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import static io.thoughtworksarts.riot.facialrecognition.Emotion.*;
 
 public class FacialRecognitionAPI {
 
-    private Map<Emotion, Integer> emotionMap;
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
     private float[] emotionProbabilities;
-
-    public FacialRecognitionAPI() {
-        Map<Emotion, Integer> emotionMap = new HashMap<>();
-        emotionMap.put(Emotion.ANGER, 0);
-        emotionMap.put(Emotion.CALM, 1);
-        emotionMap.put(Emotion.FEAR, 2);
-        this.emotionMap = emotionMap;
-    }
 
     public void initialise() {
         String h5File = this.getCompleteFileName("conv2d_weights.h5");
@@ -58,15 +49,15 @@ public class FacialRecognitionAPI {
     }
 
     public float getCalm() {
-        return emotionProbabilities[emotionMap.get(Emotion.CALM)];
+        return emotionProbabilities[CALM.getNumber()];
     }
 
     public float getFear() {
-        return emotionProbabilities[emotionMap.get(Emotion.FEAR)];
+        return emotionProbabilities[FEAR.getNumber()];
     }
 
     public float getAnger() {
-        return emotionProbabilities[emotionMap.get(Emotion.ANGER)];
+        return emotionProbabilities[ANGER.getNumber()];
     }
 
     private String getCompleteFileName(String relativePath) {
