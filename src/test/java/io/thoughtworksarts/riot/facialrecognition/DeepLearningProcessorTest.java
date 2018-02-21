@@ -51,10 +51,12 @@ public class DeepLearningProcessorTest {
     }
 
     private String getCompleteFileName(String relativePath) {
-        return Thread
+        String filepath = Thread
                 .currentThread()
                 .getContextClassLoader()
                 .getResource(relativePath)
                 .getFile();
+        boolean isWindows = System.getProperty("os.name").contains("indow");
+        return isWindows ? filepath.substring(1) : filepath;
     }
 }
