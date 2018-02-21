@@ -3,6 +3,8 @@ package io.thoughtworksarts.riot.branching;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 public class ConfigRoot {
     @Getter @Setter private Media media;
     @Getter @Setter private Level[] levels;
@@ -21,14 +23,9 @@ class Level {
     @Getter @Setter private int level;
     @Getter @Setter private String start;
     @Getter @Setter private String end;
-    @Getter @Setter private Branch branch;
+    @Getter @Setter private Map<String, Emotion> branch;
 }
 
-class Branch {
-    @Getter @Setter private Emotion anger;
-    @Getter @Setter private Emotion fear;
-    @Getter @Setter private Emotion calm;
-}
 class Emotion {
     @Getter @Setter private String start;
     @Getter @Setter private String end;

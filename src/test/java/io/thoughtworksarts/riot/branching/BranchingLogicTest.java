@@ -56,7 +56,7 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldEndIfEmotionIsFear() {
-        Emotion fearEmotion = root.getLevels()[0].getBranch().getFear();
+        Emotion fearEmotion = root.getLevels()[0].getBranch().get("fear");
         Level fearOutcome = branchingLogic.getOutcome(fearEmotion);
 
         assertNull(fearOutcome);
@@ -64,7 +64,7 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldEndIfEmotionIsAnger() {
-        Emotion angerEmotion = root.getLevels()[0].getBranch().getAnger();
+        Emotion angerEmotion = root.getLevels()[0].getBranch().get("anger");
         Level angerOutcome = branchingLogic.getOutcome(angerEmotion);
 
         assertNull(angerOutcome);
@@ -72,11 +72,11 @@ class BranchingLogicTest {
 
     @Test
     void logicTreeShouldContinueIfEmotionIsCalm() {
-        Emotion calmEmotion = root.getLevels()[0].getBranch().getCalm();
+        Emotion calmEmotion = root.getLevels()[0].getBranch().get("calm");
         Level calmOutcome = branchingLogic.getOutcome(calmEmotion);
 
         assertNotNull(calmOutcome);
-        assertTrue(calmOutcome.getBranch().getCalm().getOutcome() != 0);
+        assertTrue(calmOutcome.getBranch().get("calm").getOutcome() != 0);
     }
 
 }

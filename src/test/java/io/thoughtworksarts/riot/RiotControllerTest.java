@@ -13,6 +13,7 @@ import org.mockito.Mock;
 
 import static io.thoughtworksarts.riot.RiotController.DRIVER_NAME;
 import static io.thoughtworksarts.riot.RiotController.PATH_TO_CONFIG;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,6 +47,8 @@ class RiotControllerTest {
         controller.initRiot();
 
         verify(branchingLogic).createLogicTree(PATH_TO_CONFIG);
+        verify(moviePlayer).getMarkers();
+        verify(branchingLogic).recordMarkers(any());
         verify(audioPlayer).initialise(DRIVER_NAME, root.getAudio());
         verify(facialRecognition).initialise();
     }
