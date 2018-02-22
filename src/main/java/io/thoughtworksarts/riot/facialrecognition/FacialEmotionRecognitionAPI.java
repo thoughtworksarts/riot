@@ -9,29 +9,17 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-
-import static io.thoughtworksarts.riot.facialrecognition.Emotion.*;
 
 public class FacialEmotionRecognitionAPI {
 
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
     private float[] emotionProbabilities;
-    Map<Emotion, Integer> emotionMap;
     private FERNeuralNetConfigRoot configRoot;
-
-    public FacialEmotionRecognitionAPI() {
-        Map<Emotion, Integer> emotionMap = new HashMap<>();
-        emotionMap.put(Emotion.ANGER, 0);
-        emotionMap.put(Emotion.CALM, 1);
-        emotionMap.put(Emotion.FEAR, 2);
-        this.emotionMap = emotionMap;
-    }
+    public final Map<String, Integer> emotionMap;
 
     public FacialEmotionRecognitionAPI(String configPath) {
-        this();
         String jsonConfig = JSONReader.readFile(configPath);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -39,6 +27,7 @@ public class FacialEmotionRecognitionAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        emotionMap = configRoot.getEmotionMap();
     }
 
     public void initialise() {
@@ -72,15 +61,15 @@ public class FacialEmotionRecognitionAPI {
     }
 
     public float getCalm() {
-        return emotionProbabilities[CALM.getNumber()];
+        return emotionProbabilities[emotionMap.get("calm")];
     }
 
     public float getFear() {
-        return emotionProbabilities[FEAR.getNumber()];
+        return emotionProbabilities[emotionMap.get("fear")];
     }
 
     public float getAnger() {
-        return emotionProbabilities[ANGER.getNumber()];
+        return emotionProbabilities[emotionMap.get("anger")];
     }
 
     private String getCompleteFileName(String relativePath) {
