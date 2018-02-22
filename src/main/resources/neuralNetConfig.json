@@ -1,4 +1,4 @@
 {
-  "weightsFile": "src/main/resources/trainingmodels/conv2d_weights.h5",
-  "modelFile": "src/main/resources/trainingmodels/conv2d_model.json"
+  "weightsFile": "src/test/resources/conv2d_weights.h5",
+  "modelFile": "src/test/resources/conv2d_model.json"
 }

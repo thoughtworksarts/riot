@@ -23,7 +23,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         BranchingLogic branchingLogic = new BranchingLogic();
         AudioPlayer audioPlayer = new AudioPlayer();
-        DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI("src/main/resources/neuralNetConfig.json");
+        DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI("src/test/resources/neuralNetConfig.json");
         mediaControl = new MediaControl(branchingLogic, audioPlayer, facialRecognition);
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
