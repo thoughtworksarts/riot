@@ -37,19 +37,19 @@ public class BranchingLogic {
         String[] split = key.split(":");
         String category = split[0];
         int index = Integer.parseInt(split[1]);
-        Level level = levels[index - 1];
+        Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
         String seekToTime = "00:00.000";
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
             String value = facialRecognition.getDominateEmotion().name();
-            EmotionBranch emotionBranch = level.getBranch().get(value.toLowerCase());
+            EmotionBranch emotionBranch = branches.get(value.toLowerCase());
             seekToTime = emotionBranch.getStart();
         } else if (category.equals("emotion")) {
             log.info("Emotion Marker: " + key);
             String emotionType = split[2];
-            EmotionBranch emotionBranch = level.getBranch().get(emotionType);
+            EmotionBranch emotionBranch = branches.get(emotionType);
             int outcomeNumber = emotionBranch.getOutcome();
             if (outcomeNumber > 0) {
                 Level nextLevel = levels[outcomeNumber - 1];
@@ -65,9 +65,9 @@ public class BranchingLogic {
         for (Level level : levels) {
             markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
             Map<String, EmotionBranch> branch = level.getBranch();
-            branch.forEach((branchKey, emotionBranch) -> {
-                markers.put("emotion:" + level.getLevel() + ":" + branchKey, translator.convertToDuration(emotionBranch.getEnd()));
-            });
+            branch.forEach((branchKey, emotionBranch) -> markers.put(
+                    "emotion:" + level.getLevel() + ":" + branchKey,
+                    translator.convertToDuration(emotionBranch.getEnd())));
         }
     }
 }
