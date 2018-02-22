@@ -61,8 +61,8 @@ public class ImageProcessor {
 
     private INDArray normalizeImageData(BufferedImage image) {
         INDArray normalizedData = Nd4j.zeros(image.getWidth(), image.getHeight());
-        for (int rowIdx = 0; rowIdx < image.getWidth(); rowIdx++){
-            for (int colIdx = 0; colIdx < image.getHeight(); colIdx++){
+        for (int rowIdx = 0; rowIdx < image.getWidth(); rowIdx++) {
+            for (int colIdx = 0; colIdx < image.getHeight(); colIdx++) {
                 float normalizedValue = getNormalizedPixelValue(image, rowIdx, colIdx);
                 normalizedData.put(rowIdx, colIdx, normalizedValue);
             }

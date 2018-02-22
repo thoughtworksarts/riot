@@ -22,15 +22,3 @@ class Media {
     @Getter @Setter private String audio;
 }
 
-class Level {
-    @Getter @Setter private int level;
-    @Getter @Setter private String start;
-    @Getter @Setter private String end;
-    @Getter @Setter private Map<String, Emotion> branch;
-}
-
-class Emotion {
-    @Getter @Setter private String start;
-    @Getter @Setter private String end;
-    @Getter @Setter private int outcome;
-}

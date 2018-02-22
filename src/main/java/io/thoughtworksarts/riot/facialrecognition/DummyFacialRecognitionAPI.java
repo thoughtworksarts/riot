@@ -5,6 +5,10 @@ public class DummyFacialRecognitionAPI {
     public void initialise() {
     }
 
+    public Emotion getDominateEmotion() {
+        return Emotion.CALM;
+    }
+
     public float getCalm() {
         return 1;
     }

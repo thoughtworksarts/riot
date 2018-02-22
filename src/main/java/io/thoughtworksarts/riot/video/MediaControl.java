@@ -3,6 +3,8 @@ package io.thoughtworksarts.riot.video;
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.ConfigRoot;
+import io.thoughtworksarts.riot.branching.EmotionBranch;
+import io.thoughtworksarts.riot.branching.Level;
 import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -65,45 +67,51 @@ public class MediaControl extends BorderPane {
         filmPlayer.setAutoPlay(false);
         filmPlayer.setOnMarker(arg -> {
             String key = arg.getMarker().getKey();
-            if( key.contains("level") ){
+            String[] split = key.split(":");
+            String category = split[0];
+            int index = Integer.parseInt(split[1]);
+            Level level = root.getLevels()[index - 1];
+
+            if( category.equals("level") ) {
                 log.info("Level Marker: " + key);
-                //get dominate emotion
-                //get level object
-                //get dominate emotion object
-                //seek to the start of that emotion
-
-            } else if (key.contains("emotion")){
+                String value = facialRecognition.getDominateEmotion().name();
+                EmotionBranch emotionBranch = level.getBranch().get(value.toLowerCase());
+                seek(emotionBranch.getStart());
+            } else if( category.equals("emotion")) {
                 log.info("Emotion Marker: " + key);
-                //get level object
-                //get dominate emotion object
-                //get outcome number
-                //get level object of the outcome number
-                //get start of outcome level object
-                //seek to the start of it
-
+                String emotionType = split[2];
+                EmotionBranch emotionBranch = level.getBranch().get(emotionType);
+                int outcomeNumber = emotionBranch.getOutcome();
+                if(outcomeNumber == 0 ) {
+                    pause();
+                } else {
+                    Level nextLevel = root.getLevels()[outcomeNumber - 1];
+                    String start = nextLevel.getStart();
+                    seek(start);
+                }
             }
         });
     }
 
-    public void pause(){
+    public void pause() {
         audioPlayer.pause();
         filmPlayer.pause();
-        log.info("Paused at: " + filmPlayer.getCurrentTime().toString());
+        log.info("Paused");
     }
 
-    public void play(){
+    public void play() {
         audioPlayer.resume();
         filmPlayer.play();
-//        seek(new Duration(120000));
-        log.info("Play at: " + filmPlayer.getCurrentTime().toString());
     }
 
-    public void seek(Duration duration){
+    public void seek(String time) {
+        log.info("Seeking: " + time);
+        Duration duration = branchingLogic.stringToDuration(time);
         audioPlayer.seek(duration.toSeconds());
         filmPlayer.seek(duration);
     }
 
-    public void shutdown(){
+    public void shutdown() {
         audioPlayer.shutdown();
         filmPlayer.stop();
     }

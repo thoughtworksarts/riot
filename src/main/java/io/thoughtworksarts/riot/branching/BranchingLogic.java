@@ -25,8 +25,8 @@ public class BranchingLogic {
         return root;
     }
 
-    public Level getOutcome(Emotion currentEmotion) {
-        int outcome = currentEmotion.getOutcome();
+    public Level getOutcome(EmotionBranch currentEmotionBranch) {
+        int outcome = currentEmotionBranch.getOutcome();
         if ( outcome == 0 ) return null;
         return root.getLevels()[outcome - 1];
     }
@@ -48,25 +48,27 @@ public class BranchingLogic {
         return result;
     }
 
-    public void recordMarkers(ObservableMap<String, Duration> markers) throws ParseException {
-
-        SimpleDateFormat format = new SimpleDateFormat("mm:ss.SSS");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+    public void recordMarkers(ObservableMap<String, Duration> markers) {
 
         for(Level level: root.getLevels()) {
-            long levelEnd = format.parse(level.getEnd()).getTime();
-            markers.put("level:" + level.getLevel(), new Duration(levelEnd));
+            markers.put("level:" + level.getLevel(), stringToDuration(level.getEnd()));
 
-            Map<String, Emotion> branch = level.getBranch();
-            branch.forEach((branchKey, emotion) -> {
-                long branchEnd = 0;
-                try {
-                    branchEnd = format.parse(emotion.getEnd()).getTime();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                markers.put("emotion:" + level.getLevel() +":"+ branchKey, new Duration(branchEnd));
+            Map<String, EmotionBranch> branch = level.getBranch();
+            branch.forEach((branchKey, emotionBranch) -> {
+                markers.put("emotion:" + level.getLevel() +":"+ branchKey, stringToDuration(emotionBranch.getEnd()));
             });
         }
+    }
+
+    public Duration stringToDuration(String time) {
+        SimpleDateFormat format = new SimpleDateFormat("mm:ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long parsedTime = 0;
+        try {
+            parsedTime = format.parse(time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new Duration(parsedTime);
     }
 }

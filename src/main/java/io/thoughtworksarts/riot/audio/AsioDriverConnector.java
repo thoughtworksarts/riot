@@ -27,13 +27,13 @@ public class AsioDriverConnector implements AsioDriverListener {
     }
 
     public void start() {
-        if( asioDriver != null ){
+        if(asioDriver != null) {
             log.info("Start Asio Driver");
             asioDriver.start();
         }
     }
 
-    public void shutdown(){
+    public void shutdown() {
         if( asioDriver != null) {
             asioDriver.shutdownAndUnloadDriver();
             activeChannels.clear();

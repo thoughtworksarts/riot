@@ -11,7 +11,7 @@ public class MoviePlayer {
     private final Stage primaryStage;
     public MediaControl mediaControl;
 
-    public MoviePlayer(Stage primaryStage, MediaControl mediaControl){
+    public MoviePlayer(Stage primaryStage, MediaControl mediaControl) {
         this.primaryStage = primaryStage;
         this.mediaControl = mediaControl;
     }

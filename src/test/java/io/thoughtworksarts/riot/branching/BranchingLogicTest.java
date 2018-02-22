@@ -1,5 +1,6 @@
 package io.thoughtworksarts.riot.branching;
 
+import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class BranchingLogicTest {
 
         try{
             new FileInputStream(file);
-        } catch (Exception e){
+        } catch (Exception e) {
             assertTrue(false, e.getMessage());
         }
     }
@@ -49,34 +50,55 @@ class BranchingLogicTest {
 
         try{
             new FileInputStream(file);
-        } catch (Exception e){
+        } catch (Exception e) {
             assertTrue(false, e.getMessage());
         }
     }
 
     @Test
     void logicTreeShouldEndIfEmotionIsFear() {
-        Emotion fearEmotion = root.getLevels()[0].getBranch().get("fear");
-        Level fearOutcome = branchingLogic.getOutcome(fearEmotion);
+        EmotionBranch fearEmotionBranch = root.getLevels()[0].getBranch().get("fear");
+        Level fearOutcome = branchingLogic.getOutcome(fearEmotionBranch);
 
         assertNull(fearOutcome);
     }
 
     @Test
     void logicTreeShouldEndIfEmotionIsAnger() {
-        Emotion angerEmotion = root.getLevels()[0].getBranch().get("anger");
-        Level angerOutcome = branchingLogic.getOutcome(angerEmotion);
+        EmotionBranch angerEmotionBranch = root.getLevels()[0].getBranch().get("anger");
+        Level angerOutcome = branchingLogic.getOutcome(angerEmotionBranch);
 
         assertNull(angerOutcome);
     }
 
     @Test
     void logicTreeShouldContinueIfEmotionIsCalm() {
-        Emotion calmEmotion = root.getLevels()[0].getBranch().get("calm");
-        Level calmOutcome = branchingLogic.getOutcome(calmEmotion);
+        EmotionBranch calmEmotionBranch = root.getLevels()[0].getBranch().get("calm");
+        Level calmOutcome = branchingLogic.getOutcome(calmEmotionBranch);
 
         assertNotNull(calmOutcome);
         assertTrue(calmOutcome.getBranch().get("calm").getOutcome() != 0);
     }
 
+    @Test
+    void stringToDurationShouldReturnADurationEqualToStringValue() {
+        Duration duration = branchingLogic.stringToDuration("02:03.000");
+
+        assertEquals(duration.toSeconds(), 123.0);
+    }
+
+    @Test
+    void stringToDurationShouldReturnABeAccurateDownToTheMillisecond() {
+        Duration duration = branchingLogic.stringToDuration("02:34.090");
+
+        assertEquals(duration.toSeconds(), 154.09);
+    }
+
+    @Test
+    void stringToDurationShouldNotRoundTheMilliseconds() {
+        Duration durationOne = branchingLogic.stringToDuration("02:34.090");
+        Duration durationTwo = branchingLogic.stringToDuration("02:34.091");
+
+        assertNotEquals(durationOne.toSeconds(), durationTwo.toSeconds());
+    }
 }
