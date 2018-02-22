@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.facialrecognition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
+import io.thoughtworksarts.riot.utilities.JSONReader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import javax.imageio.ImageIO;
@@ -18,9 +19,8 @@ public class FacialEmotionRecognitionAPI {
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
     private float[] emotionProbabilities;
-    private String jsonModelFile;
-    private String h5WeightsFile;
     Map<Emotion, Integer> emotionMap;
+    private FERNeuralNetConfigRoot configRoot;
 
     public FacialEmotionRecognitionAPI() {
         Map<Emotion, Integer> emotionMap = new HashMap<>();
@@ -32,19 +32,17 @@ public class FacialEmotionRecognitionAPI {
 
     public FacialEmotionRecognitionAPI(String configPath) {
         this();
-        File configFile = new File(getCompleteFileName(configPath));
-        HashMap<String,Object> result = null;
+        String jsonConfig = JSONReader.readFile(configPath);
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            result = new ObjectMapper().readValue(configFile, HashMap.class);
+            configRoot = objectMapper.readValue(jsonConfig, FERNeuralNetConfigRoot.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        jsonModelFile = getCompleteFileName((String)result.get("model_file"));
-        h5WeightsFile = getCompleteFileName((String)result.get("weights_file"));
     }
 
     public void initialise() {
-        deepLearningProcessor = new DeepLearningProcessor(jsonModelFile, h5WeightsFile);
+        deepLearningProcessor = new DeepLearningProcessor(configRoot.getModelFile(), configRoot.getWeightsFile());
         imageProcessor = new ImageProcessor();
         recordEmotionProbabilities();
     }

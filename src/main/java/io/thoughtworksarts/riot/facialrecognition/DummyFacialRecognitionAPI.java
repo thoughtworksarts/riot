@@ -2,6 +2,9 @@ package io.thoughtworksarts.riot.facialrecognition;
 
 public class DummyFacialRecognitionAPI {
 
+    public DummyFacialRecognitionAPI(String config) {
+    }
+
     public void initialise() {
     }
 

@@ -8,7 +8,7 @@ public class FacialEmotionRecognitionAPITest {
 
     @Test
     void shouldGetEmotionValuesBetweenZeroAndOneForWebcamImage() {
-        String configPath = "neuralNetConfig.json";
+        String configPath = "src/main/resources/neuralNetConfig.json";
         FacialEmotionRecognitionAPI facialEmotionRecognitionAPI = new FacialEmotionRecognitionAPI(configPath);
         facialEmotionRecognitionAPI.initialise();
 
