@@ -1,58 +1,73 @@
 package io.thoughtworksarts.riot.branching;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.thoughtworksarts.riot.utilities.JSONReader;
+import io.thoughtworksarts.riot.branching.model.ConfigRoot;
+import io.thoughtworksarts.riot.branching.model.EmotionBranch;
+import io.thoughtworksarts.riot.branching.model.Level;
+import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
 import javafx.collections.ObservableMap;
+import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Slf4j
 public class BranchingLogic {
 
-    @Getter private ConfigRoot root;
+    public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
-    public ConfigRoot createLogicTree(String pathToConfig) throws Exception {
-        String jsonConfig = JSONReader.readFile(pathToConfig);
-        ObjectMapper objectMapper = new ObjectMapper();
-        root = objectMapper.readValue(jsonConfig, ConfigRoot.class);
-        return root;
+    private JsonTranslator translator;
+    private DummyFacialRecognitionAPI facialRecognition;
+    private Level[] levels;
+    @Getter private String filmPath;
+    @Getter private String audioPath;
+
+    public BranchingLogic(DummyFacialRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
+        this.facialRecognition = facialRecognition;
+        this.translator = translator;
+        ConfigRoot root = translator.populateModelsFromJson(PATH_TO_CONFIG);
+        levels = root.getLevels();
+        filmPath = root.getMedia().getVideo();
+        audioPath = root.getMedia().getAudio();
     }
 
-    public Level getOutcome(EmotionBranch currentEmotionBranch) {
-        int outcome = currentEmotionBranch.getOutcome();
-        if ( outcome == 0 ) return null;
-        return root.getLevels()[outcome - 1];
+    public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
+        String key = arg.getMarker().getKey();
+        String[] split = key.split(":");
+        String category = split[0];
+        int index = Integer.parseInt(split[1]);
+        Level level = levels[index - 1];
+
+        String seekToTime = "00:00.000";
+
+        if (category.equals("level")) {
+            log.info("Level Marker: " + key);
+            String value = facialRecognition.getDominateEmotion().name();
+            EmotionBranch emotionBranch = level.getBranch().get(value.toLowerCase());
+            seekToTime = emotionBranch.getStart();
+        } else if (category.equals("emotion")) {
+            log.info("Emotion Marker: " + key);
+            String emotionType = split[2];
+            EmotionBranch emotionBranch = level.getBranch().get(emotionType);
+            int outcomeNumber = emotionBranch.getOutcome();
+            if (outcomeNumber > 0) {
+                Level nextLevel = levels[outcomeNumber - 1];
+                seekToTime = nextLevel.getStart();
+            }
+        }
+        //not sure what to do here but something horrible went wrong!
+        log.info("Seeking: " + seekToTime);
+        return translator.convertToDuration(seekToTime);
     }
 
     public void recordMarkers(ObservableMap<String, Duration> markers) {
-        Level[] levels = root.getLevels();
-        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        for(Level level: root.getLevels()) {
-            markers.put("level:" + level.getLevel(), stringToDuration(level.getEnd()));
-
+        for (Level level : levels) {
+            markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
             Map<String, EmotionBranch> branch = level.getBranch();
             branch.forEach((branchKey, emotionBranch) -> {
-                markers.put("emotion:" + level.getLevel() +":"+ branchKey, stringToDuration(emotionBranch.getEnd()));
+                markers.put("emotion:" + level.getLevel() + ":" + branchKey, translator.convertToDuration(emotionBranch.getEnd()));
             });
         }
-    }
-
-    public Duration stringToDuration(String time) {
-        SimpleDateFormat format = new SimpleDateFormat("mm:ss.SSS");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        long parsedTime = 0;
-        try {
-            parsedTime = format.parse(time).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return new Duration(parsedTime);
     }
 }

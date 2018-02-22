@@ -2,11 +2,13 @@ package io.thoughtworksarts.riot;
 
 import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,15 +23,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        BranchingLogic branchingLogic = new BranchingLogic();
+        JsonTranslator jsonTranslator = new JsonTranslator();
         AudioPlayer audioPlayer = new AudioPlayer();
         DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI("src/test/resources/neuralNetConfig.json");
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, facialRecognition);
+        BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
+        mediaControl = new MediaControl(branchingLogic, audioPlayer);
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.initialise();
         mediaControl.play();
+        mediaControl.seek(new Duration(123000.0));
     }
 
     @Override

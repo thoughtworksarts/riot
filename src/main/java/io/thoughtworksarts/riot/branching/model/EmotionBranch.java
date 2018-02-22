@@ -1,4 +1,4 @@
-package io.thoughtworksarts.riot.branching;
+package io.thoughtworksarts.riot.branching.model;
 
 import lombok.Getter;
 import lombok.Setter;
