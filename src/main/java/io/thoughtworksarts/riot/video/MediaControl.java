@@ -49,7 +49,7 @@ public class MediaControl extends BorderPane {
 
     public void initialise() throws Exception {
         branchingLogic.recordMarkers(media.getMarkers());
-//        audioPlayer.initialise(DRIVER_NAME, root.getAudio());
+        audioPlayer.initialise(DRIVER_NAME, root.getAudio());
         facialRecognition.initialise();
 
         setUpPane();
