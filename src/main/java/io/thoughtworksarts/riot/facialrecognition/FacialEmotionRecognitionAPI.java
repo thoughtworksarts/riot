@@ -71,15 +71,4 @@ public class FacialEmotionRecognitionAPI {
     public float getAnger() {
         return emotionProbabilities[emotionMap.get("anger")];
     }
-
-    private String getCompleteFileName(String relativePath) {
-        String filepath = Thread
-                .currentThread()
-                .getContextClassLoader()
-                .getResource(relativePath)
-                .getFile();
-
-        boolean isWindows = System.getProperty("os.name").contains("indow");
-        return isWindows ? filepath.substring(1) : filepath;
-    }
 }
