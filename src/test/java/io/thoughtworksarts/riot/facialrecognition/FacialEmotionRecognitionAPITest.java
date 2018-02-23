@@ -8,7 +8,9 @@ import org.mockito.Mockito;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -43,5 +45,17 @@ public class FacialEmotionRecognitionAPITest {
 
         verify(imageProcessor).prepareImageForNet(Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any());
         verify(deepLearningProcessor).getEmotionPrediction(Mockito.any());
+    }
+
+    @Test
+    public void shouldGetEmotionValuesSetAtInitialisation() {
+        float[] emotionProbabilities = new float[]{0f, 1f, 0.5f};
+        doReturn(emotionProbabilities).when(deepLearningProcessor).getEmotionPrediction(Mockito.any());
+
+        mockEmotionAPI.initialise();
+
+        assertEquals(1, mockEmotionAPI.getCalm());
+        assertEquals(0, mockEmotionAPI.getAnger());
+        assertEquals(0.5, mockEmotionAPI.getFear());
     }
 }
