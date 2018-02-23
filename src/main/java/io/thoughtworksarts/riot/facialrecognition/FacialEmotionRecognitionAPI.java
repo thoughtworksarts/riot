@@ -60,15 +60,29 @@ public class FacialEmotionRecognitionAPI {
         emotionProbabilities = deepLearningProcessor.getEmotionPrediction(imageData);
     }
 
-    public float getCalm() {
+    public float getCalm() throws UnsupportedEmotionException {
+        validateEmotion("calm");
         return emotionProbabilities[emotionMap.get("calm")];
     }
 
-    public float getFear() {
+    public float getFear() throws UnsupportedEmotionException {
+        validateEmotion("fear");
         return emotionProbabilities[emotionMap.get("fear")];
     }
 
-    public float getAnger() {
+    public float getAnger() throws UnsupportedEmotionException {
+        validateEmotion("anger");
         return emotionProbabilities[emotionMap.get("anger")];
+    }
+
+    public float getDisgust() throws UnsupportedEmotionException {
+        validateEmotion("disgust");
+        return emotionProbabilities[emotionMap.get("disgust")];
+    }
+
+    private void validateEmotion(String emotionString) throws UnsupportedEmotionException {
+        if (!emotionMap.containsKey(emotionString)) {
+            throw new UnsupportedEmotionException(emotionString);
+        }
     }
 }

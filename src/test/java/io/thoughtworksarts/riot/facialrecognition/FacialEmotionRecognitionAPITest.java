@@ -23,7 +23,7 @@ public class FacialEmotionRecognitionAPITest {
     @Before
     public void setup() {
         initMocks(this);
-        String configPath = "src/main/resources/neuralNetConfig.json";
+        String configPath = "src/test/resources/neuralNetConfig.json";
         mockEmotionAPI = new MockFacialEmotionRecognitionAPI(configPath, deepLearningProcessor, imageProcessor);
     }
 
@@ -57,5 +57,11 @@ public class FacialEmotionRecognitionAPITest {
         assertEquals(1, mockEmotionAPI.getCalm());
         assertEquals(0, mockEmotionAPI.getAnger());
         assertEquals(0.5, mockEmotionAPI.getFear());
+    }
+
+    @Test(expected = UnsupportedEmotionException.class)
+    public void shouldRaiseErrorIfValueRequestedForEmotionNotInConfig() throws UnsupportedEmotionException {
+        mockEmotionAPI.initialise();
+        mockEmotionAPI.getDisgust();
     }
 }
