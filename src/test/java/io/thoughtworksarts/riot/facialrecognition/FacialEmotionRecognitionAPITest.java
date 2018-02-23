@@ -17,6 +17,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class FacialEmotionRecognitionAPITest {
 
     MockFacialEmotionRecognitionAPI mockEmotionAPI;
+    MockFacialEmotionRecognitionAPI fiveEmotionMockEmotionAPI;
     @Mock DeepLearningProcessor deepLearningProcessor;
     @Mock ImageProcessor imageProcessor;
 
@@ -25,6 +26,8 @@ public class FacialEmotionRecognitionAPITest {
         initMocks(this);
         String configPath = "src/test/resources/neuralNetConfig.json";
         mockEmotionAPI = new MockFacialEmotionRecognitionAPI(configPath, deepLearningProcessor, imageProcessor);
+        String fiveEmotionConfigPath = "src/test/resources/neuralNetConfig5Emotions.json";
+        fiveEmotionMockEmotionAPI = new MockFacialEmotionRecognitionAPI(fiveEmotionConfigPath, deepLearningProcessor, imageProcessor);
     }
 
     @Test
@@ -64,4 +67,19 @@ public class FacialEmotionRecognitionAPITest {
         mockEmotionAPI.initialise();
         mockEmotionAPI.getDisgust();
     }
+
+    @Test
+    public void shouldBuildEmotionMapFromConfigFileWithFiveEmotions() {
+        Map<String, Integer> actualEmotionMap = fiveEmotionMockEmotionAPI.emotionMap;
+
+        Map<String, Integer> expectedEmotionMap = new HashMap<>();
+        expectedEmotionMap.put("anger", 0);
+        expectedEmotionMap.put("calm", 1);
+        expectedEmotionMap.put("fear", 2);
+        expectedEmotionMap.put("disgust", 3);
+        expectedEmotionMap.put("contempt", 4);
+
+        assertTrue(expectedEmotionMap.equals(actualEmotionMap));
+    }
+
 }
