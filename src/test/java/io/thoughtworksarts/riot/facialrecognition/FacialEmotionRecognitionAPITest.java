@@ -16,7 +16,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class FacialEmotionRecognitionAPITest {
 
-    MockFacialEmotionRecognitionAPI mockEmotionAPI;
+    MockFacialEmotionRecognitionAPI threeEmotionMockEmotionAPI;
     MockFacialEmotionRecognitionAPI fiveEmotionMockEmotionAPI;
     @Mock DeepLearningProcessor deepLearningProcessor;
     @Mock ImageProcessor imageProcessor;
@@ -25,14 +25,14 @@ public class FacialEmotionRecognitionAPITest {
     public void setup() {
         initMocks(this);
         String configPath = "src/test/resources/neuralNetConfig.json";
-        mockEmotionAPI = new MockFacialEmotionRecognitionAPI(configPath, deepLearningProcessor, imageProcessor);
+        threeEmotionMockEmotionAPI = new MockFacialEmotionRecognitionAPI(configPath, deepLearningProcessor, imageProcessor);
         String fiveEmotionConfigPath = "src/test/resources/neuralNetConfig5Emotions.json";
         fiveEmotionMockEmotionAPI = new MockFacialEmotionRecognitionAPI(fiveEmotionConfigPath, deepLearningProcessor, imageProcessor);
     }
 
     @Test
     public void shouldBuildEmotionMapFromConfigFileWithThreeEmotions() {
-        Map<String, Integer> actualEmotionMap = mockEmotionAPI.emotionMap;
+        Map<String, Integer> actualEmotionMap = threeEmotionMockEmotionAPI.emotionMap;
 
         Map<String, Integer> expectedEmotionMap = new HashMap<>();
         expectedEmotionMap.put("anger", 0);
@@ -44,7 +44,7 @@ public class FacialEmotionRecognitionAPITest {
 
     @Test
     public void shouldRecordEmotionProbabilitiesOnInitialise() {
-        mockEmotionAPI.initialise();
+        threeEmotionMockEmotionAPI.initialise();
 
         verify(imageProcessor).prepareImageForNet(Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any());
         verify(deepLearningProcessor).getEmotionPrediction(Mockito.any());
@@ -55,17 +55,17 @@ public class FacialEmotionRecognitionAPITest {
         float[] emotionProbabilities = new float[]{0f, 1f, 0.5f};
         doReturn(emotionProbabilities).when(deepLearningProcessor).getEmotionPrediction(Mockito.any());
 
-        mockEmotionAPI.initialise();
+        threeEmotionMockEmotionAPI.initialise();
 
-        assertEquals(1, mockEmotionAPI.getCalm());
-        assertEquals(0, mockEmotionAPI.getAnger());
-        assertEquals(0.5, mockEmotionAPI.getFear());
+        assertEquals(1, threeEmotionMockEmotionAPI.getCalm());
+        assertEquals(0, threeEmotionMockEmotionAPI.getAnger());
+        assertEquals(0.5, threeEmotionMockEmotionAPI.getFear());
     }
 
     @Test(expected = UnsupportedEmotionException.class)
     public void shouldRaiseErrorIfValueRequestedForEmotionNotInConfig() throws UnsupportedEmotionException {
-        mockEmotionAPI.initialise();
-        mockEmotionAPI.getDisgust();
+        threeEmotionMockEmotionAPI.initialise();
+        threeEmotionMockEmotionAPI.getDisgust();
     }
 
     @Test
@@ -81,5 +81,4 @@ public class FacialEmotionRecognitionAPITest {
 
         assertTrue(expectedEmotionMap.equals(actualEmotionMap));
     }
-
 }

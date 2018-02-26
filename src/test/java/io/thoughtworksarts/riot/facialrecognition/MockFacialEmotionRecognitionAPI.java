@@ -14,10 +14,10 @@ public class MockFacialEmotionRecognitionAPI extends FacialEmotionRecognitionAPI
         super(configPath);
     }
 
-    public MockFacialEmotionRecognitionAPI(String configPath, DeepLearningProcessor mockDeepLearningProcessor, ImageProcessor mockImageProcessor) {
+    public MockFacialEmotionRecognitionAPI(String configPath, DeepLearningProcessor deepLearningProcessor, ImageProcessor imageProcessor) {
         super(configPath);
-        this.deepLearningProcessor = mockDeepLearningProcessor;
-        this.imageProcessor = mockImageProcessor;
+        this.deepLearningProcessor = deepLearningProcessor;
+        this.imageProcessor = imageProcessor;
     }
 
     @Override
@@ -51,5 +51,9 @@ public class MockFacialEmotionRecognitionAPI extends FacialEmotionRecognitionAPI
     @Override
     public float getFear() {
         return emotionProbabilities[emotionMap.get("fear")];
+    }
+
+    public float[] getEmotionProbabilities() {
+        return emotionProbabilities;
     }
 }

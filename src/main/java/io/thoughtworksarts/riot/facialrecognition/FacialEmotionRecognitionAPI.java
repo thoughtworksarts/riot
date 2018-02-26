@@ -80,6 +80,17 @@ public class FacialEmotionRecognitionAPI {
         return emotionProbabilities[emotionMap.get("disgust")];
     }
 
+    public float getSurprise() throws UnsupportedEmotionException {
+        validateEmotion("surprise");
+        return emotionProbabilities[emotionMap.get("surprise")];
+    }
+
+
+    public float getContempt() throws UnsupportedEmotionException {
+        validateEmotion("contempt");
+        return emotionProbabilities[emotionMap.get("contempt")];
+    }
+
     private void validateEmotion(String emotionString) throws UnsupportedEmotionException {
         if (!emotionMap.containsKey(emotionString)) {
             throw new UnsupportedEmotionException(emotionString);
