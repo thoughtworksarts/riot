@@ -1,6 +1,8 @@
 package io.thoughtworksarts.riot;
 
 import io.thoughtworksarts.riot.audio.AudioPlayer;
+import io.thoughtworksarts.riot.audio.JavaSoundAudioPlayer;
+import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
@@ -23,7 +25,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
-        AudioPlayer audioPlayer = new AudioPlayer();
+        RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
         DummyFacialRecognitionAPI facialRecognition = new DummyFacialRecognitionAPI("src/test/resources/neuralNetConfig.json");
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
         mediaControl = new MediaControl(branchingLogic, audioPlayer);

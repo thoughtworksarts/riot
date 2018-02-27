@@ -1,6 +1,6 @@
 package io.thoughtworksarts.riot.video;
 
-import io.thoughtworksarts.riot.audio.AudioPlayer;
+import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -18,14 +18,14 @@ public class MediaControl extends BorderPane {
     public static final String DRIVER_NAME = "ASIO4ALL v2";
 
     private BranchingLogic branchingLogic;
-    private AudioPlayer audioPlayer;
+    private RiotAudioPlayer audioPlayer;
 
     private MediaView mediaView;
     private MediaPlayer filmPlayer;
     private Pane pane;
     private Media media;
 
-    public MediaControl(BranchingLogic branchingLogic, AudioPlayer audioPlayer) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer) throws Exception {
         this.branchingLogic = branchingLogic;
         this.audioPlayer = audioPlayer;
 

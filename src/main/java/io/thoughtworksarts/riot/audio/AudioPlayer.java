@@ -4,7 +4,7 @@ import com.synthbot.jasiohost.AsioChannel;
 
 import java.util.Set;
 
-public class AudioPlayer {
+public class AudioPlayer implements RiotAudioPlayer {
 
     private int bufferSize;
     private int sampleRate;
@@ -61,13 +61,11 @@ public class AudioPlayer {
         source.seek(seekTimeSeconds);
     }
     
-    public double currentTime()
-    {
+    public double currentTime() {
         return source.currentTime();
     }
 
-    public void pause()
-    {
+    public void pause() {
         playbackState = State.Paused;
     }
 
