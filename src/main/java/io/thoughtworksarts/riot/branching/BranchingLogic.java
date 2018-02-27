@@ -4,7 +4,6 @@ import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.EmotionBranch;
 import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
-import javafx.collections.ObservableMap;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -26,6 +25,10 @@ public class BranchingLogic {
     public BranchingLogic(DummyFacialRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
+        initialise();
+    }
+
+    private void initialise() throws Exception {
         ConfigRoot root = translator.populateModelsFromJson(PATH_TO_CONFIG);
         levels = root.getLevels();
         filmPath = root.getMedia().getVideo();
@@ -61,7 +64,7 @@ public class BranchingLogic {
         return translator.convertToDuration(seekToTime);
     }
 
-    public void recordMarkers(ObservableMap<String, Duration> markers) {
+    public void recordMarkers(Map<String, Duration> markers) {
         for (Level level : levels) {
             markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
             Map<String, EmotionBranch> branch = level.getBranch();

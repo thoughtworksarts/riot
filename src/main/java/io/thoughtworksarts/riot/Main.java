@@ -8,7 +8,6 @@ import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,7 +32,6 @@ public class Main extends Application {
         moviePlayer.initialise();
         mediaControl.initialise();
         mediaControl.play();
-        mediaControl.seek(new Duration(123000.0));
     }
 
     @Override

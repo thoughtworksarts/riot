@@ -1,36 +1,90 @@
 package io.thoughtworksarts.riot.branching;
 
+import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.EmotionBranch;
 import io.thoughtworksarts.riot.branching.model.Level;
+import io.thoughtworksarts.riot.branching.model.Media;
+import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
+import javafx.util.Duration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class BranchingLogicTest {
 
-//    @Test
-//    void logicTreeShouldEndIfEmotionIsFear() {
-//        EmotionBranch fearEmotionBranch = root.getLevels()[0].getBranch().get("fear");
-//        Level fearOutcome = jsonTranslator.getOutcome(fearEmotionBranch);
-//
-//        assertNull(fearOutcome);
-//    }
-//
-//    @Test
-//    void logicTreeShouldEndIfEmotionIsAnger() {
-//        EmotionBranch angerEmotionBranch = root.getLevels()[0].getBranch().get("anger");
-//        Level angerOutcome = jsonTranslator.getOutcome(angerEmotionBranch);
-//
-//        assertNull(angerOutcome);
-//    }
-//
-//    @Test
-//    void logicTreeShouldContinueIfEmotionIsCalm() {
-//        EmotionBranch calmEmotionBranch = root.getLevels()[0].getBranch().get("calm");
-//        Level calmOutcome = jsonTranslator.getOutcome(calmEmotionBranch);
-//
-//        assertNotNull(calmOutcome);
-//        assertTrue(calmOutcome.getBranch().get("calm").getOutcome() != 0);
-//    }
+    @Mock private DummyFacialRecognitionAPI facialRecognition;
+    @Mock private JsonTranslator translator;
+    @Mock private ConfigRoot root;
 
+    private BranchingLogic branchingLogic;
+    private String start = "00:00.000";
+    private String end = "01:00.000";
+    private Duration endDuration = new Duration(123000);
+
+    @BeforeEach
+    void setUp() throws Exception {
+        initMocks(this);
+
+        Media media = new Media();
+        media.setAudio("audio path");
+        media.setVideo("video path");
+
+        Level[] levels = {createLevel()};
+        when(root.getMedia()).thenReturn(media);
+        when(root.getLevels()).thenReturn(levels);
+        when(translator.populateModelsFromJson(anyString())).thenReturn(root);
+        when(translator.convertToDuration(end)).thenReturn(endDuration);
+        branchingLogic = new BranchingLogic(facialRecognition, translator);
+    }
+
+    private Level createLevel() {
+        HashMap<String, EmotionBranch> emotionMap = new HashMap<>();
+        emotionMap.put("calm", createEmotionBranch());
+
+        Level level = new Level();
+        level.setLevel(1);
+        level.setStart(start);
+        level.setEnd(end);
+        level.setBranch(emotionMap);
+        return level;
+    }
+
+    private EmotionBranch createEmotionBranch() {
+        EmotionBranch emotionBranch = new EmotionBranch();
+        emotionBranch.setStart(start);
+        emotionBranch.setEnd(end);
+        emotionBranch.setOutcome(2);
+        return emotionBranch;
+
+    }
+
+    @Test
+    void shouldCallPopulateModelsFromJsonForSetUp() throws Exception {
+        verify(translator).populateModelsFromJson(anyString());
+    }
+
+    @Test
+    void recordMarkersShouldAddEndTimesOfLevelsToTheMap() {
+        HashMap<String, Duration> markers = new HashMap<>();
+        branchingLogic.recordMarkers(markers);
+
+        assertEquals(markers.get("level:1"), endDuration);
+    }
+
+    @Test
+    void recordMarkersShouldAddEndTimesOfEmotionBranchesToTheMap() {
+        HashMap<String, Duration> markers = new HashMap<>();
+        branchingLogic.recordMarkers(markers);
+
+        assertEquals(markers.get("emotion:1:calm"), endDuration);
+
+    }
 }
