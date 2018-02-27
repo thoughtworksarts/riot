@@ -2,8 +2,6 @@ package io.thoughtworksarts.riot.audio;
 
 import io.thoughtworksarts.riot.OSChecker;
 import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RiotAudioPlayerTest {
 
-    @Test
+    @Ignore
     void shouldPlayGivenFile() throws Exception {
 
         boolean isWindows = OSChecker.isWindows();
