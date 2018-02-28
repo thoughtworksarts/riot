@@ -34,6 +34,8 @@ public class Main extends Application {
         moviePlayer.initialise();
         mediaControl.initialise();
         mediaControl.play();
+        // skips to intro and jumps to level 1
+        mediaControl.seek(jsonTranslator.convertToDuration("03:47.110"));
     }
 
     @Override
