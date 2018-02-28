@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 public class FacialEmotionRecognitionAPI {
@@ -17,17 +18,17 @@ public class FacialEmotionRecognitionAPI {
     private ImageProcessor imageProcessor;
     private float[] emotionProbabilities;
     private FERNeuralNetConfigRoot configRoot;
-    public final Map<String, Integer> emotionMap;
 
     public FacialEmotionRecognitionAPI(String configPath) {
         String jsonConfig = JSONReader.readFile(configPath);
         ObjectMapper objectMapper = new ObjectMapper();
+        emotionProbabilities = new float[Emotion.values().length];
+        Arrays.fill(emotionProbabilities, 0);
         try {
             configRoot = objectMapper.readValue(jsonConfig, FERNeuralNetConfigRoot.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        emotionMap = configRoot.getEmotionMap();
     }
 
     public void initialise() {
@@ -57,43 +58,36 @@ public class FacialEmotionRecognitionAPI {
         File imageFile = captureImage();
         int[] dataShape = new int[]{1, 1, 64, 64};
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
-        emotionProbabilities = deepLearningProcessor.getEmotionPrediction(imageData);
+        float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
+        System.arraycopy(emotionPrediction, 0, emotionProbabilities, 0, emotionPrediction.length);
     }
 
-    public float getCalm() throws UnsupportedEmotionException {
-        validateEmotion("calm");
-        return emotionProbabilities[emotionMap.get("calm")];
+    public float getAnger() {
+        return emotionProbabilities[Emotion.ANGER.getNumber()];
     }
 
-    public float getFear() throws UnsupportedEmotionException {
-        validateEmotion("fear");
-        return emotionProbabilities[emotionMap.get("fear")];
+    public float getCalm() {
+        return emotionProbabilities[Emotion.CALM.getNumber()];
     }
 
-    public float getAnger() throws UnsupportedEmotionException {
-        validateEmotion("anger");
-        return emotionProbabilities[emotionMap.get("anger")];
+    public float getFear() {
+        return emotionProbabilities[Emotion.FEAR.getNumber()];
     }
 
-    public float getDisgust() throws UnsupportedEmotionException {
-        validateEmotion("disgust");
-        return emotionProbabilities[emotionMap.get("disgust")];
+    public float getSadness() {
+        return emotionProbabilities[Emotion.SADNESS.getNumber()];
     }
 
-    public float getSurprise() throws UnsupportedEmotionException {
-        validateEmotion("surprise");
-        return emotionProbabilities[emotionMap.get("surprise")];
+    public float getSurprise() {
+        return emotionProbabilities[Emotion.SURPRISE.getNumber()];
     }
 
-
-    public float getContempt() throws UnsupportedEmotionException {
-        validateEmotion("contempt");
-        return emotionProbabilities[emotionMap.get("contempt")];
+    public float getContempt() {
+        return emotionProbabilities[Emotion.CONTEMPT.getNumber()];
     }
 
-    private void validateEmotion(String emotionString) throws UnsupportedEmotionException {
-        if (!emotionMap.containsKey(emotionString)) {
-            throw new UnsupportedEmotionException(emotionString);
-        }
+    public float getDisgust() {
+        return emotionProbabilities[Emotion.DISGUST.getNumber()];
     }
+
 }

@@ -18,6 +18,7 @@ public class MockFacialEmotionRecognitionAPI extends FacialEmotionRecognitionAPI
         super(configPath);
         this.deepLearningProcessor = deepLearningProcessor;
         this.imageProcessor = imageProcessor;
+        emotionProbabilities = new float[Emotion.values().length];
     }
 
     @Override
@@ -35,22 +36,23 @@ public class MockFacialEmotionRecognitionAPI extends FacialEmotionRecognitionAPI
         File imageFile = captureImage();
         int[] dataShape = new int[]{1, 1, 1, 1};
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
-        emotionProbabilities = deepLearningProcessor.getEmotionPrediction(imageData);
+        float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
+        System.arraycopy(emotionPrediction, 0, emotionProbabilities, 0, emotionPrediction.length);
     }
 
     @Override
     public float getCalm() {
-        return emotionProbabilities[emotionMap.get("calm")];
+        return emotionProbabilities[Emotion.CALM.getNumber()];
     }
 
     @Override
     public float getAnger() {
-        return emotionProbabilities[emotionMap.get("anger")];
+        return emotionProbabilities[Emotion.ANGER.getNumber()];
     }
 
     @Override
     public float getFear() {
-        return emotionProbabilities[emotionMap.get("fear")];
+        return emotionProbabilities[Emotion.FEAR.getNumber()];
     }
 
     public float[] getEmotionProbabilities() {
