@@ -25,15 +25,15 @@ public class Main extends Application {
         launch(args);
     }
 
-    private String weightsFile = "src/test/resources/conv2d_weights.h5";
-    private String modelFile = "src/test/resources/conv2d_model.json";
+    private static final String PATH_TO_WEIGHTS_FILE = "src/test/resources/conv2d_weights.h5";
+    private static final String PATH_TO_MODEL_FILE = "src/test/resources/conv2d_model.json";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
         RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
         ImageProcessor imageProcessor = new ImageProcessor();
-        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(modelFile, weightsFile);
+        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor,deepLearningProcessor);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
         mediaControl = new MediaControl(branchingLogic, audioPlayer);
