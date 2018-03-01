@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 public class FacialEmotionRecognitionAPI {
 
@@ -90,4 +89,7 @@ public class FacialEmotionRecognitionAPI {
         return emotionProbabilities[Emotion.DISGUST.getNumber()];
     }
 
+    public Emotion getDominateEmotion() {
+        return Emotion.CALM;
+    }
 }

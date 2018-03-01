@@ -4,7 +4,7 @@ import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.EmotionBranch;
 import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.branching.model.Media;
-import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
+import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 class BranchingLogicTest {
 
-    @Mock private DummyFacialRecognitionAPI facialRecognition;
+    @Mock private FacialEmotionRecognitionAPI facialRecognition;
     @Mock private JsonTranslator translator;
     @Mock private ConfigRoot root;
 

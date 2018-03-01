@@ -3,7 +3,7 @@ package io.thoughtworksarts.riot.branching;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.EmotionBranch;
 import io.thoughtworksarts.riot.branching.model.Level;
-import io.thoughtworksarts.riot.facialrecognition.DummyFacialRecognitionAPI;
+import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -17,12 +17,12 @@ public class BranchingLogic {
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
     private JsonTranslator translator;
-    private DummyFacialRecognitionAPI facialRecognition;
+    private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
     @Getter private String filmPath;
     @Getter private String audioPath;
 
-    public BranchingLogic(DummyFacialRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
+    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
         initialise();
