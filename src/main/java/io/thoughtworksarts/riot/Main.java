@@ -5,7 +5,9 @@ import io.thoughtworksarts.riot.audio.JavaSoundAudioPlayer;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
+import io.thoughtworksarts.riot.facialrecognition.DeepLearningProcessor;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import io.thoughtworksarts.riot.facialrecognition.ImageProcessor;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
@@ -26,7 +28,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
         RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
-        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI("src/test/resources/neuralNetConfig.json");
+        ImageProcessor imageProcessor = new ImageProcessor();
+        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor("src/test/resources/neuralNetConfig.json");
+        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor,deepLearningProcessor);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
         mediaControl = new MediaControl(branchingLogic, audioPlayer);
 

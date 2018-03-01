@@ -1,9 +1,11 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
+import com.github.sarxos.webcam.Webcam;
 import org.datavec.image.loader.ImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,6 +19,23 @@ public class ImageProcessor {
         image = resizeImage(image, targetWidth, targetHeight);
         INDArray imageData = normalizeImageData(image);
         return imageData.reshape(targetDataShape);
+    }
+
+    public File captureImage() {
+        // get default webcam and open it
+        Webcam webcam = Webcam.getDefault();
+        webcam.open();
+
+        // get image
+        BufferedImage image = webcam.getImage();
+        File imageFile = new File("image.jpg");
+        try {
+            ImageIO.write(image, "jpg", imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        webcam.close();
+        return imageFile;
     }
 
     public BufferedImage loadImage(File imageFile) {

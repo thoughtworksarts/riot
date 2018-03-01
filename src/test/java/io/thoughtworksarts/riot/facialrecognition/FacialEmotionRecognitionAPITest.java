@@ -13,8 +13,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class FacialEmotionRecognitionAPITest {
 
-    MockFacialEmotionRecognitionAPI threeEmotionMockEmotionAPI;
-    MockFacialEmotionRecognitionAPI fiveEmotionMockEmotionAPI;
+    FacialEmotionRecognitionAPI facialRecognition;
     @Mock DeepLearningProcessor deepLearningProcessor;
     @Mock ImageProcessor imageProcessor;
 
@@ -22,30 +21,42 @@ public class FacialEmotionRecognitionAPITest {
     public void setup() {
         initMocks(this);
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3});
-        String configPath = "src/test/resources/neuralNetConfig.json";
-        threeEmotionMockEmotionAPI = new MockFacialEmotionRecognitionAPI(configPath, deepLearningProcessor, imageProcessor);
-        String fiveEmotionConfigPath = "src/test/resources/neuralNetConfig5Emotions.json";
-        fiveEmotionMockEmotionAPI = new MockFacialEmotionRecognitionAPI(fiveEmotionConfigPath, deepLearningProcessor, imageProcessor);
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor);
     }
 
     @Test
     public void shouldRecordEmotionProbabilitiesOnInitialise() {
-        threeEmotionMockEmotionAPI.initialise();
+        facialRecognition.initialise();
 
         verify(imageProcessor).prepareImageForNet(any(), Mockito.anyInt(), Mockito.anyInt(), any());
         verify(deepLearningProcessor).getEmotionPrediction(any());
     }
 
     @Test
-    public void shouldGetEmotionValuesSetAtInitialisation() {
-        threeEmotionMockEmotionAPI.initialise();
+    public void shouldGetEmotionValuesSubSetAtInitialisationWhenDeepLearningProcessorReturns3Predictions() {
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3});
+        facialRecognition.initialise();
 
-        assertEquals(1, threeEmotionMockEmotionAPI.getAnger());
-        assertEquals(2, threeEmotionMockEmotionAPI.getCalm());
-        assertEquals(3, threeEmotionMockEmotionAPI.getFear());
-        assertEquals(0, threeEmotionMockEmotionAPI.getSadness());
-        assertEquals(0, threeEmotionMockEmotionAPI.getSurprise());
-        assertEquals(0, threeEmotionMockEmotionAPI.getContempt());
-        assertEquals(0, threeEmotionMockEmotionAPI.getDisgust());
+        assertEquals(1, facialRecognition.getAnger());
+        assertEquals(2, facialRecognition.getCalm());
+        assertEquals(3, facialRecognition.getFear());
+        assertEquals(0, facialRecognition.getSadness());
+        assertEquals(0, facialRecognition.getSurprise());
+        assertEquals(0, facialRecognition.getContempt());
+        assertEquals(0, facialRecognition.getDisgust());
+    }
+
+    @Test
+    public void shouldGetAllEmotionValuesSetAtInitialisationWhenDeepLearningProcessorReturnsAllPredictions() {
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3, 4, 5, 6, 7});
+        facialRecognition.initialise();
+
+        assertEquals(1, facialRecognition.getAnger());
+        assertEquals(2, facialRecognition.getCalm());
+        assertEquals(3, facialRecognition.getFear());
+        assertEquals(4, facialRecognition.getSadness());
+        assertEquals(5, facialRecognition.getSurprise());
+        assertEquals(6, facialRecognition.getContempt());
+        assertEquals(7, facialRecognition.getDisgust());
     }
 }
