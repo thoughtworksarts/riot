@@ -1,4 +1,0 @@
-{
-  "weightsFile": "src/test/resources/conv2d_weights.h5",
-  "modelFile": "src/test/resources/conv2d_model.json"
-}

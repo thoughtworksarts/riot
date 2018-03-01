@@ -1,8 +1,5 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.thoughtworksarts.riot.utilities.JSONReader;
 import org.deeplearning4j.nn.modelimport.keras.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.UnsupportedKerasConfigurationException;
@@ -17,20 +14,6 @@ public class DeepLearningProcessor {
     private String _h5File;
     private String _jsonFile;
     private MultiLayerNetwork model;
-
-    public DeepLearningProcessor(String configPath){
-        String jsonConfig = JSONReader.readFile(configPath);
-        ObjectMapper objectMapper = new ObjectMapper();
-        FERNeuralNetConfigRoot configRoot;
-        try {
-            configRoot = objectMapper.readValue(jsonConfig, FERNeuralNetConfigRoot.class);
-            _jsonFile = configRoot.getModelFile();
-            _h5File = configRoot.getWeightsFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        initModel();
-    }
 
     public DeepLearningProcessor(String jsonFile, String h5File) {
         _jsonFile = jsonFile;

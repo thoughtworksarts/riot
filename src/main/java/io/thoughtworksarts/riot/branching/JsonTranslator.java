@@ -5,13 +5,11 @@ import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.utilities.JSONReader;
 import javafx.util.Duration;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-@Slf4j
 public class JsonTranslator {
 
     @Getter private ConfigRoot root;

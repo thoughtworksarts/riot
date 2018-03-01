@@ -3,9 +3,7 @@ package io.thoughtworksarts.riot.video;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class MoviePlayer {
 
     private final Stage primaryStage;
