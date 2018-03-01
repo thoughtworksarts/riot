@@ -26,37 +26,27 @@ public class FacialEmotionRecognitionAPITest {
 
     @Test
     public void shouldRecordEmotionProbabilitiesOnInitialise() {
-        facialRecognition.initialise();
+        facialRecognition.recordEmotionProbabilities();
 
         verify(imageProcessor).prepareImageForNet(any(), Mockito.anyInt(), Mockito.anyInt(), any());
         verify(deepLearningProcessor).getEmotionPrediction(any());
     }
 
     @Test
-    public void shouldGetEmotionValuesSubSetAtInitialisationWhenDeepLearningProcessorReturns3Predictions() {
-        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3});
-        facialRecognition.initialise();
+    public void getDominateEmotionShouldReturnCalmWhenCalmHasTheHighestValue() {
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 5, 1});
+        facialRecognition.recordEmotionProbabilities();
 
-        assertEquals(1, facialRecognition.getAnger());
-        assertEquals(2, facialRecognition.getCalm());
-        assertEquals(3, facialRecognition.getFear());
-        assertEquals(0, facialRecognition.getSadness());
-        assertEquals(0, facialRecognition.getSurprise());
-        assertEquals(0, facialRecognition.getContempt());
-        assertEquals(0, facialRecognition.getDisgust());
+        Emotion dominateEmotion = facialRecognition.getDominateEmotion();
+        assertEquals(dominateEmotion, Emotion.CALM);
     }
 
     @Test
-    public void shouldGetAllEmotionValuesSetAtInitialisationWhenDeepLearningProcessorReturnsAllPredictions() {
+    public void getDominateEmotionShouldReturnCalm() {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3, 4, 5, 6, 7});
-        facialRecognition.initialise();
+        facialRecognition.recordEmotionProbabilities();
 
-        assertEquals(1, facialRecognition.getAnger());
-        assertEquals(2, facialRecognition.getCalm());
-        assertEquals(3, facialRecognition.getFear());
-        assertEquals(4, facialRecognition.getSadness());
-        assertEquals(5, facialRecognition.getSurprise());
-        assertEquals(6, facialRecognition.getContempt());
-        assertEquals(7, facialRecognition.getDisgust());
+        Emotion dominateEmotion = facialRecognition.getDominateEmotion();
+        assertEquals(dominateEmotion, Emotion.DISGUST);
     }
 }

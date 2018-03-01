@@ -19,10 +19,6 @@ public class FacialEmotionRecognitionAPI {
         Arrays.fill(emotionProbabilities, 0);
     }
 
-    public void initialise() {
-        recordEmotionProbabilities();
-    }
-
     public void recordEmotionProbabilities() {
         File imageFile = imageProcessor.captureImage();
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
@@ -30,35 +26,15 @@ public class FacialEmotionRecognitionAPI {
         System.arraycopy(emotionPrediction, 0, emotionProbabilities, 0, emotionPrediction.length);
     }
 
-    public float getAnger() {
-        return emotionProbabilities[Emotion.ANGER.getNumber()];
-    }
-
-    public float getCalm() {
-        return emotionProbabilities[Emotion.CALM.getNumber()];
-    }
-
-    public float getFear() {
-        return emotionProbabilities[Emotion.FEAR.getNumber()];
-    }
-
-    public float getSadness() {
-        return emotionProbabilities[Emotion.SADNESS.getNumber()];
-    }
-
-    public float getSurprise() {
-        return emotionProbabilities[Emotion.SURPRISE.getNumber()];
-    }
-
-    public float getContempt() {
-        return emotionProbabilities[Emotion.CONTEMPT.getNumber()];
-    }
-
-    public float getDisgust() {
-        return emotionProbabilities[Emotion.DISGUST.getNumber()];
-    }
-
     public Emotion getDominateEmotion() {
-        return Emotion.CALM;
+        Emotion maxEmotion = null;
+        for (Emotion emotion : Emotion.values()){
+            if( maxEmotion == null){
+                maxEmotion = emotion;
+            } else if (emotionProbabilities[maxEmotion.getNumber()] < emotionProbabilities[emotion.getNumber()]){
+                maxEmotion = emotion;
+            }
+        }
+        return maxEmotion;
     }
 }
