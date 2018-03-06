@@ -1,6 +1,6 @@
 {
   "media": {
-    "video": "src/main/resources/video/film.m4v",
+    "video": "src/main/resources/video/film_with_credits.m4v",
     "audio": "src/main/resources/audio/audio.wav"
   },
   "levels": [
