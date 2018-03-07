@@ -1,9 +1,6 @@
 package io.thoughtworksarts.riot.branching;
 
-import io.thoughtworksarts.riot.branching.model.ConfigRoot;
-import io.thoughtworksarts.riot.branching.model.EmotionBranch;
-import io.thoughtworksarts.riot.branching.model.Level;
-import io.thoughtworksarts.riot.branching.model.Media;
+import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,11 +35,24 @@ class BranchingLogicTest {
         media.setVideo("video path");
 
         Level[] levels = {createLevel()};
+        Intro[] intros = {createIntro(0, start, end), createIntro(1, start, end), createIntro(2, start, end)};
+
         when(root.getMedia()).thenReturn(media);
         when(root.getLevels()).thenReturn(levels);
+        when(root.getIntros()).thenReturn(intros);
         when(translator.populateModelsFromJson(anyString())).thenReturn(root);
         when(translator.convertToDuration(end)).thenReturn(endDuration);
         branchingLogic = new BranchingLogic(facialRecognition, translator);
+    }
+
+    private Intro createIntro(int index, String start, String end) {
+        Intro intro = new Intro();
+        intro.setIntro(index);
+        intro.setStart(start);
+        intro.setEnd(end);
+
+        return intro;
+
     }
 
     private Level createLevel() {
