@@ -36,14 +36,11 @@ public class Main extends Application {
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor,deepLearningProcessor);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer);
+        mediaControl = new MediaControl(branchingLogic, audioPlayer,jsonTranslator.convertToDuration("03:47.150"));
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
-        mediaControl.initialise();
         mediaControl.play();
-        // skips to intro and jumps to level 1
-        mediaControl.seek(jsonTranslator.convertToDuration("03:47.110"));
     }
 
     @Override
@@ -51,5 +48,7 @@ public class Main extends Application {
         super.stop();
         mediaControl.shutdown();
     }
+
+
 
 }

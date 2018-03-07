@@ -1,16 +1,24 @@
 package io.thoughtworksarts.riot.video;
 
+import com.google.common.base.Throwables;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import javafx.concurrent.Service;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class MediaControl extends BorderPane {
@@ -19,42 +27,32 @@ public class MediaControl extends BorderPane {
 
     private BranchingLogic branchingLogic;
     private RiotAudioPlayer audioPlayer;
-
-    private MediaView mediaView;
     private MediaPlayer filmPlayer;
-    private Pane pane;
-    private Media media;
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime) throws Exception {
         this.branchingLogic = branchingLogic;
-        this.audioPlayer = audioPlayer;
-
-        String filmPath = branchingLogic.getFilmPath();
-        String audioPath = branchingLogic.getAudioPath();
-
-        audioPlayer.initialise(DRIVER_NAME, audioPath);
-
+        //Video relate
+        String filmPath = this.branchingLogic.getFilmPath();
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
-        media = new Media(pathToFilm);
-        branchingLogic.recordMarkers(media.getMarkers());
-        this.filmPlayer = new MediaPlayer(media);
-        this.mediaView = new MediaView(filmPlayer);
-        this.pane = new Pane();
-
-    }
-
-    public void initialise() {
+        setUpFilmPlayer(pathToFilm, startTime);
         setUpPane();
-        setUpFilmPlayer();
+        //Audio related
+        this.audioPlayer = audioPlayer;
+        this.audioPlayer.initialise(DRIVER_NAME,this.branchingLogic.getAudioPath());
     }
 
     private void setUpPane() {
+        MediaView mediaView = new MediaView(filmPlayer);
+        Pane pane = new Pane();
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
     }
 
-    private void setUpFilmPlayer() {
+    private void setUpFilmPlayer(String pathToFilm,Duration startTime) {
+        Media media = new Media(pathToFilm);
+        branchingLogic.recordMarkers(media.getMarkers());
+        filmPlayer = new MediaPlayer(media);
         filmPlayer.setAutoPlay(false);
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
@@ -64,28 +62,33 @@ public class MediaControl extends BorderPane {
                 seek(duration);
             }
         });
+        filmPlayer.setOnReady(() -> {
+                    filmPlayer.seek(startTime);
+                    audioPlayer.seek(startTime.toSeconds()-1.05);
+                }
+        );
     }
 
     public void pause() {
         log.info("Pause");
-        audioPlayer.pause();
         filmPlayer.pause();
     }
 
     public void play() {
         log.info("Play");
-        audioPlayer.resume();
         filmPlayer.play();
+        audioPlayer.resume();
     }
 
     public void seek(Duration duration) {
-        audioPlayer.seek(duration.toSeconds());
         filmPlayer.seek(duration);
+        audioPlayer.seek(duration.toSeconds());
+
     }
 
     public void shutdown() {
         log.info("Shutting Down");
-        audioPlayer.shutdown();
         filmPlayer.stop();
+        audioPlayer.shutdown();
     }
 }

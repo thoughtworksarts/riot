@@ -12,7 +12,7 @@ public class AudioPlayer implements RiotAudioPlayer {
     private float [] silentChannelBuffer;
     private WavSource source;
     private AsioDriverConnector asioDriverConnector;
-    
+
     enum State {
         Paused,
         Playing,
@@ -37,7 +37,7 @@ public class AudioPlayer implements RiotAudioPlayer {
 
         int numChannels = source.getNumChannels();
         sampleRate = (int)source.getSampleRate();
-        
+
         asioDriverConnector = new AsioDriverConnector(this);
         asioDriverConnector.initialize(driverName, numChannels, sampleRate);
 
@@ -57,6 +57,7 @@ public class AudioPlayer implements RiotAudioPlayer {
         }
     }
 
+
     public void seek(double seekTimeSeconds) {
         source.seek(seekTimeSeconds);
     }
@@ -75,22 +76,18 @@ public class AudioPlayer implements RiotAudioPlayer {
 
     // Main function that handles fetching of data from the WavSource and passing it to the Asio driver
     public void bufferSwitch(long systemTime, long samplePosition, Set<AsioChannel> channels) {
-        // If we're playing get data from the file
-        if (playbackState == State.Playing) {
-            source.readFrames(bufferSize, outputPerChannel);
-
-            int index = 0;
-            for (AsioChannel channelInfo : channels) {
-                float [] channel = outputPerChannel[index++];
-
-                channelInfo.write(channel);
+            // If we're playing get data from the file
+            if (playbackState == State.Playing) {
+                source.readFrames(bufferSize, outputPerChannel);
+                int index = 0;
+                for (AsioChannel channelInfo : channels) {
+                    float [] channel = outputPerChannel[index++];
+                    channelInfo.write(channel);
+                }
+            } else { // Otherwise just output silence
+                for (AsioChannel channelInfo : channels) {
+                    channelInfo.write(silentChannelBuffer);
+                }
             }
-        }
-        // Otherwise just output silence
-        else {
-            for (AsioChannel channelInfo : channels) {
-                channelInfo.write(silentChannelBuffer);
-            }
-        }
     }
 }
