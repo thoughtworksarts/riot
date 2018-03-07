@@ -2,7 +2,6 @@ package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
-import io.thoughtworksarts.riot.branching.JsonTranslator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -38,7 +37,7 @@ public class MediaControl extends BorderPane {
     private void setUpPane() {
         MediaView mediaView = new MediaView(filmPlayer);
         Pane pane = new Pane();
-        mediaView.setOnMouseClicked(event -> handleClickDuringIntro(event));
+        mediaView.setOnMouseClicked(event -> handleClickDuringIntro());
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
@@ -63,18 +62,12 @@ public class MediaControl extends BorderPane {
         );
     }
 
-    private void handleClickDuringIntro(MouseEvent event) {
-        JsonTranslator translator = new JsonTranslator();
-        Duration beginningOfIntro = translator.convertToDuration("10:37.500");
-        Duration secondIntroStart = translator.convertToDuration("10:47.500");
-        Duration thirdIntroStart = translator.convertToDuration("10:56.500");
-        Duration endOfIntro = translator.convertToDuration("11:04.400");
-        Duration[] durations = new Duration[]{secondIntroStart, thirdIntroStart, endOfIntro};
-        for (Duration duration : durations) {
-            if (filmPlayer.getCurrentTime().lessThan(duration) && filmPlayer.getCurrentTime().greaterThan(beginningOfIntro)) {
-                seek(duration);
-                break;
-            }
+    private void handleClickDuringIntro() {
+        Duration duration = branchingLogic.getProperIntroDuration(filmPlayer.getCurrentTime());
+        if (duration != null) {
+            seek(duration);
+        } else {
+            log.info("no clicking action outside of intro section");
         }
     }
 

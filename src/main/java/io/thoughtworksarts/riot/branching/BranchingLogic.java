@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.branching;
 
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.EmotionBranch;
+import io.thoughtworksarts.riot.branching.model.Intro;
 import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.scene.media.MediaMarkerEvent;
@@ -19,6 +20,7 @@ public class BranchingLogic {
     private JsonTranslator translator;
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
+    private Intro[] intros;
     @Getter private String filmPath;
     @Getter private String audioPath;
 
@@ -33,6 +35,7 @@ public class BranchingLogic {
         levels = root.getLevels();
         filmPath = root.getMedia().getVideo();
         audioPath = root.getMedia().getAudio();
+        intros = root.getIntros();
     }
 
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
@@ -42,7 +45,7 @@ public class BranchingLogic {
         int index = Integer.parseInt(split[1]);
         Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
-        String seekToTime = "10:38.800";
+        String seekToTime = intros[0].getStart();
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
@@ -64,17 +67,16 @@ public class BranchingLogic {
         }
         else if (category.equals("intro")) {
             log.info("Intro slide: " + key);
-            if (arg.getMarker().getValue().equals(translator.convertToDuration("11:04.400"))) {
-                seekToTime = "00:00.000";
-            }
+            seekToTime = "00:00.000";
         }
+
         //not sure what to do here but something horrible went wrong!
         log.info("Seeking: " + seekToTime);
         return translator.convertToDuration(seekToTime);
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
-        markers.put("intro:3", translator.convertToDuration("11:04.400"));
+        markers.put("intro:3", translator.convertToDuration(intros[2].getEnd()));
         for (Level level : levels) {
             markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
             Map<String, EmotionBranch> branch = level.getBranch();
@@ -82,5 +84,21 @@ public class BranchingLogic {
                     "emotion:" + level.getLevel() + ":" + branchKey,
                     translator.convertToDuration(emotionBranch.getEnd())));
         }
+    }
+
+    public Duration getProperIntroDuration(Duration currentTime) {
+        Duration beginningOfIntro = translator.convertToDuration(intros[0].getStart());
+        Duration secondIntroStart = translator.convertToDuration(intros[1].getStart());
+        Duration thirdIntroStart = translator.convertToDuration(intros[2].getStart());
+        Duration endOfIntro = translator.convertToDuration(intros[2].getEnd());
+
+        Duration[] durations = new Duration[]{secondIntroStart, thirdIntroStart, endOfIntro};
+
+        for (Duration duration : durations) {
+            if (currentTime.lessThan(duration) && currentTime.greaterThan(beginningOfIntro)) {
+                return duration;
+            }
+        }
+        return null;
     }
 }
