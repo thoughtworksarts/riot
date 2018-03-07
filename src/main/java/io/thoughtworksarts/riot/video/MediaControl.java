@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.JsonTranslator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -51,12 +52,10 @@ public class MediaControl extends BorderPane {
         filmPlayer.setAutoPlay(false);
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
-            if (duration.toMillis() == 0.0) {
-                pause();
-            } else {
-                seek(duration);
-            }
+            seek(duration);
+            audioPlayer.resume();
         });
+
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
                     audioPlayer.seek(startTime.toSeconds() - 1.05);
@@ -65,12 +64,14 @@ public class MediaControl extends BorderPane {
     }
 
     private void handleClickDuringIntro(MouseEvent event) {
-        Duration secondIntroDuration = new Duration(8200);
-        Duration thirdIntroDuration = new Duration(17000);
-        Duration beginningOfFilm = new Duration(27000);
-        Duration[] durations = new Duration[]{secondIntroDuration, thirdIntroDuration, beginningOfFilm};
+        JsonTranslator translator = new JsonTranslator();
+        Duration beginningOfIntro = translator.convertToDuration("10:37.500");
+        Duration secondIntroStart = translator.convertToDuration("10:47.500");
+        Duration thirdIntroStart = translator.convertToDuration("10:56.500");
+        Duration endOfIntro = translator.convertToDuration("11:04.400");
+        Duration[] durations = new Duration[]{secondIntroStart, thirdIntroStart, endOfIntro};
         for (Duration duration : durations) {
-            if (filmPlayer.getCurrentTime().lessThan(duration)) {
+            if (filmPlayer.getCurrentTime().lessThan(duration) && filmPlayer.getCurrentTime().greaterThan(beginningOfIntro)) {
                 seek(duration);
                 break;
             }

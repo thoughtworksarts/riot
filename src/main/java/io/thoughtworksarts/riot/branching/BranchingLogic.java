@@ -42,7 +42,7 @@ public class BranchingLogic {
         int index = Integer.parseInt(split[1]);
         Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
-        String seekToTime = "00:00.000";
+        String seekToTime = "10:38.800";
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
@@ -62,12 +62,19 @@ public class BranchingLogic {
                 seekToTime = "11:05.000";
             }
         }
+        else if (category.equals("intro")) {
+            log.info("Intro slide: " + key);
+            if (arg.getMarker().getValue().equals(translator.convertToDuration("11:04.400"))) {
+                seekToTime = "00:00.000";
+            }
+        }
         //not sure what to do here but something horrible went wrong!
         log.info("Seeking: " + seekToTime);
         return translator.convertToDuration(seekToTime);
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
+        markers.put("intro:3", translator.convertToDuration("11:04.400"));
         for (Level level : levels) {
             markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
             Map<String, EmotionBranch> branch = level.getBranch();

@@ -34,9 +34,9 @@ public class Main extends Application {
         RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
-        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor,deepLearningProcessor);
+        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer,jsonTranslator.convertToDuration("03:47.150"));
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("10:39.200"));
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
