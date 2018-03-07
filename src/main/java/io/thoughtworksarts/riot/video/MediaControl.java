@@ -1,24 +1,17 @@
 package io.thoughtworksarts.riot.video;
 
-import com.google.common.base.Throwables;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
-import javafx.concurrent.Service;
-import javafx.scene.Group;
-import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 public class MediaControl extends BorderPane {
@@ -38,21 +31,23 @@ public class MediaControl extends BorderPane {
         setUpPane();
         //Audio related
         this.audioPlayer = audioPlayer;
-        this.audioPlayer.initialise(DRIVER_NAME,this.branchingLogic.getAudioPath());
+        this.audioPlayer.initialise(DRIVER_NAME, this.branchingLogic.getAudioPath());
     }
 
     private void setUpPane() {
         MediaView mediaView = new MediaView(filmPlayer);
         Pane pane = new Pane();
+        mediaView.setOnMouseClicked(event -> handleClickDuringIntro(event));
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
     }
 
-    private void setUpFilmPlayer(String pathToFilm,Duration startTime) {
+    private void setUpFilmPlayer(String pathToFilm, Duration startTime) {
         Media media = new Media(pathToFilm);
         branchingLogic.recordMarkers(media.getMarkers());
         filmPlayer = new MediaPlayer(media);
+
         filmPlayer.setAutoPlay(false);
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
@@ -64,9 +59,22 @@ public class MediaControl extends BorderPane {
         });
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
-                    audioPlayer.seek(startTime.toSeconds()-1.05);
+                    audioPlayer.seek(startTime.toSeconds() - 1.05);
                 }
         );
+    }
+
+    private void handleClickDuringIntro(MouseEvent event) {
+        Duration secondIntroDuration = new Duration(8200);
+        Duration thirdIntroDuration = new Duration(17000);
+        Duration beginningOfFilm = new Duration(27000);
+        Duration[] durations = new Duration[]{secondIntroDuration, thirdIntroDuration, beginningOfFilm};
+        for (Duration duration : durations) {
+            if (filmPlayer.getCurrentTime().lessThan(duration)) {
+                seek(duration);
+                break;
+            }
+        }
     }
 
     public void pause() {
