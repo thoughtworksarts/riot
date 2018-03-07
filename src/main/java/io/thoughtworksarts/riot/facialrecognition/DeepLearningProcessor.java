@@ -11,19 +11,19 @@ import java.util.List;
 
 public class DeepLearningProcessor {
 
-    private String _h5File;
-    private String _jsonFile;
+    private String weightsFile;
+    private String modelConfigFile;
     private MultiLayerNetwork model;
 
-    public DeepLearningProcessor(String jsonFile, String h5File) {
-        _jsonFile = jsonFile;
-        _h5File = h5File;
+    public DeepLearningProcessor(String modelConfigFile, String weightsFile) {
+        this.modelConfigFile = modelConfigFile;
+        this.weightsFile = weightsFile;
         initModel();
     }
 
     private void initModel() {
         try {
-            model =  KerasModelImport.importKerasSequentialModelAndWeights(_jsonFile, _h5File);
+            model =  KerasModelImport.importKerasSequentialModelAndWeights(modelConfigFile, weightsFile);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidKerasConfigurationException e) {
