@@ -57,6 +57,9 @@ public class BranchingLogic {
             if (outcomeNumber > 0) {
                 Level nextLevel = levels[outcomeNumber - 1];
                 seekToTime = nextLevel.getStart();
+            } else {
+                log.info("Credits");
+                seekToTime = "11:05.000";
             }
         }
         //not sure what to do here but something horrible went wrong!
