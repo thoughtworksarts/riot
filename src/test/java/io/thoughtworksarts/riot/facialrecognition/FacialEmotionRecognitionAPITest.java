@@ -21,7 +21,8 @@ public class FacialEmotionRecognitionAPITest {
     public void setup() {
         initMocks(this);
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3});
-        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor);
+        String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
     }
 
     @Test
@@ -47,6 +48,6 @@ public class FacialEmotionRecognitionAPITest {
         facialRecognition.recordEmotionProbabilities();
 
         Emotion dominateEmotion = facialRecognition.getDominateEmotion();
-        assertEquals(dominateEmotion, Emotion.DISGUST);
+        assertEquals(dominateEmotion, Emotion.CALM);
     }
 }

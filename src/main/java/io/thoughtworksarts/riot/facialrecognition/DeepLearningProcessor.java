@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DeepLearningProcessor {
 
-    private String weightsFile;
-    private String modelConfigFile;
+    private final String weightsFile;
+    private final String modelConfigFile;
     private MultiLayerNetwork model;
 
     public DeepLearningProcessor(String modelConfigFile, String weightsFile) {

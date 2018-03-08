@@ -27,6 +27,7 @@ public class Main extends Application {
 
     private static final String PATH_TO_WEIGHTS_FILE = "src/test/resources/conv2d_weights.h5";
     private static final String PATH_TO_MODEL_FILE = "src/test/resources/conv2d_model.json";
+    private static final String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -34,7 +35,7 @@ public class Main extends Application {
         RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
-        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor);
+        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
         mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("10:39.200"));
 
