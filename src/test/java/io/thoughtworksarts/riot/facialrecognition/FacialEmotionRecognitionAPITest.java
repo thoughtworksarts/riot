@@ -34,20 +34,20 @@ public class FacialEmotionRecognitionAPITest {
     }
 
     @Test
-    public void getDominateEmotionShouldReturnCalmWhenCalmHasTheHighestValue() {
+    public void getDominantEmotionShouldReturnCalmWhenCalmHasTheHighestValue() {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 5, 1});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominateEmotion = facialRecognition.getDominateEmotion();
-        assertEquals(dominateEmotion, Emotion.CALM);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
+        assertEquals(dominantEmotion, Emotion.CALM);
     }
 
     @Test
-    public void getDominateEmotionShouldReturnCalm() {
+    public void getDominantEmotionShouldReturnCalm() {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 3, 4, 5, 6, 7});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominateEmotion = facialRecognition.getDominateEmotion();
-        assertEquals(dominateEmotion, Emotion.CALM);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
+        assertEquals(dominantEmotion, Emotion.CALM);
     }
 }
