@@ -5,6 +5,7 @@ import io.thoughtworksarts.riot.branching.model.EmotionBranch;
 import io.thoughtworksarts.riot.branching.model.Intro;
 import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -68,6 +69,9 @@ public class BranchingLogic {
         else if (category.equals("intro")) {
             log.info("Intro slide: " + key);
             seekToTime = "00:00.000";
+        } else if (category.equals("end")) {
+            log.info("Exiting application: ");
+            Platform.exit();
         }
 
         //not sure what to do here but something horrible went wrong!
@@ -84,6 +88,7 @@ public class BranchingLogic {
                     "emotion:" + level.getLevel() + ":" + branchKey,
                     translator.convertToDuration(emotionBranch.getEnd())));
         }
+        markers.put("end:1", translator.convertToDuration("11:23.000"));
     }
 
     public Duration getProperIntroDuration(Duration currentTime) {
