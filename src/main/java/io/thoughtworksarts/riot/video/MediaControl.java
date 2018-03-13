@@ -51,7 +51,10 @@ public class MediaControl extends BorderPane {
         filmPlayer.setAutoPlay(false);
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
-            seek(duration);
+
+            if (!duration.equals("")) {
+                seek(duration);
+            }
         });
 
         filmPlayer.setOnReady(() -> {
