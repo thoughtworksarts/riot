@@ -36,13 +36,24 @@ class BranchingLogicTest {
 
         Level[] levels = {createLevel()};
         Intro[] intros = {createIntro(0, start, end), createIntro(1, start, end), createIntro(2, start, end)};
+        Credits[] credits = {createCredit(0), createCredit(1)};
 
         when(root.getMedia()).thenReturn(media);
         when(root.getLevels()).thenReturn(levels);
         when(root.getIntros()).thenReturn(intros);
+        when(root.getCredits()).thenReturn(credits);
         when(translator.populateModelsFromJson(anyString())).thenReturn(root);
         when(translator.convertToDuration(end)).thenReturn(endDuration);
         branchingLogic = new BranchingLogic(facialRecognition, translator);
+    }
+
+    private Credits createCredit(int index) {
+        Credits credit = new Credits();
+        credit.setCredit(index);
+        credit.setStart(start);
+        credit.setEnd(start);
+
+        return credit;
     }
 
     private Intro createIntro(int index, String start, String end) {

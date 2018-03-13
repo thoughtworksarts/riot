@@ -67,7 +67,7 @@ public class BranchingLogic {
         } else if (category.equals("intro")) {
             log.info("Intro slide: " + key);
             return translator.convertToDuration("00:00.000");
-        } else if (category.equals("credits")) {
+        } else if (category.equals("credit")) {
             if (split[1].equals("2")) {
                 log.info("Exiting application: ");
                 Platform.exit();
@@ -85,13 +85,15 @@ public class BranchingLogic {
 
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "intro", "3", intros[2].getEnd());
+        System.out.println("here" + credits[1]);
+        addMarker(markers, "credit", "2", credits[1].getEnd());
+
         for (Level level : levels) {
             addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
             Map<String, EmotionBranch> branch = level.getBranch();
             branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
                     branchKey, emotionBranch.getEnd()));
         }
-        addMarker(markers, "credits", "2", credits[1].getEnd());
     }
 
     public Duration getProperIntroDuration(Duration currentTime) {
