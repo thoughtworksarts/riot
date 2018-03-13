@@ -1,6 +1,9 @@
 package io.thoughtworksarts.riot.branching;
 
-import io.thoughtworksarts.riot.branching.model.*;
+import io.thoughtworksarts.riot.branching.model.ConfigRoot;
+import io.thoughtworksarts.riot.branching.model.EmotionBranch;
+import io.thoughtworksarts.riot.branching.model.Intro;
+import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
@@ -19,7 +22,6 @@ public class BranchingLogic {
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
     private Intro[] intros;
-    private Credits[] credits;
     @Getter private String filmPath;
     @Getter private String audioPath;
 
@@ -35,7 +37,6 @@ public class BranchingLogic {
         filmPath = root.getMedia().getVideo();
         audioPath = root.getMedia().getAudio();
         intros = root.getIntros();
-        credits = root.getCredits();
     }
 
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
@@ -62,17 +63,15 @@ public class BranchingLogic {
                 seekToTime = nextLevel.getStart();
             } else {
                 log.info("Credits");
-                seekToTime = credits[0].getStart();
+                seekToTime = "11:05.000";
             }
         }
         else if (category.equals("intro")) {
             log.info("Intro slide: " + key);
             seekToTime = "00:00.000";
-        } else if (category.equals("credits")) {
-            if (split[1].equals("2")) {
-                log.info("Exiting application: ");
-                Platform.exit();
-            }
+        } else if (category.equals("end")) {
+            log.info("Exiting application: ");
+            Platform.exit();
         }
 
         //not sure what to do here but something horrible went wrong!
@@ -89,11 +88,7 @@ public class BranchingLogic {
                     "emotion:" + level.getLevel() + ":" + branchKey,
                     translator.convertToDuration(emotionBranch.getEnd())));
         }
-        markers.put("credits:1", translator.convertToDuration(credits[0].getStart()));
-        markers.put("credits:2", translator.convertToDuration(credits[1].getEnd()));
-
-//        markers.put("credits:1", translator.convertToDuration("11:05.000"));
-//        markers.put("end:1", translator.convertToDuration("11:23.000"));
+        markers.put("end:1", translator.convertToDuration("11:23.000"));
     }
 
     public Duration getProperIntroDuration(Duration currentTime) {
