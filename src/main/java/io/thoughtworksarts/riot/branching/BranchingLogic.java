@@ -61,7 +61,7 @@ public class BranchingLogic {
                 Level nextLevel = levels[outcomeNumber - 1];
                 seekToTime = nextLevel.getStart();
             } else {
-                log.info("Credits");
+                log.info("Credits: going to this time: " + credits[0].getStart());
                 seekToTime = credits[0].getStart();
             }
         }
@@ -73,14 +73,17 @@ public class BranchingLogic {
                 log.info("Exiting application: ");
                 Platform.exit();
             }
+        } else {
+            log.info("nothing got changed!!!");
         }
 
-        //not sure what to do here but something horrible went wrong!
+        // if your marker is not handled above, this will seek to the seekToTime!
         log.info("Seeking: " + seekToTime);
         return translator.convertToDuration(seekToTime);
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
+        // If you add a marker in here, you MUST handle it in branchOnMediaEvent()
         markers.put("intro:3", translator.convertToDuration(intros[2].getEnd()));
         for (Level level : levels) {
             markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
@@ -89,11 +92,7 @@ public class BranchingLogic {
                     "emotion:" + level.getLevel() + ":" + branchKey,
                     translator.convertToDuration(emotionBranch.getEnd())));
         }
-        markers.put("credits:1", translator.convertToDuration(credits[0].getStart()));
         markers.put("credits:2", translator.convertToDuration(credits[1].getEnd()));
-
-//        markers.put("credits:1", translator.convertToDuration("11:05.000"));
-//        markers.put("end:1", translator.convertToDuration("11:23.000"));
     }
 
     public Duration getProperIntroDuration(Duration currentTime) {

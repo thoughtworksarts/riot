@@ -6,7 +6,7 @@ trainingModels/
 *.h5
 *.wav
 *.m4v
-
+*.jpg
 # Audio Dependency
 resources/audio/
 
