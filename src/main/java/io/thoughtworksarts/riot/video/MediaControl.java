@@ -52,7 +52,6 @@ public class MediaControl extends BorderPane {
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
             seek(duration);
-            audioPlayer.resume();
         });
 
         filmPlayer.setOnReady(() -> {
@@ -85,6 +84,7 @@ public class MediaControl extends BorderPane {
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
         audioPlayer.seek(duration.toSeconds());
+        audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
 
     }
 
