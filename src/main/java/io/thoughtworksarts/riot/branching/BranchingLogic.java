@@ -20,8 +20,10 @@ public class BranchingLogic {
     private Level[] levels;
     private Intro[] intros;
     private Credits[] credits;
-    @Getter private String filmPath;
-    @Getter private String audioPath;
+    @Getter
+    private String filmPath;
+    @Getter
+    private String audioPath;
 
     public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
         this.facialRecognition = facialRecognition;
@@ -45,13 +47,11 @@ public class BranchingLogic {
         int index = Integer.parseInt(split[1]);
         Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
-        String seekToTime = intros[0].getStart();
-
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
             String value = facialRecognition.getDominantEmotion().name();
             EmotionBranch emotionBranch = branches.get(value.toLowerCase());
-            seekToTime = emotionBranch.getStart();
+            return translator.convertToDuration(emotionBranch.getStart());
         } else if (category.equals("emotion")) {
             log.info("Emotion Marker: " + key);
             String emotionType = split[2];
@@ -59,40 +59,39 @@ public class BranchingLogic {
             int outcomeNumber = emotionBranch.getOutcome();
             if (outcomeNumber > 0) {
                 Level nextLevel = levels[outcomeNumber - 1];
-                seekToTime = nextLevel.getStart();
+                return translator.convertToDuration(nextLevel.getStart());
             } else {
-                log.info("Credits: going to this time: " + credits[0].getStart());
-                seekToTime = credits[0].getStart();
+                log.info("Credits: ");
+                return translator.convertToDuration(credits[0].getStart());
             }
-        }
-        else if (category.equals("intro")) {
+        } else if (category.equals("intro")) {
             log.info("Intro slide: " + key);
-            seekToTime = "00:00.000";
+            return translator.convertToDuration("00:00.000");
         } else if (category.equals("credits")) {
             if (split[1].equals("2")) {
                 log.info("Exiting application: ");
                 Platform.exit();
             }
-        } else {
-            log.info("nothing got changed!!!");
         }
 
-        // if your marker is not handled above, this will seek to the seekToTime!
-        log.info("Seeking: " + seekToTime);
-        return translator.convertToDuration(seekToTime);
+        double currentTime = arg.getMarker().getValue().toMillis() + 1;
+        return new Duration(currentTime);
+    }
+
+    public void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time) {
+        String markerNameWithColon = nameForMarker + ":" + index;
+        markers.put(markerNameWithColon, translator.convertToDuration(time));
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
-        // If you add a marker in here, you MUST handle it in branchOnMediaEvent()
-        markers.put("intro:3", translator.convertToDuration(intros[2].getEnd()));
+        addMarker(markers, "intro", "3", intros[2].getEnd());
         for (Level level : levels) {
-            markers.put("level:" + level.getLevel(), translator.convertToDuration(level.getEnd()));
+            addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
             Map<String, EmotionBranch> branch = level.getBranch();
-            branch.forEach((branchKey, emotionBranch) -> markers.put(
-                    "emotion:" + level.getLevel() + ":" + branchKey,
-                    translator.convertToDuration(emotionBranch.getEnd())));
+            branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
+                    branchKey, emotionBranch.getEnd()));
         }
-        markers.put("credits:2", translator.convertToDuration(credits[1].getEnd()));
+        addMarker(markers, "credits", "2", credits[1].getEnd());
     }
 
     public Duration getProperIntroDuration(Duration currentTime) {
