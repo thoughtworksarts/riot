@@ -8,6 +8,9 @@ import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -15,6 +18,7 @@ public class BranchingLogic {
 
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
+    private Map<String, List<Duration>> markersWithSeekTimes;
     private JsonTranslator translator;
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
@@ -38,37 +42,30 @@ public class BranchingLogic {
         audioPath = root.getMedia().getAudio();
         intros = root.getIntros();
         credits = root.getCredits();
+        markersWithSeekTimes = new HashMap<String, List<Duration>>();
     }
 
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
-        String key = arg.getMarker().getKey();
-        String[] split = key.split(":");
+        String markerKey = arg.getMarker().getKey();
+        String[] split = markerKey.split(":");
         String category = split[0];
-        int index = Integer.parseInt(split[1]);
-        Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
-        if (category.equals("level")) {
-            log.info("Level Marker: " + key);
-            String value = facialRecognition.getDominantEmotion().name();
-            EmotionBranch emotionBranch = branches.get(value.toLowerCase());
-            return translator.convertToDuration(emotionBranch.getStart());
-        } else if (category.equals("emotion")) {
-            log.info("Emotion Marker: " + key);
-            String emotionType = split[2];
-            EmotionBranch emotionBranch = branches.get(emotionType);
-            int outcomeNumber = emotionBranch.getOutcome();
-            if (outcomeNumber > 0) {
-                Level nextLevel = levels[outcomeNumber - 1];
-                return translator.convertToDuration(nextLevel.getStart());
-            } else {
-                log.info("Credits: ");
-                return translator.convertToDuration(credits[0].getStart());
+        if(markersWithSeekTimes.containsKey(markerKey)){
+            //get possible duration list
+            List<Duration> markerSeekTimes = markersWithSeekTimes.get(markerKey);
+            if(category.equals("level")) {
+                log.info("Level Marker: " + markerKey);
+                int emotion = facialRecognition.getDominantEmotion().getNumber();
+                return markerSeekTimes.get(emotion);
             }
-        } else if (category.equals("intro")) {
-            log.info("Intro slide: " + key);
-            return translator.convertToDuration("00:00.000");
-        } else if (category.equals("credit")) {
-            if (split[1].equals("2")) {
+            //handle every marker with multiple seek times in an else if format
+            else{
+                return markerSeekTimes.get(0);
+            }
+        }
+        //handle every marker without a seek time here
+        else{
+            if(category.equals("credit end")){
                 log.info("Exiting application: ");
                 Platform.exit();
             }
@@ -78,24 +75,86 @@ public class BranchingLogic {
         return new Duration(currentTime);
     }
 
-    public void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time) {
+    //add a marker with a single time to seek to
+    public void addMarkerWithSeekTime(Map<String, Duration> markers, String nameForMarker, String index, String time, Duration seekTime){
         String markerNameWithColon = nameForMarker + ":" + index;
+        if(markersWithSeekTimes.containsKey(markerNameWithColon)) {
+            return;
+        }
+        markers.put(markerNameWithColon, translator.convertToDuration(time));
+        List<Duration> singleSeekTimeList = new ArrayList<Duration>();
+        singleSeekTimeList.add(seekTime);
+        markersWithSeekTimes.put(markerNameWithColon, singleSeekTimeList);
+    }
+
+    //add marker with multiple times to seek to
+    //IMPORTANT NOTE: multiple seek times must be handled in method BranchOnMediaEvent
+    private void addMarkerWithMultipleSeekTimes(Map<String, Duration> markers, String nameForMarker, String index, String time, List<Duration> seekTimes) {
+        String markerNameWithColon = nameForMarker + ":" + index;
+        if(markersWithSeekTimes.containsKey(markerNameWithColon)) {
+            log.info("This marker "+ markerNameWithColon + " has not been added because it already seeks to a time.");
+            return;
+        }
+        markers.put(markerNameWithColon, translator.convertToDuration(time));
+        markersWithSeekTimes.put(markerNameWithColon, seekTimes);
+    }
+
+    //add markers for other reasons which can be added in method BranchOnMediaEvent
+    private void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time){
+        String markerNameWithColon = nameForMarker + ":" + index;
+        if(markers.containsKey(markerNameWithColon)) {
+            log.info("This marker "+ markerNameWithColon + " has not been added because it already seeks to a time.");
+            return;
+        }
         markers.put(markerNameWithColon, translator.convertToDuration(time));
     }
 
-    public void recordMarkers(Map<String, Duration> markers) {
-        addMarker(markers, "intro", "3", intros[2].getEnd());
-        System.out.println("here" + credits[1]);
-        addMarker(markers, "credit", "2", credits[1].getEnd());
+    //get a particular marker
+    public void getMarker(Map<String, Duration[]> markers, String nameForMarker) {
+        markers.get(nameForMarker);
+    }
 
+    //default markers used for branching in main
+    public void recordMarkers(Map<String, Duration> markers) {
+        //Add seek time + marker for end of intro
+        Duration introend = translator.convertToDuration("00:00.000");
+        addMarkerWithSeekTime(markers, "intro", "3", intros[2].getEnd(), introend);
+
+        //Add marker for end of credits
+        addMarker(markers, "credit end", "2", credits[1].getEnd());
+
+
+        //Add seek times + markers related to level and emotion ends
         for (Level level : levels) {
-            addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
+            //get branches for each level
             Map<String, EmotionBranch> branch = level.getBranch();
-            branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
-                    branchKey, emotionBranch.getEnd()));
+
+            //Add seek times + markers for end of each level scene
+            List<Duration> levelEnds = new ArrayList<Duration>();
+            branch.forEach((branchName, emotionBranch) -> levelEnds.add(translator.convertToDuration(emotionBranch.getStart())));
+            //level: x
+            addMarkerWithMultipleSeekTimes(markers, "level", String.valueOf(level.getLevel()), level.getEnd(), levelEnds);
+
+            //Add seek times + markers for end of each emotion scene
+            for (Map.Entry<String, EmotionBranch> pair : branch.entrySet()){
+                Duration emotionEnd;
+                int outcome = pair.getValue().getOutcome();
+                //if user "loses" level, add beginning of credit
+                if(outcome == 0){
+                    emotionEnd = translator.convertToDuration(credits[0].getStart());
+                    addMarkerWithSeekTime(markers, "emotion:" + level.getLevel(), pair.getKey(), pair.getValue().getEnd(), emotionEnd);
+                }
+                //if user stays calm, add beginning of next level
+                else{
+                    Level nextLevel = levels[outcome - 1];
+                    emotionEnd = translator.convertToDuration(nextLevel.getStart());
+                    addMarkerWithSeekTime(markers, "emotion:" + level.getLevel(), pair.getKey(), pair.getValue().getEnd(), emotionEnd);
+                }
+            }
         }
     }
 
+    //get the duration of the intro
     public Duration getProperIntroDuration(Duration currentTime) {
         Duration beginningOfIntro = translator.convertToDuration(intros[0].getStart());
         Duration secondIntroStart = translator.convertToDuration(intros[1].getStart());

@@ -56,7 +56,7 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
-                    audioPlayer.seek(startTime.toSeconds() - 1.05);
+                    audioPlayer.seek(startTime.toSeconds());
                 }
         );
     }

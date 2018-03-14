@@ -34,9 +34,10 @@ class BranchingLogicTest {
         media.setAudio("audio path");
         media.setVideo("video path");
 
-        Level[] levels = {createLevel()};
+        Level[] levels = {createLevel(0), createLevel(1)};
         Intro[] intros = {createIntro(0, start, end), createIntro(1, start, end), createIntro(2, start, end)};
         Credits[] credits = {createCredit(0), createCredit(1)};
+
 
         when(root.getMedia()).thenReturn(media);
         when(root.getLevels()).thenReturn(levels);
@@ -66,12 +67,12 @@ class BranchingLogicTest {
 
     }
 
-    private Level createLevel() {
+    private Level createLevel(int index) {
         HashMap<String, EmotionBranch> emotionMap = new HashMap<>();
         emotionMap.put("calm", createEmotionBranch());
 
         Level level = new Level();
-        level.setLevel(1);
+        level.setLevel(index);
         level.setStart(start);
         level.setEnd(end);
         level.setBranch(emotionMap);

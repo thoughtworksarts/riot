@@ -87,7 +87,7 @@ public class FacialEmotionRecognitionAPI {
                 maxEmotion = emotion;
             }
         }
-        return maxEmotion;
+        return Emotion.CALM;
     }
 
     public Map<Emotion, Integer> loadEmotionMap(String emotionMapFile) {
