@@ -66,6 +66,8 @@ public class BranchingLogic {
         //handle every marker without a seek time here
         else{
             if(category.equals("credit end")){
+                log.info("Shutting down webcam: ");
+                facialRecognition.endImageCapture();
                 log.info("Exiting application: ");
                 Platform.exit();
             }

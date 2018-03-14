@@ -22,6 +22,8 @@ public class FacialEmotionRecognitionAPI {
     private ImageProcessor imageProcessor;
     private final Map<Emotion, Integer> emotionMap;
     private File imageFile;
+    private Thread webcamThread;
+    private volatile boolean webcamThreadRunning;
 
     public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile) {
         this.imageProcessor = imageProcessor;
@@ -29,11 +31,12 @@ public class FacialEmotionRecognitionAPI {
         this.emotionMap = loadEmotionMap(emotionMapFile);
         emotionProbabilities = new float[Emotion.values().length];
         Arrays.fill(emotionProbabilities, 0);
+        webcamThreadRunning = true;
         startImageCapture();
     }
 
     private void startImageCapture() {
-        Thread emotionMeasurementThread = new Thread(new Runnable() {
+        webcamThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -41,7 +44,7 @@ public class FacialEmotionRecognitionAPI {
                 Webcam webcam = Webcam.getDefault();
                 webcam.open();
                 System.out.println("Webcam initialized");
-                while (true) {
+                while (webcamThreadRunning) {
                     BufferedImage image = webcam.getImage();
                     imageFile = new File("image.jpg");
                     try {
@@ -56,9 +59,14 @@ public class FacialEmotionRecognitionAPI {
                         e.printStackTrace();
                     }
                 }
+                webcam.close();
             }
         });
-        emotionMeasurementThread.start();
+        webcamThread.start();
+    }
+
+    public void endImageCapture() {
+        webcamThreadRunning = false;
     }
 
     public void recordEmotionProbabilities() {
