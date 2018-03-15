@@ -37,7 +37,7 @@ public class Main extends Application {
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("03:47.120"));
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"));
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();

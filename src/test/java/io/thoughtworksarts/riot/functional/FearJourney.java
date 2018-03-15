@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Slf4j
-public class BranchingJourney extends Application {
+public class FearJourney extends Application {
 
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
@@ -60,11 +60,39 @@ public class BranchingJourney extends Application {
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();
-        //Skip intro and most of level 1
-        mediaControl.seek(jsonTranslator.convertToDuration("04:00.001"));
-        //Verify level 1 skips to credits
+
+        //Skip to end of level1
+        String endLevel1 = levels[0].getEnd();
+        Duration nearEndOfLevel = subtractTimeFromDuration("00:03.000", endLevel1);
+        mediaControl.seek(nearEndOfLevel);
+
+        //Verify that end of level1 goes to fear scene
+
+        //Skip the middle of fear of scene
+        String startFearScene = levels[0].getBranch().get("fear").getStart();
+        Duration nearStartOfFearScene = addTimeToDuration("00:03.00", startFearScene);
+
+
+        String endFearScene = levels[0].getBranch().get("fear").getEnd();
+        Duration nearEndOfFearScene = subtractTimeFromDuration("00:03.000", endFearScene);
+        mediaControl.seek(nearEndOfFearScene);
 
     }
+
+    //Strings must be in 00:00.000
+    public Duration subtractTimeFromDuration(String seconds, String time){
+        Duration timeInDuration = jsonTranslator.convertToDuration(time);
+        Duration secondsInDuration = jsonTranslator.convertToDuration(seconds);
+        return timeInDuration.subtract(secondsInDuration);
+    }
+
+    //Strings must be in 00:00.000
+    public Duration addTimeToDuration(String seconds, String time){
+        Duration timeInDuration = jsonTranslator.convertToDuration(time);
+        Duration secondsInDuration = jsonTranslator.convertToDuration(seconds);
+        return timeInDuration.add(secondsInDuration);
+    }
+
 
     @Override
     public void stop() throws Exception {

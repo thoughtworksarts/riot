@@ -69,6 +69,8 @@ public class BranchingLogic {
             return translator.convertToDuration("00:00.000");
         } else if (category.equals("credit")) {
             if (split[1].equals("2")) {
+                log.info("Shutting down webcam: ");
+                facialRecognition.endImageCapture();
                 log.info("Exiting application: ");
                 Platform.exit();
             }
