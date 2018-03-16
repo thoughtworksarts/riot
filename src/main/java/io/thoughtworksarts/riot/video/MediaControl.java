@@ -2,7 +2,6 @@ package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -15,8 +14,6 @@ import java.io.File;
 
 @Slf4j
 public class MediaControl extends BorderPane {
-
-    public static final String DRIVER_NAME = "ASIO4ALL v2";
 
     private BranchingLogic branchingLogic;
     private RiotAudioPlayer audioPlayer;
@@ -31,7 +28,6 @@ public class MediaControl extends BorderPane {
         setUpPane();
         //Audio related
         this.audioPlayer = audioPlayer;
-        this.audioPlayer.initialise(DRIVER_NAME, this.branchingLogic.getAudioPath());
     }
 
     private void setUpPane() {

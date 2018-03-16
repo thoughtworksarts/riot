@@ -1,6 +1,7 @@
 package io.thoughtworksarts.riot;
 
 import io.thoughtworksarts.riot.audio.AudioPlayer;
+import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
 import io.thoughtworksarts.riot.audio.JavaSoundAudioPlayer;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 public class Main extends Application {
 
     private MediaControl mediaControl;
+    public static final String DRIVER_NAME = "ASIO4ALL v2";
+
 
     public static void main(String... args) {
         log.info("Starting Riot...");
@@ -32,13 +35,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
-        RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
+        RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(branchingLogic);
         mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"));
-
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();
