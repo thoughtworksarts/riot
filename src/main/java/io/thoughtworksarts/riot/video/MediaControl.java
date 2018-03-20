@@ -33,7 +33,7 @@ public class MediaControl extends BorderPane {
     private void setUpPane() {
         MediaView mediaView = new MediaView(filmPlayer);
         Pane pane = new Pane();
-        mediaView.setOnMouseClicked(event -> handleClickDuringIntro());
+        mediaView.setOnMouseClicked(event -> handleClick());
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
@@ -57,8 +57,8 @@ public class MediaControl extends BorderPane {
         );
     }
 
-    private void handleClickDuringIntro() {
-        Duration duration = branchingLogic.getProperIntroDuration(filmPlayer.getCurrentTime());
+    private void handleClick() {
+        Duration duration = branchingLogic.getClickSeekTime(filmPlayer.getCurrentTime());
         if (duration != null) {
             seek(duration);
         } else {
