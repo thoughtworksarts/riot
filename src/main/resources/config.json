@@ -27,7 +27,7 @@
       "level": 1,
       "start": "03:47.110",
       "end": "04:03.000",
-      "branches" : {
+      "branch" : {
         "anger": {
           "start": "04:03.010",
           "end": "04:19.020",
@@ -49,7 +49,7 @@
       "level": 2,
       "start": "05:06.000",
       "end": "05:28.160",
-      "branches" : {
+      "branch" : {
         "anger": {
           "start": "05:28.170",
           "end": "06:04.000",
@@ -71,7 +71,7 @@
       "level": 3,
       "start": "06:19.240",
       "end": "07:03.000",
-      "branches": {
+      "branch": {
         "anger": {
           "start": "07:03.010",
           "end": "07:09.800",
@@ -93,7 +93,7 @@
       "level": 4,
       "start": "07:17.000",
       "end": "09:07.140",
-      "branches" : {
+      "branch" : {
         "anger": {
           "start": "09:28.200",
           "end": "09:55.190",

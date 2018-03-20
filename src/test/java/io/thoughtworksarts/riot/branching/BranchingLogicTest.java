@@ -75,7 +75,7 @@ class BranchingLogicTest {
         level.setLevel(index);
         level.setStart(start);
         level.setEnd(end);
-        level.setBranches(emotionMap);
+        level.setBranch(emotionMap);
         return level;
     }
 
