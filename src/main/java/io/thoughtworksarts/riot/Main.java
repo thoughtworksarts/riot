@@ -40,7 +40,7 @@ public class Main extends Application {
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(branchingLogic);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"));
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("10:39.200"));
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();

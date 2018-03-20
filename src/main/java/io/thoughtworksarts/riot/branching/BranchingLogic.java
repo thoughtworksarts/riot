@@ -8,6 +8,8 @@ import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
@@ -24,6 +26,7 @@ public class BranchingLogic {
     private String filmPath;
     @Getter
     private String audioPath;
+    private boolean visitedIntro = false;
 
     public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
         this.facialRecognition = facialRecognition;
@@ -98,19 +101,41 @@ public class BranchingLogic {
         }
     }
 
-    public Duration getProperIntroDuration(Duration currentTime) {
-        Duration beginningOfIntro = translator.convertToDuration(intros[0].getStart());
+    public Duration getClickSeekTime(Duration currentTime) {
+        Duration beginningOfIntroSlides = translator.convertToDuration(intros[0].getStart());
         Duration secondIntroStart = translator.convertToDuration(intros[1].getStart());
         Duration thirdIntroStart = translator.convertToDuration(intros[2].getStart());
         Duration endOfIntro = translator.convertToDuration(intros[2].getEnd());
 
-        Duration[] durations = new Duration[]{secondIntroStart, thirdIntroStart, endOfIntro};
+        ArrayList<Duration> durations = new ArrayList<>();
+
+        for (Level level : levels) {
+            durations.add(translator.convertToDuration(level.getStart()));
+        }
+
+        durations.add(beginningOfIntroSlides);
+        durations.add(secondIntroStart);
+        durations.add(thirdIntroStart);
+        durations.add(endOfIntro);
+
+        Collections.sort(durations);  // needs to be ordered because intro slides are at end of film
 
         for (Duration duration : durations) {
-            if (currentTime.lessThan(duration) && currentTime.greaterThan(beginningOfIntro)) {
+            isIntroVisited(currentTime, thirdIntroStart);
+
+            if (currentTime.lessThan(duration)) {
+                if (duration.equals(beginningOfIntroSlides) && visitedIntro) {
+                    return translator.convertToDuration(credits[0].getStart());
+                }
                 return duration;
             }
         }
         return null;
+    }
+
+    private void isIntroVisited(Duration currentTime, Duration thirdIntroStart) {
+        if (currentTime.greaterThan(thirdIntroStart)) {
+            visitedIntro = true;
+        }
     }
 }
