@@ -121,7 +121,7 @@ public class BranchingLogic {
         Collections.sort(durations);  // needs to be ordered because intro slides are at end of film
 
         for (Duration duration : durations) {
-            isIntroVisited(currentTime, thirdIntroStart);
+            isIntroVisited(currentTime, thirdIntroStart, beginningOfIntroSlides);
 
             if (currentTime.lessThan(duration)) {
                 if (duration.equals(beginningOfIntroSlides) && visitedIntro) {
@@ -133,8 +133,8 @@ public class BranchingLogic {
         return null;
     }
 
-    private void isIntroVisited(Duration currentTime, Duration thirdIntroStart) {
-        if (currentTime.greaterThan(thirdIntroStart)) {
+    private void isIntroVisited(Duration currentTime, Duration thirdIntroStart, Duration beginning) {
+        if (currentTime.greaterThan(thirdIntroStart) || currentTime.lessThan(beginning)) {
             visitedIntro = true;
         }
     }
