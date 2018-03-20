@@ -45,7 +45,7 @@ public class BranchingLogic {
         String[] split = key.split(":");
         String category = split[0];
         int index = Integer.parseInt(split[1]);
-        Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
+        Map<String, EmotionBranch> branches = levels[index - 1].getBranches();
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
@@ -92,7 +92,7 @@ public class BranchingLogic {
 
         for (Level level : levels) {
             addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
-            Map<String, EmotionBranch> branch = level.getBranch();
+            Map<String, EmotionBranch> branch = level.getBranches();
             branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
                     branchKey, emotionBranch.getEnd()));
         }

@@ -9,5 +9,5 @@ public class Level {
     @Getter @Setter private int level;
     @Getter @Setter private String start;
     @Getter @Setter private String end;
-    @Getter @Setter private Map<String, EmotionBranch> branch;
+    @Getter @Setter private Map<String, EmotionBranch> branches;
 }
