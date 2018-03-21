@@ -1,20 +1,21 @@
 package io.thoughtworksarts.riot;
 
-import io.thoughtworksarts.riot.audio.AudioPlayer;
 import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
-import io.thoughtworksarts.riot.audio.JavaSoundAudioPlayer;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.facialrecognition.DeepLearningProcessor;
+import io.thoughtworksarts.riot.facialrecognition.Emotion;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import io.thoughtworksarts.riot.facialrecognition.ImageProcessor;
-import io.thoughtworksarts.riot.utilities.OSChecker;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Slf4j
 public class Main extends Application {
@@ -28,9 +29,11 @@ public class Main extends Application {
         launch(args);
     }
 
-    private static final String PATH_TO_WEIGHTS_FILE = "src/test/resources/conv2d_weights.h5";
-    private static final String PATH_TO_MODEL_FILE = "src/test/resources/conv2d_model.json";
-    private static final String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
+    private static final Emotion[] emotionSet = {Emotion.ANGER, Emotion.FEAR, Emotion.SURPRISE, Emotion.CALM};
+    private static final String emotionSetId = getEmotionSetId();
+    private static final String PATH_TO_WEIGHTS_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_weights_%s.h5", emotionSetId);
+    private static final String PATH_TO_MODEL_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_model_%s.json", emotionSetId);
+    private static final String PATH_TO_EMOTION_MAP_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_emotion_map_%s.json", emotionSetId);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -52,5 +55,16 @@ public class Main extends Application {
         mediaControl.shutdown();
     }
 
-
+    private static String getEmotionSetId() {
+        ArrayList<Integer> emotionIds = new ArrayList<>();
+        for (Emotion emotion: emotionSet) {
+            emotionIds.add(emotion.getNumber());
+        }
+        Collections.sort(emotionIds);
+        String emotionSetId = "";
+        for(Integer emotionId: emotionIds) {
+            emotionSetId += Integer.toString(emotionId);
+        }
+        return emotionSetId;
+    }
 }

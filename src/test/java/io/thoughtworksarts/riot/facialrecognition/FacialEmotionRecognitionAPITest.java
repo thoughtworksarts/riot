@@ -3,7 +3,6 @@ package io.thoughtworksarts.riot.facialrecognition;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +28,7 @@ public class FacialEmotionRecognitionAPITest {
     public void shouldRecordEmotionProbabilitiesOnInitialise() {
         facialRecognition.recordEmotionProbabilities();
 
-        verify(imageProcessor).prepareImageForNet(any(), Mockito.anyInt(), Mockito.anyInt(), any());
+        verify(imageProcessor).prepareImageForNet(any(), any());
         verify(deepLearningProcessor).getEmotionPrediction(any());
     }
 

@@ -61,8 +61,8 @@ public class ImageProcessorTest {
 
     @Test
     void shouldFindSameValuesInPreppedDataAsInPython() {
-        int[] dataShape = new int[]{1, 64, 64, 1};
-        INDArray data = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
+        int[] dataShape = new int[]{1, 1, 64, 64};
+        INDArray data = imageProcessor.prepareImageForNet(imageFile, dataShape);
 
         float[] expectedValues = new float[]{0.988151985294f, 0.932896623775f, 0.951524050245f, 1.0f, 0.999845373775f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
         float[] actualValues = Arrays.copyOfRange(data.ravel().data().asFloat(), 0, 10);

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class FacialEmotionRecognitionAPI {
 
-    private final int[] dataShape = new int[]{1, 1, 64, 64};
+    private final int[] dataShape = new int[]{1, 1, 48, 48};
     private float[] emotionProbabilities;
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
@@ -70,7 +70,7 @@ public class FacialEmotionRecognitionAPI {
     }
 
     public void recordEmotionProbabilities() {
-        INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
+        INDArray imageData = imageProcessor.prepareImageForNet(imageFile, dataShape);
         float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
         for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()) {
             emotionProbabilities[entry.getKey().getNumber()] = emotionPrediction[entry.getValue()];

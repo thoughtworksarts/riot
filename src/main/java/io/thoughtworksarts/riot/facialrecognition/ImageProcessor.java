@@ -13,10 +13,10 @@ import java.io.IOException;
 
 public class ImageProcessor {
 
-    public INDArray prepareImageForNet(File imageFile, int targetWidth, int targetHeight, int[] targetDataShape) {
+    public INDArray prepareImageForNet(File imageFile, int[] targetDataShape) {
         BufferedImage image = loadImage(imageFile);
         image = convertImageToGrayscale(image);
-        image = resizeImage(image, targetWidth, targetHeight);
+        image = resizeImage(image, targetDataShape[2], targetDataShape[3]);
         INDArray imageData = normalizeImageData(image);
         return imageData.reshape(targetDataShape);
     }

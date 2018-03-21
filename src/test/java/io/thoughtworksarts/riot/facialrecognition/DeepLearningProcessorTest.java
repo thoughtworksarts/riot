@@ -43,7 +43,7 @@ public class DeepLearningProcessorTest {
         float[] expectedPrediction = new float[]{0.0f, 0.24070886f, 0.0920638f};
 
         int[] dataShape = new int[]{1, 1, 64, 64};
-        INDArray imageData = imageProcessor.prepareImageForNet(imageFile, 64, 64, dataShape);
+        INDArray imageData = imageProcessor.prepareImageForNet(imageFile, dataShape);
         float[] actualPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
 
         float delta = 0.001f;
