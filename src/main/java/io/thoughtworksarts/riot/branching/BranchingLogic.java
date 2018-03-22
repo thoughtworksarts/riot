@@ -120,6 +120,10 @@ public class BranchingLogic {
 
         Collections.sort(durations);  // needs to be ordered because intro slides are at end of film
 
+        if (isDuringEmoScene(currentTime)) {
+            return null;
+        }
+
         for (Duration duration : durations) {
             isIntroVisited(currentTime, thirdIntroStart, beginningOfIntroSlides);
 
@@ -136,6 +140,42 @@ public class BranchingLogic {
     private void isIntroVisited(Duration currentTime, Duration thirdIntroStart, Duration beginning) {
         if (currentTime.greaterThan(thirdIntroStart) || currentTime.lessThan(beginning)) {
             visitedIntro = true;
+        }
+    }
+
+    private boolean isDuringEmoScene(Duration currentTime) {
+        ArrayList<ArrayList<Duration>> emoTimes = new ArrayList<>();
+
+        addEmoTimesToArray(emoTimes);
+
+        addLastLevelEmoToIntroTime(emoTimes);
+
+        for (ArrayList<Duration> times : emoTimes) {
+            if (currentTime.greaterThan(times.get(0)) && currentTime.lessThan(times.get(1))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void addLastLevelEmoToIntroTime(ArrayList<ArrayList<Duration>> emoTimes) {
+        /*
+        NOTE: because the Intro slides are directly after the end of the non-emotion measuring part of the last level,
+        the end time for this has to be the start of the first Intro slide instead of the first Credit slide
+        */
+        ArrayList<Duration> currTimes = new ArrayList<>();
+        currTimes.add(translator.convertToDuration(levels[levels.length - 1].getEnd()));
+        currTimes.add(translator.convertToDuration(intros[0].getStart()));
+        emoTimes.add(currTimes);
+    }
+
+    private void addEmoTimesToArray(ArrayList<ArrayList<Duration>> emoTimes) {
+        for(int i = 0; i < levels.length - 1; i++) {
+            ArrayList<Duration> currTimes = new ArrayList<>();
+            currTimes.add(translator.convertToDuration(levels[i].getEnd()));
+            currTimes.add(translator.convertToDuration(levels[i + 1].getStart()));
+            emoTimes.add(currTimes);
         }
     }
 }

@@ -62,7 +62,7 @@ public class MediaControl extends BorderPane {
         if (duration != null) {
             seek(duration);
         } else {
-            log.info("no clicking action outside of intro section");
+            log.info("Clicking is not allowed at this particular time point.");
         }
     }
 
