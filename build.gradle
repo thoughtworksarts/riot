@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
+        classpath 'org.apache.ivy:ivy:2.3.0'
     }
 }
 
@@ -52,6 +53,14 @@ downloads.each {
         dest destination
         overwrite false
     }
+}
+
+task downloadNetModelFiles(type: Download) {
+    def dir = 'https://artifactory.eldermael.io/artifactory/binaries/facialrecognitionmodels/'
+    def urlLister = new org.apache.ivy.util.url.ApacheURLLister()
+    def files = urlLister.listFiles(new URL(dir))
+    src files
+    dest 'src/main/resources/facialrecognitionmodels'
 }
 
 compileJava.dependsOn tasks.withType(Download)

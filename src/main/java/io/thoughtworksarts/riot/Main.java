@@ -29,7 +29,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    private static final Emotion[] emotionSet = {Emotion.ANGER, Emotion.FEAR, Emotion.SURPRISE, Emotion.CALM};
+    private static final Emotion[] emotionSet = {Emotion.ANGER, Emotion.FEAR, Emotion.CALM};
     private static final String emotionSetId = getEmotionSetId();
     private static final String PATH_TO_WEIGHTS_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_weights_%s.h5", emotionSetId);
     private static final String PATH_TO_MODEL_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_model_%s.json", emotionSetId);
