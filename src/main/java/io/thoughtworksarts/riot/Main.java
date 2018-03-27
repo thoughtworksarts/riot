@@ -4,6 +4,7 @@ import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
+import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.DeepLearningProcessor;
 import io.thoughtworksarts.riot.facialrecognition.Emotion;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
@@ -12,38 +13,45 @@ import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class Main extends Application {
 
-    private MediaControl mediaControl;
-    public static final String DRIVER_NAME = "ASIO4ALL v2";
+    public static final String DEFAULT_FILES_PATH = "src/main/resources/facialrecognitionmodels/";
+    public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
+    private MediaControl mediaControl;
 
     public static void main(String... args) {
         log.info("Starting Riot...");
         launch(args);
     }
 
-    private static final Emotion[] emotionSet = {Emotion.ANGER, Emotion.FEAR, Emotion.CALM};
-    private static final String emotionSetId = getEmotionSetId();
-    private static final String PATH_TO_WEIGHTS_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_weights_%s.h5", emotionSetId);
-    private static final String PATH_TO_MODEL_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_model_%s.json", emotionSetId);
-    private static final String PATH_TO_EMOTION_MAP_FILE = String.format("src/main/resources/facialrecognitionmodels/conv_emotion_map_%s.json", emotionSetId);
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
+        ConfigRoot jsonConfiguration = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);
+
+        String emotionsSetId= getEmotionSetId(jsonConfiguration);
+        String pathToWeightsFile = String.format( "%sconv_weights_%s.h5",DEFAULT_FILES_PATH, emotionsSetId);
+        String pathToModelFile = String.format("%sconv_model_%s.json",DEFAULT_FILES_PATH, emotionsSetId);
+        String pathToEmotionMapFile = String.format("%sconv_emotion_map_%s.json", DEFAULT_FILES_PATH, emotionsSetId);
+        String filmPath = jsonConfiguration.getMedia().getVideo();
+        String audioPath = jsonConfiguration.getMedia().getAudio();
+        Duration startTime =jsonTranslator.convertToDuration("10:39.200");
+
         ImageProcessor imageProcessor = new ImageProcessor();
-        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(PATH_TO_MODEL_FILE, PATH_TO_WEIGHTS_FILE);
-        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
-        BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator);
-        RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(branchingLogic);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("10:39.200"));
+        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
+        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile);
+        BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
+        RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
+        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath);
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();
@@ -55,16 +63,15 @@ public class Main extends Application {
         mediaControl.shutdown();
     }
 
-    private static String getEmotionSetId() {
-        ArrayList<Integer> emotionIds = new ArrayList<>();
-        for (Emotion emotion: emotionSet) {
-            emotionIds.add(emotion.getNumber());
-        }
-        Collections.sort(emotionIds);
-        String emotionSetId = "";
-        for(Integer emotionId: emotionIds) {
-            emotionSetId += Integer.toString(emotionId);
-        }
-        return emotionSetId;
+    private static String getEmotionSetId(ConfigRoot configRoot) {
+        return Stream.of(configRoot.getLevels())
+                .flatMap(level -> level.getBranch().entrySet().stream()
+                        .map(Map.Entry::getKey))
+                .collect(Collectors.toSet()) //Unique emotions in config.json
+                .stream()
+                .map(emotion -> Emotion.valueOf(emotion.toUpperCase()).getNumber())
+                .sorted()
+                .map(number -> number.toString())
+                .collect(Collectors.joining());
     }
 }

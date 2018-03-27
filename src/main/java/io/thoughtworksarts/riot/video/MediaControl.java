@@ -19,10 +19,9 @@ public class MediaControl extends BorderPane {
     private RiotAudioPlayer audioPlayer;
     private MediaPlayer filmPlayer;
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime, String  filmPath) throws Exception {
         this.branchingLogic = branchingLogic;
         //Video relate
-        String filmPath = this.branchingLogic.getFilmPath();
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
         setUpFilmPlayer(pathToFilm, startTime);
         setUpPane();

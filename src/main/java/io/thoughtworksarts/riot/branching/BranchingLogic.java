@@ -5,7 +5,6 @@ import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -15,32 +14,19 @@ import java.util.Map;
 @Slf4j
 public class BranchingLogic {
 
-    public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
-
     private JsonTranslator translator;
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
     private Intro[] intros;
     private Credits[] credits;
-    @Getter
-    private String filmPath;
-    @Getter
-    private String audioPath;
     private boolean visitedIntro = false;
 
-    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator) throws Exception {
+    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator,ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
-        initialise();
-    }
-
-    private void initialise() throws Exception {
-        ConfigRoot root = translator.populateModelsFromJson(PATH_TO_CONFIG);
-        levels = root.getLevels();
-        filmPath = root.getMedia().getVideo();
-        audioPath = root.getMedia().getAudio();
-        intros = root.getIntros();
-        credits = root.getCredits();
+        this.levels = configRoot.getLevels();
+        this.intros = configRoot.getIntros();
+        this.credits = configRoot.getCredits();
     }
 
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {

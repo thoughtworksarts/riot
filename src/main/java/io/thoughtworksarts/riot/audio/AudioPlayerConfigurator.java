@@ -10,7 +10,7 @@ public class AudioPlayerConfigurator {
 
     private AudioPlayerConfigurator(){}
 
-    public static RiotAudioPlayer getConfiguredRiotAudioPlayer(BranchingLogic branchingLogic) throws Exception{
+    public static RiotAudioPlayer getConfiguredRiotAudioPlayer(String  audioPath) throws Exception{
         RiotAudioPlayer audioPlayer;
         String driverName="";
         if( !OSChecker.isWindows()){
@@ -19,7 +19,7 @@ public class AudioPlayerConfigurator {
             driverName =selectDriverName(getDriversAvailable());
             audioPlayer =new AudioPlayer();
         }
-        audioPlayer.initialise(driverName,branchingLogic.getAudioPath());
+        audioPlayer.initialise(driverName,audioPath);
         return audioPlayer;
     }
 
