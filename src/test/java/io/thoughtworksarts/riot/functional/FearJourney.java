@@ -1,7 +1,6 @@
 package io.thoughtworksarts.riot.functional;
 
-import io.thoughtworksarts.riot.audio.AudioPlayer;
-import io.thoughtworksarts.riot.audio.JavaSoundAudioPlayer;
+import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
@@ -9,7 +8,6 @@ import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.Level;
 import io.thoughtworksarts.riot.facialrecognition.Emotion;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
-import io.thoughtworksarts.riot.utilities.OSChecker;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
@@ -18,10 +16,8 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
-
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -34,7 +30,6 @@ public class FearJourney extends Application {
     @Mock FacialEmotionRecognitionAPI facialEmotionRecognitionAPI;
     private MediaControl mediaControl;
     private static JsonTranslator jsonTranslator;
-    private static MediaControl mediaControlSpy;
 
     @Test
     public static void main(String... args) throws Exception {
@@ -45,16 +40,17 @@ public class FearJourney extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         initMocks(this);
-        when(facialEmotionRecognitionAPI.getDominantEmotion()).thenReturn(Emotion.FEAR);
+        when(facialEmotionRecognitionAPI.getDominantEmotion(any())).thenReturn(Emotion.FEAR);
 
         jsonTranslator = new JsonTranslator();
         ConfigRoot root = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);
         Level[] levels = root.getLevels();
+        String videoPath = root.getMedia().getVideo();
 
         //Play the movie
-        RiotAudioPlayer audioPlayer = OSChecker.isWindows() ? new AudioPlayer() : new JavaSoundAudioPlayer();
-        BranchingLogic branchingLogic = new BranchingLogic(facialEmotionRecognitionAPI, jsonTranslator);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"));
+        RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(root.getMedia().getAudio());
+        BranchingLogic branchingLogic = new BranchingLogic(facialEmotionRecognitionAPI, jsonTranslator,root);
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"),videoPath);
 
 //        mediaControlSpy = Mockito.spy(mediaControl);
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
@@ -98,10 +94,6 @@ public class FearJourney extends Application {
     public void stop() throws Exception {
         super.stop();
         mediaControl.shutdown();
-    }
-
-    public void verifySeek(String time){
-        verify(mediaControlSpy).seek(jsonTranslator.convertToDuration(time));
     }
 
 }

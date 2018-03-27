@@ -30,22 +30,16 @@ class BranchingLogicTest {
     void setUp() throws Exception {
         initMocks(this);
 
-        Media media = new Media();
-        media.setAudio("audio path");
-        media.setVideo("video path");
-
         Level[] levels = {createLevel(0), createLevel(1)};
         Intro[] intros = {createIntro(0, start, end), createIntro(1, start, end), createIntro(2, start, end)};
         Credits[] credits = {createCredit(0), createCredit(1)};
 
 
-        when(root.getMedia()).thenReturn(media);
         when(root.getLevels()).thenReturn(levels);
         when(root.getIntros()).thenReturn(intros);
         when(root.getCredits()).thenReturn(credits);
-        when(translator.populateModelsFromJson(anyString())).thenReturn(root);
         when(translator.convertToDuration(end)).thenReturn(endDuration);
-        branchingLogic = new BranchingLogic(facialRecognition, translator);
+        branchingLogic = new BranchingLogic(facialRecognition, translator,root);
     }
 
     private Credits createCredit(int index) {
@@ -86,11 +80,6 @@ class BranchingLogicTest {
         emotionBranch.setOutcome(2);
         return emotionBranch;
 
-    }
-
-    @Test
-    void shouldCallPopulateModelsFromJsonForSetUp() throws Exception {
-        verify(translator).populateModelsFromJson(anyString());
     }
 
     @Test

@@ -3,6 +3,7 @@ asio/
 
 # Media files
 trainingModels/
+facialrecognitionmodels/
 *.h5
 *.wav
 *.m4v

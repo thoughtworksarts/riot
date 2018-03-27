@@ -38,7 +38,7 @@ public class BranchingLogic {
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
-            String value = facialRecognition.getDominantEmotion().name();
+            String value = facialRecognition.getDominantEmotion(branches.keySet()).name();
             EmotionBranch emotionBranch = branches.get(value.toLowerCase());
             return translator.convertToDuration(emotionBranch.getStart());
         } else if (category.equals("emotion")) {

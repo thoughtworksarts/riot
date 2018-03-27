@@ -61,6 +61,7 @@ task downloadNetModelFiles(type: Download) {
     def files = urlLister.listFiles(new URL(dir))
     src files
     dest 'src/main/resources/facialrecognitionmodels'
+    onlyIfModified true
 }
 
 compileJava.dependsOn tasks.withType(Download)

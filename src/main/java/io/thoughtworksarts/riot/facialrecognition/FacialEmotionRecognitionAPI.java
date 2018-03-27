@@ -2,17 +2,17 @@ package io.thoughtworksarts.riot.facialrecognition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
+import com.google.common.util.concurrent.Uninterruptibles;
 import io.thoughtworksarts.riot.utilities.JSONReader;
-import javassist.NotFoundException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class FacialEmotionRecognitionAPI {
 
@@ -22,7 +22,6 @@ public class FacialEmotionRecognitionAPI {
     private ImageProcessor imageProcessor;
     private final Map<Emotion, Integer> emotionMap;
     private File imageFile;
-    private Thread webcamThread;
     private volatile boolean webcamThreadRunning;
 
     public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile) {
@@ -36,33 +35,24 @@ public class FacialEmotionRecognitionAPI {
     }
 
     private void startImageCapture() {
-        webcamThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                System.out.println();
-                Webcam webcam = Webcam.getDefault();
-                webcam.open();
-                System.out.println("Webcam initialized");
-                while (webcamThreadRunning) {
-                    BufferedImage image = webcam.getImage();
-                    imageFile = new File("image.jpg");
-                    try {
-                        ImageIO.write(image, "jpg", imageFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            System.out.println();
+            Webcam webcam = Webcam.getDefault();
+            webcam.open();
+            System.out.println("Webcam initialized");
+            while (webcamThreadRunning) {
+                BufferedImage image = webcam.getImage();
+                imageFile = new File("image.jpg");
+                try {
+                    ImageIO.write(image, "jpg", imageFile);
                     recordEmotionProbabilities();
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                webcam.close();
             }
-        });
-        webcamThread.start();
+            webcam.close();
+        }).start();
     }
 
     public void endImageCapture() {
@@ -72,8 +62,14 @@ public class FacialEmotionRecognitionAPI {
     public void recordEmotionProbabilities() {
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, dataShape);
         float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
-        for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()) {
-            emotionProbabilities[entry.getKey().getNumber()] = emotionPrediction[entry.getValue()];
+
+        List<Integer> emotionIdList = emotionMap.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .sorted()
+                .collect(Collectors.toList());
+
+        for(int index=0; index < emotionPrediction.length; index++){
+            emotionProbabilities[emotionIdList.get(index)]=emotionPrediction[index];
         }
         printProbabilitiesToConsole();
     }
@@ -86,9 +82,13 @@ public class FacialEmotionRecognitionAPI {
         System.out.println();
     }
 
-    public Emotion getDominantEmotion() {
+    public Emotion getDominantEmotion(Set<String> enabledEmotions){
+        List<Emotion> enabledEmotionList = enabledEmotions.stream()
+                .map(emotion -> Emotion.valueOf(emotion.toUpperCase()))
+                .collect(Collectors.toList());
+
         Emotion maxEmotion = null;
-        for (Emotion emotion : Emotion.values()){
+        for (Emotion emotion : enabledEmotionList){
             if( maxEmotion == null){
                 maxEmotion = emotion;
             } else if (emotionProbabilities[maxEmotion.getNumber()] < emotionProbabilities[emotion.getNumber()]){
@@ -99,32 +99,15 @@ public class FacialEmotionRecognitionAPI {
     }
 
     public Map<Emotion, Integer> loadEmotionMap(String emotionMapFile) {
-        JSONReader jsonReader = new JSONReader();
-        Map<String,Integer> emotionStringMap = new HashMap<>();
+        Map<String,Integer> emotionStringMap;
+        Map<Emotion, Integer> enumEmotionMap = new HashMap<>();
         try {
-             emotionStringMap = new ObjectMapper().readValue(jsonReader.readFile(emotionMapFile), HashMap.class);
+            emotionStringMap = new ObjectMapper().readValue(JSONReader.readFile(emotionMapFile), HashMap.class);
+            emotionStringMap.forEach( (key,value) -> enumEmotionMap.put(Emotion.valueOf(key.toUpperCase()),value));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Map<Emotion, Integer> emotionMap = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : emotionStringMap.entrySet()) {
-            Emotion emotion = null;
-            try {
-                emotion = getEmotionFromString(entry.getKey());
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            }
-            emotionMap.put(emotion, entry.getValue());
-        }
-        return emotionMap;
+        return enumEmotionMap;
     }
 
-    private Emotion getEmotionFromString(String emotionString) throws NotFoundException {
-        for (Emotion emotion: Emotion.values()) {
-            if (emotion.name().toLowerCase().equals(emotionString)) {
-                return emotion;
-            }
-        }
-        throw new NotFoundException(String.format("Emotion not valid: %s", emotionString));
-    }
 }
