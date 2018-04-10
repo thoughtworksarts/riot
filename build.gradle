@@ -71,6 +71,16 @@ junitPlatformTest {
     systemProperty 'java.library.path', "$canonicalPathToLib"
 }
 
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 dependencies {
 
     compile files('asio/JAsioHost.jar')
@@ -88,7 +98,7 @@ dependencies {
     compile 'org.nd4j:nd4j-native-platform:0.9.1'
     compile 'org.nd4j:nd4j-api:0.9.1'
 
-    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compile 'org.projectlombok:lombok:1.16.18'
 
     testCompile 'org.mockito:mockito-core:2.11.0'
     testCompile 'org.assertj:assertj-core:3.8.0'
@@ -96,3 +106,4 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
 
 }
+
