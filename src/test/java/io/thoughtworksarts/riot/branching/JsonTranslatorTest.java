@@ -1,8 +1,6 @@
 package io.thoughtworksarts.riot.branching;
 
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
-import io.thoughtworksarts.riot.branching.model.EmotionBranch;
-import io.thoughtworksarts.riot.branching.model.Level;
 import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,5 +77,11 @@ class JsonTranslatorTest {
         Duration durationTwo = jsonTranslator.convertToDuration("02:34.091");
 
         assertNotEquals(durationOne.toSeconds(), durationTwo.toSeconds());
+    }
+
+    @Test
+    void createLogicTreeShouldContainCorrectModeAttribute() {
+        String mode = root.getMode();
+        assertTrue(mode.equals("installation"));
     }
 }

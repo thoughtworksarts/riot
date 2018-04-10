@@ -8,5 +8,6 @@ public class ConfigRoot {
     @Getter @Setter private Level[] levels;
     @Getter @Setter private Intro[] intros;
     @Getter @Setter private Credits[] credits;
+    @Getter @Setter private String mode;
 }
 
