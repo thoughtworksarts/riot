@@ -17,9 +17,11 @@ public class FacialEmotionRecognitionAPITest {
 
     FacialEmotionRecognitionAPI facialRecognition;
     Set<String> enabledEmotions;
-    String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
-    String INSTALLATION_MODE = "installation";
-    String CALM_TEST_MODE = "calm-test";
+    private String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
+    private String INSTALLATION_MODE = "installation";
+    private String CALM_TEST_MODE = "calm-test";
+    private String FEAR_TEST_MODE = "fear-test";
+    private String ANGER_TEST_MODE = "anger-test";
     @Mock DeepLearningProcessor deepLearningProcessor;
     @Mock ImageProcessor imageProcessor;
 
@@ -111,5 +113,25 @@ public class FacialEmotionRecognitionAPITest {
 
         Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
         assertEquals(Emotion.CALM, dominantEmotion);
+    }
+
+    @Test
+    public void getDominantEmotionShouldReturnFearWhenInFearTestMode() {
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE, FEAR_TEST_MODE);
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
+        facialRecognition.recordEmotionProbabilities();
+
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        assertEquals(Emotion.FEAR, dominantEmotion);
+    }
+
+    @Test
+    public void getDominantEmotionShouldReturnAngerWhenInAngerTestMode() {
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE, ANGER_TEST_MODE);
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
+        facialRecognition.recordEmotionProbabilities();
+
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        assertEquals(Emotion.ANGER, dominantEmotion);
     }
 }

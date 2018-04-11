@@ -89,7 +89,10 @@ public class FacialEmotionRecognitionAPI {
                 .map(emotion -> Emotion.valueOf(emotion.toUpperCase()))
                 .collect(Collectors.toList());
 
-        if (mode.contains("test"))  return Emotion.CALM;
+        if (mode.contains("test"))  {
+            String testingEmotion = mode.split("-")[0];
+            return Emotion.valueOf(testingEmotion.toUpperCase());
+        }
 
         Emotion maxEmotion = null;
         for (Emotion emotion : enabledEmotionList){
