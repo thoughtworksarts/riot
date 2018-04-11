@@ -17,18 +17,20 @@ public class FacialEmotionRecognitionAPITest {
 
     FacialEmotionRecognitionAPI facialRecognition;
     Set<String> enabledEmotions;
+    String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
+    String INSTALLATION_MODE = "installation";
+    String CALM_TEST_MODE = "calm-test";
     @Mock DeepLearningProcessor deepLearningProcessor;
     @Mock ImageProcessor imageProcessor;
 
     @Before
     public void setup() {
         initMocks(this);
-        String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
         enabledEmotions = new TreeSet<>();
         enabledEmotions.add("anger");
         enabledEmotions.add("fear");
         enabledEmotions.add("calm");
-        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE);
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE, INSTALLATION_MODE);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class FacialEmotionRecognitionAPITest {
         assertEquals(Emotion.ANGER,dominantEmotion);
     }
     @Test
-    public void getDominantEmotionShouldReturnFearEvenWhenCalmHasAHigherValue() {
+    public void getDominantEmotionShouldReturnFearEvenWhenCalmHasAHigherValueAndIsDisabled() {
         enabledEmotions = new TreeSet<>();
         enabledEmotions.add("fear");
         enabledEmotions.add("anger");
@@ -90,7 +92,7 @@ public class FacialEmotionRecognitionAPITest {
     }
 
     @Test
-    public void getDominantEmotionShouldReturnAngerEvenWhenCalmHasAHigherValue() {
+    public void getDominantEmotionShouldReturnAngerEvenWhenCalmHasAHigherValueAndIsDisabled() {
         enabledEmotions = new TreeSet<>();
         enabledEmotions.add("anger");
 
@@ -99,5 +101,15 @@ public class FacialEmotionRecognitionAPITest {
 
         Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
         assertEquals(Emotion.ANGER,dominantEmotion);
+    }
+
+    @Test
+    public void getDominantEmotionShouldReturnCalmWhenInCalmTestMode() {
+        facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, PATH_TO_EMOTION_MAP_FILE, CALM_TEST_MODE);
+        when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
+        facialRecognition.recordEmotionProbabilities();
+
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        assertEquals(Emotion.CALM, dominantEmotion);
     }
 }

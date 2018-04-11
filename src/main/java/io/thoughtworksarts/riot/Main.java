@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class Main extends Application {
 
     public static final String DEFAULT_FILES_PATH = "src/main/resources/facialrecognitionmodels/";
-    public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
+    public static final String PATH_TO_CONFIG = System.getProperty("user.home") + "/Desktop/config.json";
 
     private MediaControl mediaControl;
 
@@ -48,7 +48,7 @@ public class Main extends Application {
 
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
-        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile);
+        FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
         mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath);
