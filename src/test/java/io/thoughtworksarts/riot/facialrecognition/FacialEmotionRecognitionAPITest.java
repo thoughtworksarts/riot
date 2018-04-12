@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -133,5 +134,10 @@ public class FacialEmotionRecognitionAPITest {
 
         Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
         assertEquals(Emotion.ANGER, dominantEmotion);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenGivenInvalidModeValueInConfig() {
+        assertFalse(facialRecognition.isValidAppMode("ggg-test"));
     }
 }

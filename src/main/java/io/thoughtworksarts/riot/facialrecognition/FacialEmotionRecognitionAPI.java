@@ -24,8 +24,10 @@ public class FacialEmotionRecognitionAPI {
     private final Map<Emotion, Integer> emotionMap;
     private File imageFile;
     private volatile boolean webcamThreadRunning;
+    private final ArrayList<String> VALID_APP_MODES = getValidAppModes();
 
     public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile, String mode) {
+        validateMode(mode);
         this.imageProcessor = imageProcessor;
         this.deepLearningProcessor = deepLearningProcessor;
         this.emotionMap = loadEmotionMap(emotionMapFile);
@@ -117,4 +119,24 @@ public class FacialEmotionRecognitionAPI {
         return enumEmotionMap;
     }
 
+
+    public void validateMode(String mode) {
+        if (!isValidAppMode(mode)) {
+            String validAppModeStr = String.join(", ", VALID_APP_MODES);
+            throw new IllegalArgumentException(String.format("Please use a valid app mode in config file: %s", validAppModeStr));
+        }
+    }
+
+    public boolean isValidAppMode(String mode) {
+        return VALID_APP_MODES.contains(mode);
+    }
+
+    public ArrayList<String> getValidAppModes() {
+        ArrayList<String> validAppModes = new ArrayList<>();
+        validAppModes.add("installation");
+        for (Emotion emotion: Emotion.values()) {
+            validAppModes.add(emotion.name().toLowerCase() + "-test");
+        }
+        return validAppModes;
+    }
 }
