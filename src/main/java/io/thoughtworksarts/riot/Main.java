@@ -44,14 +44,14 @@ public class Main extends Application {
         String pathToEmotionMapFile = String.format("%sconv_emotion_map_%s.json", DEFAULT_FILES_PATH, emotionsSetId);
         String filmPath = jsonConfiguration.getMedia().getVideo();
         String audioPath = jsonConfiguration.getMedia().getAudio();
-        Duration startTime =jsonTranslator.convertToDuration("10:39.200");
+        Duration startTime = jsonTranslator.convertToDuration("10:39.200");
 
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath);
+        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration(jsonConfiguration.getAudioOffset()));
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();

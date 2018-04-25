@@ -9,5 +9,6 @@ public class ConfigRoot {
     @Getter @Setter private Intro[] intros;
     @Getter @Setter private Credits[] credits;
     @Getter @Setter private String mode;
+    @Getter @Setter private String audioOffset;
 }
 

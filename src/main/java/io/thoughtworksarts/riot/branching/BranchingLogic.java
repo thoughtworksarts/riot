@@ -76,7 +76,6 @@ public class BranchingLogic {
 
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "intro", "3", intros[2].getEnd());
-        System.out.println("here" + credits[1]);
         addMarker(markers, "credit", "2", credits[1].getEnd());
 
         for (Level level : levels) {

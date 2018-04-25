@@ -18,8 +18,9 @@ public class MediaControl extends BorderPane {
     private BranchingLogic branchingLogic;
     private RiotAudioPlayer audioPlayer;
     private MediaPlayer filmPlayer;
+    private final Duration audioOffset;
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime, String  filmPath) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime, String filmPath, Duration audioOffset) throws Exception {
         this.branchingLogic = branchingLogic;
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
@@ -27,6 +28,7 @@ public class MediaControl extends BorderPane {
         setUpPane();
         //Audio related
         this.audioPlayer = audioPlayer;
+        this.audioOffset = audioOffset;
     }
 
     private void setUpPane() {
@@ -78,7 +80,7 @@ public class MediaControl extends BorderPane {
 
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
-        audioPlayer.seek(duration.toSeconds());
+        audioPlayer.seek(duration.add(audioOffset).toSeconds());
         audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
 
     }
