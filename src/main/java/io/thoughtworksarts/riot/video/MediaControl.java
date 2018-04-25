@@ -2,6 +2,8 @@ package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -33,6 +35,13 @@ public class MediaControl extends BorderPane {
 
     private void setUpPane() {
         MediaView mediaView = new MediaView(filmPlayer);
+
+        final DoubleProperty width = mediaView.fitWidthProperty();
+        final DoubleProperty height = mediaView.fitHeightProperty();
+        width.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+        height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+        mediaView.setPreserveRatio(true);
+
         Pane pane = new Pane();
         mediaView.setOnMouseClicked(event -> handleClick());
         pane.getChildren().add(mediaView);
