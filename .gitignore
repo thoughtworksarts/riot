@@ -23,3 +23,6 @@ build/
 .project
 .settings/
 bin/
+
+# OSX
+.DS_Store
