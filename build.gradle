@@ -36,11 +36,7 @@ def downloads = [
         [name: 'AsioHostDll', dest: 'asio/jasiohost64.dll',
             url: 'https://github.com/mhroth/jasiohost/raw/master/jasiohost64.dll' ],
         [name: 'AsioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
-            url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ],
-        [name: 'Film', dest: 'src/main/resources/video/film_with_credits.m4v',
-            url: 'https://artifactory.eldermael.io/artifactory/binaries/film_with_credits.m4v'],
-        [name: 'Audio', dest: 'src/main/resources/audio/audio.wav',
-            url: 'https://artifactory.eldermael.io/artifactory/binaries/RIOT_II_binarual_master_03.wav']
+            url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ]
 ]
 
 downloads.each {
@@ -53,15 +49,6 @@ downloads.each {
         dest destination
         overwrite false
     }
-}
-
-task downloadNetModelFiles(type: Download) {
-    def dir = 'https://artifactory.eldermael.io/artifactory/binaries/facialrecognitionmodels/'
-    def urlLister = new org.apache.ivy.util.url.ApacheURLLister()
-    def files = urlLister.listFiles(new URL(dir))
-    src files
-    dest 'src/main/resources/facialrecognitionmodels'
-    onlyIfModified true
 }
 
 compileJava.dependsOn tasks.withType(Download)
