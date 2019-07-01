@@ -9,7 +9,9 @@ import lombok.Getter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class JsonTranslator {
 
     @Getter private ConfigRoot root;
