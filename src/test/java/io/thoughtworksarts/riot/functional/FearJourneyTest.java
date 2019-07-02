@@ -13,7 +13,6 @@ import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -21,8 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Slf4j
-public class FearJourney extends Application {
+public class FearJourneyTest extends Application {
 
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
@@ -33,7 +31,6 @@ public class FearJourney extends Application {
 
     @Test
     public static void main(String... args) throws Exception {
-        log.info("Starting Riot...");
         launch(args);
     }
 
