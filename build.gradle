@@ -7,12 +7,12 @@ buildscript {
         classpath 'org.apache.ivy:ivy:2.3.0'
     }
 }
-
 plugins {
     id 'java'
     id 'application'
     id "de.undercouch.download" version "3.3.0"
     id 'io.franzbecker.gradle-lombok' version '1.11'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
 apply plugin: 'org.junit.platform.gradle.plugin'
@@ -26,6 +26,11 @@ mainClassName = "io.thoughtworksarts.riot.Main"
 
 repositories {
     jcenter()
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls', 'javafx.media' ]
 }
 
 import de.undercouch.gradle.tasks.download.Download
@@ -85,9 +90,10 @@ dependencies {
     compile 'org.nd4j:nd4j-native-platform:0.9.1'
     compile 'org.nd4j:nd4j-api:0.9.1'
 
-    compile 'org.projectlombok:lombok:1.16.18'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
-    testCompile 'org.mockito:mockito-core:2.11.0'
+    testCompile 'org.mockito:mockito-core:2.+'
     testCompile 'org.assertj:assertj-core:3.8.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
     testCompile 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
