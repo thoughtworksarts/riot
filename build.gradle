@@ -85,6 +85,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.0.13'
 
     compile 'com.github.sarxos:webcam-capture:0.3.11'
+    compile 'org.apache.httpcomponents:httpclient:4.5.9'
     compile 'org.deeplearning4j:deeplearning4j-core:0.9.1'
     compile 'org.deeplearning4j:deeplearning4j-modelimport:0.9.1'
     compile 'org.nd4j:nd4j-native-platform:0.9.1'
