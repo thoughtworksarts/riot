@@ -5,7 +5,7 @@ import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
-import lombok.extern.slf4j.Slf4j;q
+import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;

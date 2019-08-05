@@ -4,7 +4,7 @@ notifications:
   slack: thoughtworksarts:RdQaWk8I3BpwUpyw7Dyri2Hj
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 cache:
     directories:

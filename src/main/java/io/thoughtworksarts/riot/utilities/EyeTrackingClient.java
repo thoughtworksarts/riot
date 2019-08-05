@@ -38,6 +38,8 @@ public class EyeTrackingClient {
         } catch (IOException e){
             e.printStackTrace();
         }
+
+        return 0;
     }
 
 
