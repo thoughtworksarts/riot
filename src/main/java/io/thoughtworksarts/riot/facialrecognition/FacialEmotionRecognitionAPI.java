@@ -67,21 +67,15 @@ public class FacialEmotionRecognitionAPI {
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, dataShape);
         float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
 
-        List<Integer> emotionIdList = emotionMap.entrySet().stream()
-                .map(Map.Entry::getValue)
-                .sorted()
-                .collect(Collectors.toList());
-
         for(int index=0; index < emotionPrediction.length; index++){
-            emotionProbabilities[emotionIdList.get(index)]=emotionPrediction[index];
+            emotionProbabilities[index]+=emotionPrediction[index];
         }
         printProbabilitiesToConsole();
     }
 
     private void printProbabilitiesToConsole() {
-        System.out.println();
         for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()) {
-            System.out.println(String.format("%s - %f", entry.getKey().name(), emotionProbabilities[entry.getKey().getNumber()]));
+            System.out.println(String.format("%s - %f", entry.getKey(), emotionProbabilities[entry.getValue()]));
         }
         System.out.println();
     }
@@ -96,15 +90,20 @@ public class FacialEmotionRecognitionAPI {
             return Emotion.valueOf(testingEmotion.toUpperCase());
         }
 
-        Emotion maxEmotion = null;
-        for (Emotion emotion : enabledEmotionList){
-            if( maxEmotion == null){
-                maxEmotion = emotion;
-            } else if (emotionProbabilities[maxEmotion.getNumber()] < emotionProbabilities[emotion.getNumber()]){
-                maxEmotion = emotion;
+        Map.Entry<Emotion, Integer> maxEmotionEntry = null;
+        int maxValue = 0;
+        for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()){
+            if(maxEmotionEntry == null){
+                maxEmotionEntry = entry;
+            } else if (emotionProbabilities[maxEmotionEntry.getValue()] < emotionProbabilities[entry.getValue()]){
+                maxEmotionEntry = entry;
             }
         }
-        return maxEmotion;
+        emotionProbabilities = new float[Emotion.values().length];
+        Arrays.fill(emotionProbabilities, 0);
+        System.out.println("dominantEmotion");
+        System.out.println(maxEmotionEntry);
+        return maxEmotionEntry.getKey();
     }
 
     public Map<Emotion, Integer> loadEmotionMap(String emotionMapFile) {
