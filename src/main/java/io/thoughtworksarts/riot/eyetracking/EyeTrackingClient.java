@@ -1,37 +1,87 @@
 package io.thoughtworksarts.riot.eyetracking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.thoughtworksarts.riot.branching.model.Level;
+
 import java.io.IOException;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EyeTrackingClient {
 
-    private String message;
+    private ObjectMapper objectMapper;
 
+    public EyeTrackingClient() {
+         objectMapper = new ObjectMapper();
+    }
 
-
-    public void start() {
-
+    public void startEyeTracking(String levelId) {
+        String url = "http://127.0.0.1:5000/eye-tracking/start";
         try {
-            Socket socket = new Socket("127.0.0.1", 59253);
+            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            con.setRequestMethod("POST");
 
-            DataInputStream input = new DataInputStream(socket.getInputStream());
-            String message = "";
-            while(input.available() > 0) {
-                byte[] bytes = new byte[1];
-                bytes[0] = input.readByte();
-                message += new String(bytes, StandardCharsets.US_ASCII);
-            }
-            System.out.println(message);
-            socket.close();
-        } catch (Exception e) {
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("levelId", levelId);
+            setRequestBody(parameters, con);
+
+            if(con.getResponseCode() != 200)
+                throw new RuntimeException();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void stopEyeTracking(String levelId) {
+        String url = "http://127.0.0.1:5000/eye-tracking/stop";
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            con.setRequestMethod("POST");
+
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("levelId", levelId);
+            setRequestBody(parameters, con);
+
+            if(con.getResponseCode() != 200)
+                throw new RuntimeException();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createEyeTrackingVisualization(List<Level> levels) {
+        List<LevelDTO> levelDTOS = new ArrayList<>();
+        for (Level level :
+                levels) {
+            levelDTOS.add(new LevelDTO(level));
+        }
+
+        try {
+            URL url = new URL("http://127.0.0.1:5000/eye-tracking/visualization");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            setRequestBody(levelDTOS, con);
+
+            if(con.getResponseCode() != 200)
+                throw new RuntimeException();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setRequestBody(Object body, HttpURLConnection con) throws IOException {
+        con.setDoOutput(true);
+        con.addRequestProperty("Content-Type", "application/json");
+        String query = objectMapper.writeValueAsString(body);
+        con.setRequestProperty("Content-Length", Integer.toString(query.length()));
+        con.getOutputStream().write(query.getBytes("UTF8"));
     }
 }
 
