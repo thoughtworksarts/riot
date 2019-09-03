@@ -19,13 +19,13 @@ public class EyeTrackingClient {
          objectMapper = new ObjectMapper();
     }
 
-    public void startEyeTracking(String levelId) {
+    public void startEyeTracking(int levelId) {
         String url = "http://127.0.0.1:5000/eye-tracking/start";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("POST");
 
-            Map<String, String> parameters = new HashMap<>();
+            Map<String, Integer> parameters = new HashMap<>();
             parameters.put("levelId", levelId);
             setRequestBody(parameters, con);
 
@@ -37,13 +37,13 @@ public class EyeTrackingClient {
         }
     }
 
-    public void stopEyeTracking(String levelId) {
+    public void stopEyeTracking(int levelId) {
         String url = "http://127.0.0.1:5000/eye-tracking/stop";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("POST");
 
-            Map<String, String> parameters = new HashMap<>();
+            Map<String, Integer> parameters = new HashMap<>();
             parameters.put("levelId", levelId);
             setRequestBody(parameters, con);
 
@@ -55,11 +55,12 @@ public class EyeTrackingClient {
         }
     }
 
-    public void createEyeTrackingVisualization(List<Level> levels) {
+    public void createEyeTrackingVisualization(List<Level> levels, Map<Integer, String> emotionsByLevelId) {
         List<LevelDTO> levelDTOS = new ArrayList<>();
+
         for (Level level :
                 levels) {
-            levelDTOS.add(new LevelDTO(level));
+            levelDTOS.add(new LevelDTO(level, emotionsByLevelId.get(level.getLevel())));
         }
 
         try {

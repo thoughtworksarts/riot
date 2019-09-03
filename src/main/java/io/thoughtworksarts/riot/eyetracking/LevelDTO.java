@@ -6,10 +6,15 @@ public class LevelDTO {
     private int levelId;
     private String startTime;
     private String endTime;
+    private String dominantEmotion;
 
     public int getLevelId() {
         return levelId;
     }
+
+    public String getDominantEmotion() { return dominantEmotion; }
+
+    private void setDominantEmotion(String dominantEmotion) { this.dominantEmotion = dominantEmotion; }
 
     private void setLevelId(int levelId) {
         this.levelId = levelId;
@@ -31,9 +36,11 @@ public class LevelDTO {
         this.endTime = endTime;
     }
 
-    public LevelDTO(Level level) {
+    public LevelDTO(Level level, String emotion) {
         setLevelId(level.getLevel());
+        setDominantEmotion(emotion);
         setStartTime(level.getStart());
         setEndTime(level.getEnd());
+
     }
 }
