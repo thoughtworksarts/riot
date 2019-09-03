@@ -80,10 +80,7 @@ public class FacialEmotionRecognitionAPI {
         System.out.println();
     }
 
-    public Emotion getDominantEmotion(Set<String> enabledEmotions){
-        List<Emotion> enabledEmotionList = enabledEmotions.stream()
-                .map(emotion -> Emotion.valueOf(emotion.toUpperCase()))
-                .collect(Collectors.toList());
+    public Emotion getDominantEmotion(){
 
         if (mode.contains("test"))  {
             String testingEmotion = mode.split("-")[0];
@@ -91,7 +88,6 @@ public class FacialEmotionRecognitionAPI {
         }
 
         Map.Entry<Emotion, Integer> maxEmotionEntry = null;
-        int maxValue = 0;
         for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()){
             if(maxEmotionEntry == null){
                 maxEmotionEntry = entry;
