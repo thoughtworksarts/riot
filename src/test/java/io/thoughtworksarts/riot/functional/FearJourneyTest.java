@@ -37,7 +37,7 @@ public class FearJourneyTest extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         initMocks(this);
-        when(facialEmotionRecognitionAPI.getDominantEmotion(any())).thenReturn(Emotion.FEAR);
+        when(facialEmotionRecognitionAPI.getDominantEmotion()).thenReturn(Emotion.FEAR);
 
         jsonTranslator = new JsonTranslator();
         ConfigRoot root = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);

@@ -51,7 +51,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 1, 5});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.CALM,dominantEmotion);
     }
 
@@ -60,7 +60,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 2, 8});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.CALM,dominantEmotion);
     }
 
@@ -69,7 +69,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 8, 3});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.FEAR,dominantEmotion);
     }
 
@@ -78,7 +78,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{4, 2, 0});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.ANGER,dominantEmotion);
     }
     @Test
@@ -90,7 +90,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 3, 4});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.FEAR,dominantEmotion);
     }
 
@@ -102,7 +102,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{1, 3, 4});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.ANGER,dominantEmotion);
     }
 
@@ -112,7 +112,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.CALM, dominantEmotion);
     }
 
@@ -122,7 +122,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.FEAR, dominantEmotion);
     }
 
@@ -132,7 +132,7 @@ public class FacialEmotionRecognitionAPITest {
         when(deepLearningProcessor.getEmotionPrediction(any())).thenReturn(new float[]{3, 3 ,3});
         facialRecognition.recordEmotionProbabilities();
 
-        Emotion dominantEmotion = facialRecognition.getDominantEmotion(enabledEmotions);
+        Emotion dominantEmotion = facialRecognition.getDominantEmotion();
         assertEquals(Emotion.ANGER, dominantEmotion);
     }
 

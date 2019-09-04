@@ -4,6 +4,7 @@ import io.thoughtworksarts.riot.branching.model.Level;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,13 +13,13 @@ class EyeTrackingClientTest {
     @Test
     public void test1() {
         EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.startEyeTracking("something different");
+        eyeTrackingClient.startEyeTracking();
     }
 
     @Test
     public void test2() {
         EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.stopEyeTracking("hue");
+        eyeTrackingClient.stopEyeTracking();
     }
 
     @Test
@@ -30,7 +31,7 @@ class EyeTrackingClientTest {
         ArrayList levels = new ArrayList();
         levels.add(level);
         EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.createEyeTrackingVisualization(levels);
+        eyeTrackingClient.createEyeTrackingVisualization(new ArrayList<String>(), new HashMap<String, ArrayList<String>>());
     }
 
 }
