@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.branching;
 
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
+import io.thoughtworksarts.riot.eyetracking.VisualizationDTO;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
@@ -20,8 +21,9 @@ public class BranchingLogic {
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
     private Intro[] intros;
-    private HashMap<Integer, String> emotions;
+    private Map<String, ArrayList<String>> emotionsByActorId;
     private Credits[] credits;
+    private String actorId;
     private boolean visitedIntro = false;
     private EyeTrackingClient eyeTrackingClient;
 
@@ -32,47 +34,53 @@ public class BranchingLogic {
         this.levels = configRoot.getLevels();
         this.intros = configRoot.getIntros();
         this.credits = configRoot.getCredits();
-        this.emotions = new HashMap<Integer, String>();
+        this.emotionsByActorId = new HashMap<>();
+        this.actorId = "1";
         this.eyeTrackingClient = new EyeTrackingClient();
 
     }
 
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
         String key = arg.getMarker().getKey();
-        System.out.println("printing key"+ key);
-        System.out.println(this.levels.length);
         String[] split = key.split(":");
         String category = split[0];
-        System.out.println("Media Event Category:" + category);
         int index = Integer.parseInt(split[1]);
         Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
         if (category.equals("level")) {
             log.info("Level Marker: " + key);
             String value = facialRecognition.getDominantEmotion().name();
-            emotions.put(index, value);
             EmotionBranch emotionBranch = branches.get(value.toLowerCase());
             return translator.convertToDuration(emotionBranch.getStart());
         }
         else if(category.equals("level start")){
-            System.out.println("Start eye tracking");
-            this.eyeTrackingClient.startEyeTracking(index);
+            log.info("Start eye tracking");
+            if(index == 1) {
+                this.eyeTrackingClient.startEyeTracking();
+            }
 
         }
         else if (category.equals("emotion")) {
 
+
             log.info("Emotion Marker: " + key);
             String emotionType = split[2];
-//            emotions[index - 1] = emotionType;
+
+            if(!emotionsByActorId.containsKey(actorId))
+            {
+                emotionsByActorId.put(actorId, new ArrayList<>());
+            }
+            emotionsByActorId.get(actorId).add(emotionType);
             EmotionBranch emotionBranch = branches.get(emotionType);
             int outcomeNumber = emotionBranch.getOutcome();
-            System.out.println("Stopping eye tracking");
-            this.eyeTrackingClient.stopEyeTracking(index -1 );
+            log.info("Stopping eye tracking");
+
             if (outcomeNumber > 0) {
                 Level nextLevel = levels[outcomeNumber - 1];
 
                 return translator.convertToDuration(nextLevel.getStart());
             } else {
+                this.eyeTrackingClient.stopEyeTracking();
                 log.info("Credits: ");
 
 
@@ -89,9 +97,10 @@ public class BranchingLogic {
 
                 log.info("Shutting down webcam: ");
 
-                for (Map.Entry<Integer, String> emotions : emotions.entrySet()) {
-                    System.out.println(emotions.getKey() + ":" + emotions.getValue());
-                }
+              ArrayList<String> orderedActorIds = new ArrayList<>();
+              orderedActorIds.add(actorId);
+              eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, emotionsByActorId);
+
 
                 facialRecognition.endImageCapture();
                 log.info("Exiting application: ");
@@ -99,7 +108,6 @@ public class BranchingLogic {
 //                Platform.exit();
             }
         }
-
         double currentTime = arg.getMarker().getValue().toMillis() + 1;
         return new Duration(currentTime);
     }
@@ -120,13 +128,6 @@ public class BranchingLogic {
             branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
                     branchKey, emotionBranch.getEnd()));
         }
-
-
-        for( Map.Entry<String, Duration> marker : markers.entrySet()){
-            System.out.println(marker.getKey() + ": " + marker.getValue());
-
-        }
-
 
     }
 
