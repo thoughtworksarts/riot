@@ -1,21 +1,13 @@
 package io.thoughtworksarts.riot.audio;
 
 import io.thoughtworksarts.riot.utilities.OSChecker;
-import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class RiotAudioPlayerTest {
+class AudioPlayerTest {
 
     private RiotAudioPlayer audioPlayer;
 
-    @Ignore
+    @Test
     void shouldPlayGivenFile() throws Exception {
         boolean isWindows = OSChecker.isWindows();
         audioPlayer = isWindows ? new AudioPlayer() : new JavaSoundAudioPlayer();
@@ -25,6 +17,7 @@ public class RiotAudioPlayerTest {
         audioPlayer.shutdown();
     }
 
+    @Test
     private void playAudio() throws InterruptedException {
         audioPlayer.resume();
         Thread.sleep(3000);
