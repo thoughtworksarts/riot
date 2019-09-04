@@ -19,16 +19,11 @@ public class EyeTrackingClient {
          objectMapper = new ObjectMapper();
     }
 
-    public void startEyeTracking(int levelId) {
+    public void startEyeTracking() {
         String url = "http://127.0.0.1:5000/eye-tracking/start";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("POST");
-
-            Map<String, Integer> parameters = new HashMap<>();
-            parameters.put("levelId", levelId);
-            setRequestBody(parameters, con);
-
             if(con.getResponseCode() != 200)
                 throw new RuntimeException();
 
@@ -37,16 +32,11 @@ public class EyeTrackingClient {
         }
     }
 
-    public void stopEyeTracking(int levelId) {
+    public void stopEyeTracking() {
         String url = "http://127.0.0.1:5000/eye-tracking/stop";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("POST");
-
-            Map<String, Integer> parameters = new HashMap<>();
-            parameters.put("levelId", levelId);
-            setRequestBody(parameters, con);
-
             if(con.getResponseCode() != 200)
                 throw new RuntimeException();
 
@@ -55,19 +45,15 @@ public class EyeTrackingClient {
         }
     }
 
-    public void createEyeTrackingVisualization(List<Level> levels, Map<Integer, String> emotionsByLevelId) {
-        List<LevelDTO> levelDTOS = new ArrayList<>();
+    public void createEyeTrackingVisualization(ArrayList<String> orderedActorIds, Map<String, ArrayList<String>> emotionsByActorId) {
 
-        for (Level level :
-                levels) {
-            levelDTOS.add(new LevelDTO(level, emotionsByLevelId.get(level.getLevel())));
-        }
+        VisualizationDTO visualizationDTO = new VisualizationDTO(emotionsByActorId, orderedActorIds);
 
         try {
             URL url = new URL("http://127.0.0.1:5000/eye-tracking/visualization");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
-            setRequestBody(levelDTOS, con);
+            setRequestBody(visualizationDTO, con);
 
             if(con.getResponseCode() != 200)
                 throw new RuntimeException();
