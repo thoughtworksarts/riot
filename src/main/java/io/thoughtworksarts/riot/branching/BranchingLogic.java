@@ -2,15 +2,12 @@ package io.thoughtworksarts.riot.branching;
 
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
-import io.thoughtworksarts.riot.eyetracking.VisualizationDTO;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
-import javafx.application.Platform;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +25,7 @@ public class BranchingLogic {
     private EyeTrackingClient eyeTrackingClient;
 
 
-    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator,ConfigRoot configRoot) {
+    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
         this.levels = configRoot.getLevels();
@@ -47,65 +44,61 @@ public class BranchingLogic {
         int index = Integer.parseInt(split[1]);
         Map<String, EmotionBranch> branches = levels[index - 1].getBranch();
 
-        if (category.equals("level")) {
-            log.info("Level Marker: " + key);
-            String value = facialRecognition.getDominantEmotion().name();
-            EmotionBranch emotionBranch = branches.get(value.toLowerCase());
-            return translator.convertToDuration(emotionBranch.getStart());
-        }
-        else if(category.equals("level start")){
-            log.info("Start eye tracking");
-            if(index == 1) {
-                this.eyeTrackingClient.startEyeTracking();
+        switch (category) {
+            case "level": {
+                log.info("Level Marker: " + key);
+                String value = facialRecognition.getDominantEmotion().name();
+                EmotionBranch emotionBranch = branches.get(value.toLowerCase());
+                return translator.convertToDuration(emotionBranch.getStart());
             }
-
-        }
-        else if (category.equals("emotion")) {
-
-
-            log.info("Emotion Marker: " + key);
-            String emotionType = split[2];
-
-            if(!emotionsByActorId.containsKey(actorId))
-            {
-                emotionsByActorId.put(actorId, new ArrayList<>());
+            case "level start": {
+                log.info("Start eye tracking");
+                if (index == 1) {
+                    this.eyeTrackingClient.startEyeTracking();
+                }
             }
-            emotionsByActorId.get(actorId).add(emotionType);
-            EmotionBranch emotionBranch = branches.get(emotionType);
-            int outcomeNumber = emotionBranch.getOutcome();
-            log.info("Stopping eye tracking");
+            case "emotion": {
+                log.info("Emotion Marker: " + key);
+                String emotionType = split[2];
 
-            if (outcomeNumber > 0) {
-                Level nextLevel = levels[outcomeNumber - 1];
+                if (!emotionsByActorId.containsKey(actorId)) {
+                    emotionsByActorId.put(actorId, new ArrayList<>());
+                }
+                emotionsByActorId.get(actorId).add(emotionType);
+                EmotionBranch emotionBranch = branches.get(emotionType);
+                int outcomeNumber = emotionBranch.getOutcome();
+                log.info("Stopping eye tracking");
 
-                return translator.convertToDuration(nextLevel.getStart());
-            } else {
-                this.eyeTrackingClient.stopEyeTracking();
-                log.info("Credits: ");
+                if (outcomeNumber > 0) {
+                    Level nextLevel = levels[outcomeNumber - 1];
 
-
-                //TODO: make request to send over emotions to python application
-
-                facialRecognition.endImageCapture();
-                return translator.convertToDuration(credits[0].getStart());
+                    return translator.convertToDuration(nextLevel.getStart());
+                } else {
+                    this.eyeTrackingClient.stopEyeTracking();
+                    log.info("Credits: ");
+                    //TODO: make request to send over emotions to python application
+                    facialRecognition.endImageCapture();
+                    return translator.convertToDuration(credits[0].getStart());
+                }
             }
-        } else if (category.equals("intro")) {
-            log.info("Intro slide: " + key);
-            return translator.convertToDuration("00:00.000");
-        } else if (category.equals("credit")) {
-            if (split[1].equals("2")) {
+            case "intro": {
+                log.info("Intro slide: " + key);
+                return translator.convertToDuration("00:00.000");
+            }
+            case "credit": {
+                if (split[1].equals("2")) {
 
-                log.info("Shutting down webcam: ");
+                    log.info("Shutting down webcam: ");
 
-              ArrayList<String> orderedActorIds = new ArrayList<>();
-              orderedActorIds.add(actorId);
-              eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, emotionsByActorId);
+                    ArrayList<String> orderedActorIds = new ArrayList<>();
+                    orderedActorIds.add(actorId);
+                    eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, emotionsByActorId);
 
-
-                facialRecognition.endImageCapture();
-                log.info("Exiting application: ");
+                    facialRecognition.endImageCapture();
+                    log.info("Exiting application: ");
 
 //                Platform.exit();
+                }
             }
         }
         double currentTime = arg.getMarker().getValue().toMillis() + 1;
@@ -118,44 +111,41 @@ public class BranchingLogic {
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
-        addMarker(markers, "intro", "3", intros[2].getEnd());
-        addMarker(markers, "credit", "2", credits[1].getEnd());
+        Integer indexOfLastIntro = intros.length - 1;
+        Integer indexOfLastCredits = credits.length - 1;
+        addMarker(markers, "intro", indexOfLastIntro.toString(),
+                intros[indexOfLastIntro].getEnd());
+        addMarker(markers, "credit", indexOfLastCredits.toString(),
+                credits[indexOfLastCredits].getEnd());
 
         for (Level level : levels) {
             addMarker(markers, "level start", String.valueOf(level.getLevel()), level.getStart());
             addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
             Map<String, EmotionBranch> branch = level.getBranch();
-            branch.forEach((branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
+            branch.forEach(
+                    (branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
                     branchKey, emotionBranch.getEnd()));
         }
-
     }
 
     public Duration getClickSeekTime(Duration currentTime) {
-        Duration beginningOfIntroSlides = translator.convertToDuration(intros[0].getStart());
-        Duration secondIntroStart = translator.convertToDuration(intros[1].getStart());
-        Duration thirdIntroStart = translator.convertToDuration(intros[2].getStart());
-        Duration endOfIntro = translator.convertToDuration(intros[2].getEnd());
 
-        ArrayList<Duration> durations = new ArrayList<>();
+        HashMap<String, Duration> durations = new HashMap<>();
 
-        for (Level level : levels) {
-            durations.add(translator.convertToDuration(level.getStart()));
-        }
-
-        durations.add(beginningOfIntroSlides);
-        durations.add(secondIntroStart);
-        durations.add(thirdIntroStart);
-        durations.add(endOfIntro);
-
-        Collections.sort(durations);  // needs to be ordered because intro slides are at end of film
+        //TODO: Refactor - maybe this could be one method that takes a list
+        addIntrosToDurationList(durations);
+        addLevelsToDurationList(durations);
 
         if (isDuringEmoScene(currentTime)) {
             return null;
         }
 
-        for (Duration duration : durations) {
-            isIntroVisited(currentTime, thirdIntroStart, beginningOfIntroSlides);
+        for (Map.Entry<String, Duration> nameDurationPair : durations.entrySet()) {
+            Integer lastIntroIndex = intros.length - 1;
+            Duration lastIntroStartTime = translator.convertToDuration(intros[lastIntroIndex].getStart());
+            Duration beginningOfIntroSlides = translator.convertToDuration(intros[0].getStart());
+            isIntroVisited(currentTime, lastIntroStartTime, beginningOfIntroSlides);
+            Duration duration = nameDurationPair.getValue();
 
             if (currentTime.lessThan(duration)) {
                 if (duration.equals(beginningOfIntroSlides) && visitedIntro) {
@@ -165,6 +155,25 @@ public class BranchingLogic {
             }
         }
         return null;
+    }
+
+    private void addLevelsToDurationList(HashMap<String, Duration> durations) {
+        for (Level level : levels) {
+            String branchLevelPrefix = level.getBranch() + "-" + level.getLevel();
+            String levelStartLabel = branchLevelPrefix + "-start";
+            String levelEndLabel = branchLevelPrefix + "-end";
+            durations.put(levelStartLabel, translator.convertToDuration(level.getStart()));
+            durations.put(levelEndLabel, translator.convertToDuration(level.getStart()));
+        }
+    }
+
+    private void addIntrosToDurationList(HashMap<String, Duration> durations) {
+        for (Intro intro : intros) {
+            String introStartLabel = "intro-" + intro.getIntro() + "-start";
+            String introEndLabel = "intro-" + intro.getIntro() + "-end";
+            durations.put(introStartLabel, translator.convertToDuration(intro.getStart()));
+            durations.put(introEndLabel, translator.convertToDuration(intro.getEnd()));
+        }
     }
 
     private void isIntroVisited(Duration currentTime, Duration thirdIntroStart, Duration beginning) {
@@ -201,7 +210,7 @@ public class BranchingLogic {
     }
 
     private void addEmoTimesToArray(ArrayList<ArrayList<Duration>> emoTimes) {
-        for(int i = 0; i < levels.length - 1; i++) {
+        for (int i = 0; i < levels.length - 1; i++) {
             ArrayList<Duration> currTimes = new ArrayList<>();
             currTimes.add(translator.convertToDuration(levels[i].getEnd()));
             currTimes.add(translator.convertToDuration(levels[i + 1].getStart()));
