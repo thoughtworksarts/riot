@@ -22,11 +22,11 @@ public class MediaControl extends BorderPane {
     private MediaPlayer filmPlayer;
     private final Duration audioOffset;
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime, String filmPath, Duration audioOffset) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration videoStartTime, String filmPath, Duration audioOffset) throws Exception {
         this.branchingLogic = branchingLogic;
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
-        setUpFilmPlayer(pathToFilm, startTime);
+        setUpFilmPlayer(pathToFilm, videoStartTime);
         setUpPane();
         //Audio related
         this.audioPlayer = audioPlayer;
@@ -74,11 +74,6 @@ public class MediaControl extends BorderPane {
         } else {
             log.info("Clicking is not allowed at this particular time point.");
         }
-    }
-
-    public void pause() {
-        log.info("Pause");
-        filmPlayer.pause();
     }
 
     public void play() {

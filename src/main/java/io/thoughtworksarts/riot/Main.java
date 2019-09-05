@@ -44,7 +44,7 @@ public class Main extends Application {
         String pathToEmotionMapFile = String.format("%sconv_emotion_map_%s.json", DEFAULT_FILES_PATH, emotionsSetId);
         String filmPath = jsonConfiguration.getMedia().getVideo();
         String audioPath = jsonConfiguration.getMedia().getAudio();
-        Duration startTime = jsonTranslator.convertToDuration("10:39.200");
+        Duration startTime = jsonTranslator.convertToDuration("00:00.000");
 
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
