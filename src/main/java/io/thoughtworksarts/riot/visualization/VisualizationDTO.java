@@ -1,4 +1,4 @@
-package io.thoughtworksarts.riot.eyetracking;
+package io.thoughtworksarts.riot.visualization;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
