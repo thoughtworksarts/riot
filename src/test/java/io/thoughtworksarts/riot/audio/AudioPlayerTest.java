@@ -1,12 +1,14 @@
 package io.thoughtworksarts.riot.audio;
 
 import io.thoughtworksarts.riot.utilities.OSChecker;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class AudioPlayerTest {
 
     private RiotAudioPlayer audioPlayer;
 
+    @Disabled
     @Test
     void shouldPlayGivenFile() throws Exception {
         boolean isWindows = OSChecker.isWindows();
