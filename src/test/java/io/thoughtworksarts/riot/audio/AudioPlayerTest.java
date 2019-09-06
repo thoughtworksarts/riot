@@ -11,7 +11,7 @@ class AudioPlayerTest {
     void shouldPlayGivenFile() throws Exception {
         boolean isWindows = OSChecker.isWindows();
         audioPlayer = isWindows ? new AudioPlayer() : new JavaSoundAudioPlayer();
-        String wavFile = this.getClass().getClassLoader().getResource("audio/audio.wav").getFile();
+        String wavFile = this.getClass().getClassLoader().getResource("audio/audio_test.wav").getFile();
         audioPlayer.initialise("ASIO4ALL v2", wavFile);
         playAudio();
         audioPlayer.shutdown();
@@ -23,7 +23,7 @@ class AudioPlayerTest {
         Thread.sleep(3000);
         audioPlayer.pause();
         Thread.sleep(3000);
-        audioPlayer.seek(120);
+        audioPlayer.seek(50);
         audioPlayer.resume();
         Thread.sleep(3000);
     }

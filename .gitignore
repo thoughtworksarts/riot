@@ -5,7 +5,6 @@ asio/
 trainingModels/
 facialrecognitionmodels/
 *.h5
-*.wav
 *.m4v
 *.jpg
 # Audio Dependency
