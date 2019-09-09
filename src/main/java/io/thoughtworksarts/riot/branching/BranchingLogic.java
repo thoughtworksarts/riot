@@ -111,21 +111,19 @@ public class BranchingLogic {
     }
 
     public void recordMarkers(Map<String, Duration> markers) {
-        Integer indexOfLastIntro = intros.length - 1;
-        Integer indexOfLastCredits = credits.length - 1;
-        addMarker(markers, "intro", indexOfLastIntro.toString(),
-                intros[indexOfLastIntro].getEnd());
-        addMarker(markers, "credit", indexOfLastCredits.toString(),
-                credits[indexOfLastCredits].getEnd());
+        addMarker(markers, "intro", String.valueOf(intros.length),
+                intros[intros.length - 1].getEnd());
+        addMarker(markers, "credit", String.valueOf(credits.length),
+                credits[credits.length - 1].getEnd());
 
         for (Level level : levels) {
             addMarker(markers, "level start", String.valueOf(level.getLevel()), level.getStart());
             addMarker(markers, "level", String.valueOf(level.getLevel()), level.getEnd());
             Map<String, EmotionBranch> branch = level.getBranch();
-            branch.forEach(
-                    (branchKey, emotionBranch) -> addMarker(markers, "emotion:" + level.getLevel(),
-                    branchKey, emotionBranch.getEnd()));
+            branch.forEach((branchKey, emotionBranch) ->
+                    addMarker(markers, "emotion:" + level.getLevel(), branchKey, emotionBranch.getEnd()));
         }
+        log.info(markers.toString());
     }
 
     public Duration getClickSeekTime(Duration currentTime) {
