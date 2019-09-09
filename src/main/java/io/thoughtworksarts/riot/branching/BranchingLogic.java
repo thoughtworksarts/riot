@@ -56,6 +56,7 @@ public class BranchingLogic {
                 if (index == 1) {
                     this.eyeTrackingClient.startEyeTracking();
                 }
+                break;
             }
             case "emotion": {
                 log.info("Emotion Marker: " + key);
@@ -71,7 +72,6 @@ public class BranchingLogic {
 
                 if (outcomeNumber > 0) {
                     Level nextLevel = levels[outcomeNumber - 1];
-
                     return translator.convertToDuration(nextLevel.getStart());
                 } else {
                     this.eyeTrackingClient.stopEyeTracking();
@@ -99,6 +99,7 @@ public class BranchingLogic {
 
 //                Platform.exit();
                 }
+                break;
             }
         }
         double currentTime = arg.getMarker().getValue().toMillis() + 1;
@@ -123,7 +124,6 @@ public class BranchingLogic {
             branch.forEach((branchKey, emotionBranch) ->
                     addMarker(markers, "emotion:" + level.getLevel(), branchKey, emotionBranch.getEnd()));
         }
-        log.info(markers.toString());
     }
 
     public Duration getClickSeekTime(Duration currentTime) {
