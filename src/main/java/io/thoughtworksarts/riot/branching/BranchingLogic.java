@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -128,55 +129,37 @@ public class BranchingLogic {
 
     public Duration getClickSeekTime(Duration currentTime) {
 
-        HashMap<String, Duration> durations = new HashMap<>();
-
-        //TODO: Refactor - maybe this could be one method that takes a list
+        List<Duration> durations = new ArrayList<>();
         addIntrosToDurationList(durations);
         addLevelsToDurationList(durations);
+        durations.add(translator.convertToDuration(credits[0].getStart()));
 
         if (isDuringEmoScene(currentTime)) {
             return null;
         }
 
-        for (Map.Entry<String, Duration> nameDurationPair : durations.entrySet()) {
-            Integer lastIntroIndex = intros.length - 1;
-            Duration lastIntroStartTime = translator.convertToDuration(intros[lastIntroIndex].getStart());
-            Duration beginningOfIntroSlides = translator.convertToDuration(intros[0].getStart());
-            isIntroVisited(currentTime, lastIntroStartTime, beginningOfIntroSlides);
-            Duration duration = nameDurationPair.getValue();
-
-            if (currentTime.lessThan(duration)) {
-                if (duration.equals(beginningOfIntroSlides) && visitedIntro) {
-                    return translator.convertToDuration(credits[0].getStart());
-                }
-                return duration;
+        for (int i = 0; i < durations.size(); i+=2) {
+            Duration startDuration = durations.get(i);
+            Duration endDuration = durations.get(i+1);
+            if(currentTime.greaterThan(startDuration) && currentTime.lessThan(endDuration)) {
+                return durations.get(i+2);
             }
         }
+
         return null;
     }
 
-    private void addLevelsToDurationList(HashMap<String, Duration> durations) {
+    private void addLevelsToDurationList(List<Duration> durations) {
         for (Level level : levels) {
-            String branchLevelPrefix = level.getBranch() + "-" + level.getLevel();
-            String levelStartLabel = branchLevelPrefix + "-start";
-            String levelEndLabel = branchLevelPrefix + "-end";
-            durations.put(levelStartLabel, translator.convertToDuration(level.getStart()));
-            durations.put(levelEndLabel, translator.convertToDuration(level.getStart()));
+            durations.add(translator.convertToDuration(level.getStart()));
+            durations.add(translator.convertToDuration(level.getEnd()));
         }
     }
 
-    private void addIntrosToDurationList(HashMap<String, Duration> durations) {
+    private void addIntrosToDurationList(List<Duration> durations) {
         for (Intro intro : intros) {
-            String introStartLabel = "intro-" + intro.getIntro() + "-start";
-            String introEndLabel = "intro-" + intro.getIntro() + "-end";
-            durations.put(introStartLabel, translator.convertToDuration(intro.getStart()));
-            durations.put(introEndLabel, translator.convertToDuration(intro.getEnd()));
-        }
-    }
-
-    private void isIntroVisited(Duration currentTime, Duration thirdIntroStart, Duration beginning) {
-        if (currentTime.greaterThan(thirdIntroStart) || currentTime.lessThan(beginning)) {
-            visitedIntro = true;
+            durations.add(translator.convertToDuration(intro.getStart()));
+            durations.add(translator.convertToDuration(intro.getEnd()));
         }
     }
 
