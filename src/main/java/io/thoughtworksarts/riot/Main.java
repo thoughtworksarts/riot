@@ -12,10 +12,16 @@ import io.thoughtworksarts.riot.facialrecognition.ImageProcessor;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,14 +33,17 @@ public class Main extends Application {
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
     private MediaControl mediaControl;
+    private MoviePlayer moviePlayer;
 
     public static void main(String... args) {
         log.info("Starting Riot...");
+
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         JsonTranslator jsonTranslator = new JsonTranslator();
         ConfigRoot jsonConfiguration = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);
 
@@ -49,17 +58,21 @@ public class Main extends Application {
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
+
         BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"));
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
+
+        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"),  "/Users/tomshannon/Documents/GitLab/perception-eye-tracking/eye_tracking/clip.mp4");
+        moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
+
         mediaControl.play();
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
+
         mediaControl.shutdown();
     }
 
@@ -74,4 +87,29 @@ public class Main extends Application {
                 .map(number -> number.toString())
                 .collect(Collectors.joining());
     }
+
+    private static void playback(MediaView mediaView, Stage primaryStage)
+    {
+        String path = "/Users/tomshannon/Documents/GitLab/perception-eye-tracking/eye_tracking/clip.mp4";
+
+        //Instantiating Media class
+        Media media = new Media(new File(path).toURI().toString());
+
+        //Instantiating MediaPlayer class
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+        //Instantiating MediaView class
+        mediaView.setMediaPlayer(mediaPlayer);
+
+        //by setting this property to true, the Video will be played
+        mediaPlayer.setAutoPlay(true);
+
+        //setting group and scene
+        Group root = new Group();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root,500,400);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
 }

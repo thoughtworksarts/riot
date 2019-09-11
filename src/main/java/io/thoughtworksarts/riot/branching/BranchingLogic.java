@@ -38,6 +38,11 @@ public class BranchingLogic {
 
     }
 
+    public Duration getCreditDuration() {
+        return this.translator.convertToDuration(this.credits[0].getStart());
+    }
+
+
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
         String key = arg.getMarker().getKey();
         String[] split = key.split(":");
@@ -79,7 +84,7 @@ public class BranchingLogic {
                     log.info("Credits: ");
                     //TODO: make request to send over emotions to python application
                     facialRecognition.endImageCapture();
-                    return translator.convertToDuration(credits[0].getStart());
+                    return null;//translator.convertToDuration(credits[0].getStart());
                 }
             }
             case "intro": {

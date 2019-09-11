@@ -22,4 +22,9 @@ public class MoviePlayer {
         primaryStage.setFullScreen(true);
         primaryStage.show();
     }
+
+    public Stage getStage()
+    {
+        return this.primaryStage;
+    }
 }
