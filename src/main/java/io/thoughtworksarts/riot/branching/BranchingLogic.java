@@ -3,6 +3,7 @@ package io.thoughtworksarts.riot.branching;
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.visualization.VisualizationClient;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
@@ -97,9 +98,11 @@ public class BranchingLogic {
             return translator.convertToDuration("00:00.000");
         } else if (category.equals("credit")) {
             if (split[1].equals("2")) {
+                //TODO: invoke static method to close feed.
 
                 log.info("Shutting down webcam: ");
 
+                MediaControl.shutDownWebcamFeed();
               ArrayList<String> orderedActorIds = new ArrayList<>();
               orderedActorIds.add(actorId);
               visualizationClient.createVisualization(orderedActorIds, emotionsByActorId);
