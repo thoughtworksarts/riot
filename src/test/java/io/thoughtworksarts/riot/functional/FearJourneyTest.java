@@ -2,7 +2,7 @@ package io.thoughtworksarts.riot.functional;
 
 import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
-import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.RiotBranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.branching.model.Level;
@@ -46,7 +46,7 @@ public class FearJourneyTest extends Application {
 
         //Play the movie
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(root.getMedia().getAudio());
-        BranchingLogic branchingLogic = new BranchingLogic(facialEmotionRecognitionAPI, jsonTranslator,root);
+        RiotBranchingLogic branchingLogic = new RiotBranchingLogic(facialEmotionRecognitionAPI, jsonTranslator,root);
         mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"),videoPath, jsonTranslator.convertToDuration("00:00.000"));
 
 //        mediaControlSpy = Mockito.spy(mediaControl);

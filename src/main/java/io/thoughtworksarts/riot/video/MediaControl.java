@@ -9,13 +9,12 @@ import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.embed.swing.SwingNode;
-
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,12 +34,12 @@ public class MediaControl extends BorderPane {
     private final Duration audioOffset;
     private static volatile boolean webcamThreadRunning;
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration startTime, String filmPath, Duration audioOffset) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration videoStartTime, String filmPath, Duration audioOffset) throws Exception {
         this.branchingLogic = branchingLogic;
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
-        setUpFilmPlayer(pathToFilm, startTime);
         webcamThreadRunning = true;
+        setUpFilmPlayer(pathToFilm, videoStartTime);
         setUpPane();
         //Audio related
         this.audioPlayer = audioPlayer;
@@ -131,8 +130,6 @@ public class MediaControl extends BorderPane {
         pane.getChildren().addAll(mediaView, swingNode);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
-
-
     }
 
     private void createAndSetSwingContent(final SwingNode swingNode) {

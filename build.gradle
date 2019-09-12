@@ -11,8 +11,7 @@ plugins {
     id 'java'
     id 'application'
     id "de.undercouch.download" version "3.3.0"
-//    id 'io.franzbecker.gradle-lombok' version '1.11'
-//    id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'io.franzbecker.gradle-lombok' version '1.11'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
@@ -86,7 +85,6 @@ dependencies {
 
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'ch.qos.logback:logback-classic:1.0.13'
-
 
     compile 'com.github.sarxos:webcam-capture:0.3.11'
     compile 'org.deeplearning4j:deeplearning4j-core:0.9.1'

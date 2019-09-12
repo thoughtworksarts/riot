@@ -1,114 +1,222 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/film_with_credits.m4v",
+    "video": "src/main/resources/video/Perception-Test-mid-res.m4v",
     "audio": "src/main/resources/audio/audio.wav"
   },
+  "actors": ["bad-black", "bad-white"],
   "intros": [
-    {"intro": 1,
-     "start": "10:39.200",
-     "end": "10:47.500"},
-    {"intro": 2,
-      "start": "10:47.500",
-      "end": "10:56.500"},
-    {"intro": 3,
-      "start": "10:56.500",
-      "end": "11:04.400"}
+    {
+      "intro": 1,
+      "start": "00:00.000",
+      "end": "00:00.000"
+    }
   ],
-  "credits":[
-    {"credit": 1,
-      "start": "11:04.500",
-      "end": "11:13.500"},
-    {"credit": 2,
-      "start": "11:13.500",
-      "end": "11:23.000"}
+  "credits": [
+    {
+      "credit": 1,
+      "start": "00:01.000",
+      "end": "00:01.000"
+    }
   ],
   "levels": [
     {
+      "level": 0,
+      "start": "01:20.300",
+      "end": "01:30.934",
+      "branch": {}
+    },
+    {
       "level": 1,
-      "start": "03:47.110",
-      "end": "04:03.000",
-      "branch" : {
-        "anger": {
-          "start": "04:03.010",
-          "end": "04:19.020",
-          "outcome": 0
-        },
-        "fear": {
-          "start": "04:19.030",
-          "end": "04:34.080",
-          "outcome": 0
-        },
-        "calm": {
-          "start": "04:36.000",
-          "end": "04:50.160",
-          "outcome": 2
-        }
-      }
+      "start": "01:31.000",
+      "end": "01:35.934",
+      "branch": {}
     },
     {
       "level": 2,
-      "start": "05:06.000",
-      "end": "05:28.160",
-      "branch" : {
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
         "anger": {
-          "start": "05:28.170",
-          "end": "06:04.000",
-          "outcome": 0
+          "start": "06:14.000",
+          "end": "06:22.934",
+          "outcome": "1"
         },
         "fear": {
-          "start": "05:28.170",
-          "end": "06:04.000",
-          "outcome": 0
+          "start": "10:17.000",
+          "end": "10:19.934",
+          "outcome": "1"
         },
         "calm": {
-          "start": "06:04.010",
-          "end": "06:19.230",
-          "outcome": 3
+          "start": "01:36.000",
+          "end": "01:46.934",
+          "outcome": "1"
         }
       }
     },
     {
       "level": 3,
-      "start": "06:19.240",
-      "end": "07:03.000",
+      "start": "00:00.000",
+      "end": "00:00.000",
       "branch": {
         "anger": {
-          "start": "07:03.010",
-          "end": "07:09.800",
-          "outcome": 4
+          "start": "06:23.000",
+          "end": "06:36.934",
+          "outcome": "1"
         },
         "fear": {
-          "start": "07:03.010",
-          "end": "07:09.800",
-          "outcome": 4
+          "start": "10:20.000",
+          "end": "10:29.934",
+          "outcome": "1"
         },
-        "calm" : {
-          "start": "07:10.000",
-          "end": "07:16.000",
-          "outcome": 0
+        "calm": {
+          "start": "01:47.000",
+          "end": "01:58.934",
+          "outcome": "1"
         }
       }
     },
     {
       "level": 4,
-      "start": "07:17.000",
-      "end": "09:07.140",
-      "branch" : {
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
         "anger": {
-          "start": "09:28.200",
-          "end": "09:55.190",
-          "outcome": 0
+          "start": "06:37.000",
+          "end": "06:56.934",
+          "outcome": "1"
         },
         "fear": {
-          "start": "09:07.150",
-          "end": "09:28.190",
-          "outcome": 0
+          "start": "10:30.000",
+          "end": "10:37.934",
+          "outcome": "1"
         },
         "calm": {
-          "start": "09:55.200",
-          "end": "10:37.200",
-          "outcome": 0
+          "start": "01:59.000",
+          "end": "02:02.934",
+          "outcome": "1"
+        }
+      }
+    },
+    {
+      "level": 5,
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
+        "anger": {
+          "start": "06:57.000",
+          "end": "07:14.000",
+          "outcome": "0"
+        },
+        "fear": {
+          "start": "10:38.000",
+          "end": "10:42.300",
+          "outcome": "0"
+        },
+        "calm": {
+          "start": "02:03.000",
+          "end": "02:20.000",
+          "outcome": "0"
+        }
+      }
+    },
+    {
+      "level": 6,
+      "start": "02:55.000",
+      "end": "03:26.934",
+      "branch": {}
+    },
+    {
+      "level": 7,
+      "start": "03:27.134",
+      "end": "03:33.934",
+      "branch": {}
+    },
+    {
+      "level": 8,
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
+        "anger": {
+          "start": "04:50.000",
+          "end": "04:55.934",
+          "outcome": "0"
+        },
+        "fear": {
+          "start": "09:01.000",
+          "end": "09:05.934",
+          "outcome": "0"
+        },
+        "calm": {
+          "start": "03:34.000",
+          "end": "03:39.934",
+          "outcome": "0"
+        }
+      }
+    },
+    {
+      "level": 9,
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
+        "anger": {
+          "start": "04:56.000",
+          "end": "05:00.934",
+          "outcome": "0"
+        },
+        "fear": {
+          "start": "09:06.000",
+          "end": "09:08.934",
+          "outcome": "0"
+        },
+        "calm": {
+          "start": "03:40.000",
+          "end": "03:43.934",
+          "outcome": "0"
+        }
+      }
+    },
+    {
+      "level": 10,
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
+        "anger": {
+          "start": "05:01.000",
+          "end": "05:03.934",
+          "outcome": "0"
+        },
+        "fear": {
+          "start": "09:09.000",
+          "end": "09:09.934",
+          "outcome": "0"
+        },
+        "calm": {
+          "start": "03:44.000",
+          "end": "03:45.934",
+          "outcome": "0"
+        }
+      }
+    },
+    {
+      "level": 11,
+      "start": "00:00.000",
+      "end": "00:00.000",
+      "branch": {
+        "anger": {
+          "start": "05:04.000",
+          "end": "05:18.000",
+          "outcome": "0"
+        },
+        "fear": {
+          "start": "9:10.000",
+          "end": "09:16.000",
+          "outcome": "0"
+        },
+        "calm": {
+          "start": "03:46.000",
+          "end": "04:01.000",
+          "outcome": "0"
         }
       }
     }

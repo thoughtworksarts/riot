@@ -1,8 +1,11 @@
 package io.thoughtworksarts.riot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.thoughtworksarts.riot.audio.AudioPlayerConfigurator;
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
+import io.thoughtworksarts.riot.branching.RiotBranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.DeepLearningProcessor;
@@ -44,12 +47,13 @@ public class Main extends Application {
         String pathToEmotionMapFile = String.format("%sconv_emotion_map_%s.json", DEFAULT_FILES_PATH, emotionsSetId);
         String filmPath = jsonConfiguration.getMedia().getVideo();
         String audioPath = jsonConfiguration.getMedia().getAudio();
-        Duration startTime = jsonTranslator.convertToDuration("10:39.200");
+        Duration startTime = jsonTranslator.convertToDuration(jsonConfiguration.getIntros()[0].getStart());
 
         ImageProcessor imageProcessor = new ImageProcessor();
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
-        BranchingLogic branchingLogic = new BranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
+//        BranchingLogic branchingLogic = new RiotBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
+        BranchingLogic branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
         mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"));
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);

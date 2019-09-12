@@ -1,20 +1,17 @@
 package io.thoughtworksarts.riot.eyetracking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.thoughtworksarts.riot.visualization.VisualizationDTO;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class EyeTrackingClient {
 
     private ObjectMapper objectMapper;
 
     public EyeTrackingClient() {
-
+         objectMapper = new ObjectMapper();
     }
 
     public void startEyeTracking() {
@@ -42,8 +39,6 @@ public class EyeTrackingClient {
             e.printStackTrace();
         }
     }
-
-
 
     private void setRequestBody(Object body, HttpURLConnection con) throws IOException {
         con.setDoOutput(true);

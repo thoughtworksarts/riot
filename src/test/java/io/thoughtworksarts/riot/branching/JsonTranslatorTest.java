@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileInputStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonTranslatorTest {
 
@@ -18,7 +21,7 @@ class JsonTranslatorTest {
     @BeforeEach
     void setUp() throws Exception {
         jsonTranslator = new JsonTranslator();
-        String configFile = "src/main/resources/config.json";
+        String configFile = "src/test/resources/config.json";
         root = jsonTranslator.populateModelsFromJson(configFile);
     }
 
@@ -82,6 +85,6 @@ class JsonTranslatorTest {
     @Test
     void createLogicTreeShouldContainCorrectModeAttribute() {
         String mode = root.getMode();
-        assertTrue(mode.equals("installation"));
+        assertEquals(mode, "installation");
     }
 }

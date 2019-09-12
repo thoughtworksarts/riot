@@ -1,10 +1,10 @@
 language: java
 
 notifications:
-  slack: thoughtworksarts:RdQaWk8I3BpwUpyw7Dyri2Hj
+  slack: thoughtworksarts:koNU6SlW5pDN8TRB5GyDSiaS
 
 jdk:
-  - oraclejdk8
+  - openjdk12
 
 cache:
     directories:
