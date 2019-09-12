@@ -55,7 +55,9 @@ public class Main extends Application {
 //        BranchingLogic branchingLogic = new RiotBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         BranchingLogic branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"));
+
+
+        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"), "playbacks.mp4");
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
         moviePlayer.initialise();
         mediaControl.play();

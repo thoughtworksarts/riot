@@ -12,4 +12,8 @@ public interface BranchingLogic {
     void recordMarkers(Map<String, Duration> markers);
 
     Duration getClickSeekTime(Duration currentTime);
+
+    Duration getCreditDuration();
+
+
 }

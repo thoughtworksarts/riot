@@ -107,6 +107,13 @@ public class RiotBranchingLogic implements BranchingLogic {
         return new Duration(currentTime);
     }
 
+    @Override
+    public Duration getCreditDuration()
+    {
+        return translator.convertToDuration(credits[0].getStart());
+    }
+
+
     public void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time) {
         String markerNameWithColon = nameForMarker + ":" + index;
         markers.put(markerNameWithColon, translator.convertToDuration(time));

@@ -79,7 +79,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         emotionsByActorId.get(actors[actorIndex]).get("scenesPlayed").add(arg.getMarker().getKey());
     }
 
-    private Duration getCredits() {
+    @Override
+    public Duration getCreditDuration() {
         return translator.convertToDuration(credits[0].getStart());
     }
 
