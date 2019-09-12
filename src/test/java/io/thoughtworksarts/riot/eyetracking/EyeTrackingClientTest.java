@@ -22,16 +22,4 @@ class EyeTrackingClientTest {
         eyeTrackingClient.stopEyeTracking();
     }
 
-    @Test
-    public void test3() {
-        Level level = new Level();
-        level.setLevel(1);
-        level.setStart("hue");
-        level.setEnd("endhue");
-        ArrayList levels = new ArrayList();
-        levels.add(level);
-        EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.createEyeTrackingVisualization(new ArrayList<String>(), null);
-    }
-
 }

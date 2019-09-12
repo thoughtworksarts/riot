@@ -3,6 +3,7 @@ package io.thoughtworksarts.riot.branching;
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import io.thoughtworksarts.riot.visualization.VisualizationClient;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private String[] actors;
     private int actorIndex;
     private EyeTrackingClient eyeTrackingClient;
+    private VisualizationClient visualizationClient;
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
@@ -33,6 +35,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         this.credits = configRoot.getCredits();
         this.actors = configRoot.getActors();
         this.eyeTrackingClient = new EyeTrackingClient();
+        this.visualizationClient = new VisualizationClient();
         this.actorIndex = 0;
         initalizeEmotionsByActorIdMap();
 
@@ -83,7 +86,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private Duration getPlaybackVisualization() {
         getDominantEmotion();
         eyeTrackingClient.stopEyeTracking();
-        eyeTrackingClient.createEyeTrackingVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
+        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
         return null;
     }
 
