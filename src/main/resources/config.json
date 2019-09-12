@@ -4,7 +4,7 @@
     "video": "src/main/resources/video/Perception-Test-mid-res.m4v",
     "audio": "src/main/resources/audio/audio.wav"
   },
-  "actors": ["bad-black", "bad-white", "good-black", "good-white"],
+  "actors": ["bad-black", "bad-white"],
   "intros": [
     {
       "intro": 1,
@@ -21,7 +21,7 @@
   ],
   "levels": [
     {
-      "intro": 0,
+      "level": 0,
       "start": "01:20.300",
       "end": "01:30.934",
       "branch": {}
