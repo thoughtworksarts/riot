@@ -7,7 +7,7 @@ facialrecognitionmodels/
 *.h5
 *.jpg
 # Audio Dependency
-resources/audio/
+src/main/resources
 
 # IDE,
 out/

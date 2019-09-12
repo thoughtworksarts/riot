@@ -45,7 +45,7 @@ public class EyeTrackingClient {
         }
     }
 
-    public void createEyeTrackingVisualization(ArrayList<String> orderedActorIds, Map<String, ArrayList<String>> emotionsByActorId) {
+    public void createEyeTrackingVisualization(ArrayList<String> orderedActorIds, Map<String, Map<String, ArrayList<String>>> emotionsByActorId) {
 
         VisualizationDTO visualizationDTO = new VisualizationDTO(emotionsByActorId, orderedActorIds);
 

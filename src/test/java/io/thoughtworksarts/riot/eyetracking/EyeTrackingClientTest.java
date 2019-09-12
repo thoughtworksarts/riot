@@ -31,7 +31,7 @@ class EyeTrackingClientTest {
         ArrayList levels = new ArrayList();
         levels.add(level);
         EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.createEyeTrackingVisualization(new ArrayList<String>(), new HashMap<String, ArrayList<String>>());
+        eyeTrackingClient.createEyeTrackingVisualization(new ArrayList<String>(), null);
     }
 
 }

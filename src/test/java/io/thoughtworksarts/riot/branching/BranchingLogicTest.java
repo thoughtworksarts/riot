@@ -19,7 +19,7 @@ class BranchingLogicTest {
     @Mock private JsonTranslator translator;
     @Mock private ConfigRoot root;
 
-    private BranchingLogic branchingLogic;
+    private RiotBranchingLogic branchingLogic;
     private String start = "00:00.000";
     private String end = "01:00.000";
     private Duration endDuration = new Duration(123000);
@@ -39,7 +39,7 @@ class BranchingLogicTest {
         when(root.getIntros()).thenReturn(intros);
         when(root.getCredits()).thenReturn(credits);
         when(translator.convertToDuration(end)).thenReturn(endDuration);
-        branchingLogic = new BranchingLogic(facialRecognition, translator,root);
+        branchingLogic = new RiotBranchingLogic(facialRecognition, translator,root);
     }
 
     private Credits createCredit(int index) {

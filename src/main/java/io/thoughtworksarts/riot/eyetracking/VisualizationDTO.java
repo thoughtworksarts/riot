@@ -7,13 +7,13 @@ import java.util.Map;
 public class VisualizationDTO {
 
 
-    private Map<String, ArrayList<String>> emotionDataByActorId;
+    private Map<String, Map<String, ArrayList<String>>> emotionDataByActorId;
 
-    public Map<String, ArrayList<String>> getEmotionDataByActorId() {
+    public Map<String, Map<String, ArrayList<String>>> getEmotionDataByActorId() {
         return emotionDataByActorId;
     }
 
-    public void setEmotionDataByActorId(Map<String, ArrayList<String>> emotionDataByActorId) {
+    public void setEmotionDataByActorId(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId) {
         this.emotionDataByActorId = emotionDataByActorId;
     }
 
@@ -25,7 +25,7 @@ public class VisualizationDTO {
         this.orderedActorID = orderedActorID;
     }
 
-    public VisualizationDTO(Map<String, ArrayList<String>> emotionDataByActorId, ArrayList<String> orderedActorID) {
+    public VisualizationDTO(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId, ArrayList<String> orderedActorID) {
         this.emotionDataByActorId = emotionDataByActorId;
         this.orderedActorID = orderedActorID;
     }

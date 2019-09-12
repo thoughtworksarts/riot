@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.RiotBranchingLogic;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.layout.BorderPane;
@@ -43,8 +44,9 @@ public class MediaControl extends BorderPane {
         mediaView.setPreserveRatio(true);
 
         Pane pane = new Pane();
-        mediaView.setOnMouseClicked(event -> handleClick());
+//        mediaView.setOnMouseClicked(event -> handleClick());
         pane.getChildren().add(mediaView);
+
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
     }
@@ -53,8 +55,10 @@ public class MediaControl extends BorderPane {
         Media media = new Media(pathToFilm);
         branchingLogic.recordMarkers(media.getMarkers());
         filmPlayer = new MediaPlayer(media);
+        filmPlayer.setMute(true);
 
         filmPlayer.setAutoPlay(false);
+
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
             seek(duration);
@@ -62,7 +66,7 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
-                    audioPlayer.seek(startTime.toSeconds());
+//                    audioPlayer.seek(startTime.toSeconds());
                 }
         );
     }
@@ -79,19 +83,19 @@ public class MediaControl extends BorderPane {
     public void play() {
         log.info("Play");
         filmPlayer.play();
-        audioPlayer.resume();
+//        audioPlayer.resume();
     }
 
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
-        audioPlayer.seek(duration.add(audioOffset).toSeconds());
-        audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
+//        audioPlayer.seek(duration.add(audioOffset).toSeconds());
+//        audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
 
     }
 
     public void shutdown() {
         log.info("Shutting Down");
         filmPlayer.stop();
-        audioPlayer.shutdown();
+//        audioPlayer.shutdown();
     }
 }

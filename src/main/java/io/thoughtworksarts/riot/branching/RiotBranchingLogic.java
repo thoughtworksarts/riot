@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class BranchingLogic {
+public class RiotBranchingLogic implements BranchingLogic {
 
     private JsonTranslator translator;
     private FacialEmotionRecognitionAPI facialRecognition;
@@ -22,11 +22,10 @@ public class BranchingLogic {
     private Map<String, ArrayList<String>> emotionsByActorId;
     private Credits[] credits;
     private String actorId;
-    private boolean visitedIntro = false;
     private EyeTrackingClient eyeTrackingClient;
 
 
-    public BranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
+    public RiotBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
         this.levels = configRoot.getLevels();
@@ -38,6 +37,7 @@ public class BranchingLogic {
 
     }
 
+    @Override
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
         String key = arg.getMarker().getKey();
         String[] split = key.split(":");
@@ -93,7 +93,7 @@ public class BranchingLogic {
 
                     ArrayList<String> orderedActorIds = new ArrayList<>();
                     orderedActorIds.add(actorId);
-                    eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, emotionsByActorId);
+                    eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, null);
 
                     facialRecognition.endImageCapture();
                     log.info("Exiting application: ");
@@ -112,6 +112,7 @@ public class BranchingLogic {
         markers.put(markerNameWithColon, translator.convertToDuration(time));
     }
 
+    @Override
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "intro", String.valueOf(intros.length),
                 intros[intros.length - 1].getEnd());
@@ -127,6 +128,7 @@ public class BranchingLogic {
         }
     }
 
+    @Override
     public Duration getClickSeekTime(Duration currentTime) {
 
         List<Duration> durations = new ArrayList<>();
