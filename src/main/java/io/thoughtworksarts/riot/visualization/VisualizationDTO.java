@@ -1,36 +1,35 @@
 package io.thoughtworksarts.riot.visualization;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class VisualizationDTO {
 
 
-    private Map<String, ArrayList<String>> emotionDataByActorId;
+    private Map<String, Map<String, ArrayList<String>>> emotionDataByActorId;
 
-    public Map<String, ArrayList<String>> getEmotionDataByActorId() {
+    public Map<String, Map<String, ArrayList<String>>> getEmotionDataByActorId() {
         return emotionDataByActorId;
     }
 
-    public void setEmotionDataByActorId(Map<String, ArrayList<String>> emotionDataByActorId) {
+    public void setEmotionDataByActorId(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId) {
         this.emotionDataByActorId = emotionDataByActorId;
     }
 
-    public ArrayList<String> getOrderedActorID() {
-        return orderedActorID;
+    public ArrayList<String> getOrderedActorId() {
+        return orderedActorId;
     }
 
-    public void setOrderedActorID(ArrayList<String> orderedActorID) {
-        this.orderedActorID = orderedActorID;
+    public void setOrderedActorId(ArrayList<String> orderedActorId) {
+        this.orderedActorId = orderedActorId;
     }
 
-    public VisualizationDTO(Map<String, ArrayList<String>> emotionDataByActorId, ArrayList<String> orderedActorID) {
+    public VisualizationDTO(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId, ArrayList<String> orderedActorId) {
         this.emotionDataByActorId = emotionDataByActorId;
-        this.orderedActorID = orderedActorID;
+        this.orderedActorId = orderedActorId;
     }
 
-    private ArrayList<String> orderedActorID;
+    private ArrayList<String> orderedActorId;
 
 
 

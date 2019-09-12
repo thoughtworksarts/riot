@@ -93,7 +93,7 @@ public class RiotBranchingLogic implements BranchingLogic {
 
                     ArrayList<String> orderedActorIds = new ArrayList<>();
                     orderedActorIds.add(actorId);
-                    eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, null);
+//                    eyeTrackingClient.createEyeTrackingVisualization(orderedActorIds, null);
 
                     facialRecognition.endImageCapture();
                     log.info("Exiting application: ");

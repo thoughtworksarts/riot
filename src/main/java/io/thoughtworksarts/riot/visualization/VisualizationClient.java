@@ -22,7 +22,7 @@ public class VisualizationClient {
     }
 
 
-    public HttpResponse createVisualization(ArrayList<String> orderedActorIds, Map<String, ArrayList<String>> emotionsByActorId) {
+    public HttpResponse createVisualization(ArrayList<String> orderedActorIds, Map<String, Map<String, ArrayList<String>>> emotionsByActorId) {
 
         VisualizationDTO visualizationDTO = new VisualizationDTO(emotionsByActorId, orderedActorIds);
 
@@ -33,7 +33,7 @@ public class VisualizationClient {
                     .uri(URI.create(baseUrl + "/visualization"))
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(visualizationDTO)))
                     .build();
-
+            System.out.println(objectMapper.writeValueAsString(visualizationDTO));
             return  httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {

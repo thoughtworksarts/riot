@@ -45,7 +45,6 @@ public class MediaControl extends BorderPane {
         this.audioPlayer = audioPlayer;
         this.audioOffset = audioOffset;
 
-
     }
 
     private JPanel setUpWebcamFeed(){
