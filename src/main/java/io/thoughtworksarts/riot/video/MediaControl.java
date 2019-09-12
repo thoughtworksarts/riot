@@ -38,6 +38,7 @@ public class MediaControl extends BorderPane {
 
     private MediaView mediaView;
     private Pane pane;
+    final SwingNode swingNode = new SwingNode();
 
     public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration videoStartTime, String filmPath, Duration audioOffset, String playbackPath) throws Exception {
         this.branchingLogic = branchingLogic;
@@ -47,10 +48,12 @@ public class MediaControl extends BorderPane {
         this.playbackPath = new File(String.valueOf(playbackPath)).toURI().toURL().toString();
 
         setUpFilmPlayer(pathToFilm, videoStartTime);
+
         setUpPlaybackPlayer(this.playbackPath);
 
 
         setUpPane(filmPlayer);
+        filmPlayer.setMute(true);
 //        setUpPane(playbackPlayer);
         //Audio related
         this.audioPlayer = audioPlayer;
@@ -139,10 +142,9 @@ public class MediaControl extends BorderPane {
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         mediaView.setPreserveRatio(true);
 
-        Pane pane = new Pane();
+        pane = new Pane();
         mediaView.setOnMouseClicked(event -> handleClick());
 
-        final SwingNode swingNode = new SwingNode();
         createAndSetSwingContent(swingNode);
         pane.getChildren().addAll(mediaView, swingNode);
         pane.setStyle("-fx-background-color: black;");
@@ -191,7 +193,7 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
-                    audioPlayer.seek(startTime.toSeconds());
+                    //audioPlayer.seek(startTime.toSeconds());
                 }
         );
     }
@@ -230,19 +232,19 @@ public class MediaControl extends BorderPane {
         log.info("Play");
 //        playbackPlayer.play();
         filmPlayer.play();
-        audioPlayer.resume();
+        //audioPlayer.resume();
     }
 
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
-        audioPlayer.seek(duration.add(audioOffset).toSeconds());
-        audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
+        //audioPlayer.seek(duration.add(audioOffset).toSeconds());
+        //audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
 
     }
 
     public void shutdown() {
         log.info("Shutting Down");
         filmPlayer.stop();
-        audioPlayer.shutdown();
+        //audioPlayer.shutdown();
     }
 }
