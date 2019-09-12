@@ -1,4 +1,4 @@
 package io.thoughtworksarts.riot.branching;
 
-public interface BranchingLogic {
+public class PerceptionBranchingLogic {
 }
