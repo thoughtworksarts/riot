@@ -1,7 +1,6 @@
 package io.thoughtworksarts.riot.audio;
 
 import com.synthbot.jasiohost.AsioDriver;
-import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.utilities.OSChecker;
 import javafx.scene.control.*;
 import java.util.List;

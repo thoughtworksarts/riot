@@ -96,8 +96,6 @@ public class FacialEmotionRecognitionAPI {
         }
         emotionProbabilities = new float[Emotion.values().length];
         Arrays.fill(emotionProbabilities, 0);
-        System.out.println("dominantEmotion");
-        System.out.println(maxEmotionEntry);
         return maxEmotionEntry.getKey();
     }
 

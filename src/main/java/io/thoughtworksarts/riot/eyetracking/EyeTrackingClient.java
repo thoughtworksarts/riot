@@ -45,12 +45,11 @@ public class EyeTrackingClient {
         }
     }
 
-    public void createEyeTrackingVisualization(ArrayList<String> orderedActorIds, Map<String, ArrayList<String>> emotionsByActorId) {
+    public void createEyeTrackingVisualization(ArrayList<String> orderedActorIds, Map<String, Map<String, ArrayList<String>>> emotionsByActorId) {
 
         VisualizationDTO visualizationDTO = new VisualizationDTO(emotionsByActorId, orderedActorIds);
-
         try {
-            URL url = new URL("http://127.0.0.1:5000/eye-tracking/visualization");
+            URL url = new URL("http://127.0.0.1:5000/visualization");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             setRequestBody(visualizationDTO, con);
