@@ -21,6 +21,7 @@ public class MoviePlayer {
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
         primaryStage.show();
+        mediaControl.play();
     }
 
     public Stage getStage()

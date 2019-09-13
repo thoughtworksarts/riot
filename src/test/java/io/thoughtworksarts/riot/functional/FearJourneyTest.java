@@ -47,7 +47,7 @@ public class FearJourneyTest extends Application {
         //Play the movie
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(root.getMedia().getAudio());
         RiotBranchingLogic branchingLogic = new RiotBranchingLogic(facialEmotionRecognitionAPI, jsonTranslator,root);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"),videoPath, jsonTranslator.convertToDuration("00:00.000"));
+        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"),videoPath, jsonTranslator.convertToDuration("00:00.000"), "");
 
 //        mediaControlSpy = Mockito.spy(mediaControl);
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
@@ -64,7 +64,6 @@ public class FearJourneyTest extends Application {
         //Skip the middle of fear of scene
         String startFearScene = levels[0].getBranch().get("fear").getStart();
         Duration nearStartOfFearScene = addTimeToDuration("00:03.00", startFearScene);
-
 
         String endFearScene = levels[0].getBranch().get("fear").getEnd();
         Duration nearEndOfFearScene = subtractTimeFromDuration("00:03.000", endFearScene);

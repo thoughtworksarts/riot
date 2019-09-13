@@ -26,6 +26,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private int actorIndex;
     private EyeTrackingClient eyeTrackingClient;
     private VisualizationClient visualizationClient;
+    private static final String SCENES_PLAYED_KEY = "scenesPlayed";
+    private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";;
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
@@ -44,11 +46,11 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private void initalizeEmotionsByActorIdMap() {
         this.emotionsByActorId = new HashMap<>();
         this.emotionsByActorId.put(actors[0], new HashMap<>());
-        this.emotionsByActorId.get(actors[0]).put("dominantEmotions", new ArrayList<>());
-        this.emotionsByActorId.get(actors[0]).put("scenesPlayed", new ArrayList<>());
+        this.emotionsByActorId.get(actors[0]).put(DOMINANT_EMOTIONS_KEY, new ArrayList<>());
+        this.emotionsByActorId.get(actors[0]).put(SCENES_PLAYED_KEY, new ArrayList<>());
         this.emotionsByActorId.put(actors[1], new HashMap<>());
-        this.emotionsByActorId.get(actors[1]).put("dominantEmotions", new ArrayList<>());
-        this.emotionsByActorId.get(actors[1]).put("scenesPlayed", new ArrayList<>());
+        this.emotionsByActorId.get(actors[1]).put(DOMINANT_EMOTIONS_KEY, new ArrayList<>());
+        this.emotionsByActorId.get(actors[1]).put(SCENES_PLAYED_KEY, new ArrayList<>());
     }
 
 
@@ -64,11 +66,21 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 addScenePlayed(arg);
                 if(isIntro(getCurrentLevel(arg))) return getFirstLevelOfStory(getNextLevel(arg));
                 if(isEndOfStoryOne(getCurrentLevel(arg))) return getIntroOfStoryTwo();
-                if(isEndOfStoryTwo(getCurrentLevel(arg))) return getPlaybackVisualization();
+                if(isEndOfStoryTwo(getCurrentLevel(arg))) return getVisualizationProcessing();
                 return getNextEmotionBranch(getNextLevel(arg));
             }
+            case "visualization-processing": {
+                return getVisualizationPlayback();
+            }
+//            case "credit": {
+//
+//            }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private Duration getVisualizationProcessing() {
+        return translator.convertToDuration(credits[0].getStart());
     }
 
     private Level getNextLevel(MediaMarkerEvent arg) {
@@ -76,18 +88,18 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private void addScenePlayed(MediaMarkerEvent arg) {
-        emotionsByActorId.get(actors[actorIndex]).get("scenesPlayed").add(arg.getMarker().getKey());
+        emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY).add(arg.getMarker().getKey());
     }
 
     @Override
     public Duration getCreditDuration() {
-        return translator.convertToDuration(credits[0].getStart());
+        return translator.convertToDuration(credits[2].getStart());
     }
 
-    private Duration getPlaybackVisualization() {
+    private Duration getVisualizationPlayback() {
         getDominantEmotion();
-        eyeTrackingClient.stopEyeTracking();
-        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
+//        eyeTrackingClient.stopEyeTracking();
+//        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
         return null;
     }
 
@@ -96,7 +108,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getFirstStory() {
-        eyeTrackingClient.startEyeTracking();
+//        eyeTrackingClient.startEyeTracking();
         return translator.convertToDuration(levels[0].getStart());
     }
 
@@ -119,7 +131,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
 
     private String getDominantEmotion() {
         String dominantEmotion = facialRecognition.getDominantEmotion().name().toLowerCase();
-        emotionsByActorId.get(actors[actorIndex]).get("dominantEmotions").add(dominantEmotion);
+        emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY).add(dominantEmotion);
         return dominantEmotion;
     }
 
@@ -141,8 +153,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "intro", String.valueOf(intros.length),
                 intros[intros.length - 1].getEnd());
-        addMarker(markers, "credit", String.valueOf(credits.length),
-                credits[credits.length - 1].getEnd());
+        addMarker(markers, "visualization-processing", String.valueOf(credits.length),
+                credits[1].getEnd());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());

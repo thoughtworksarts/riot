@@ -51,10 +51,9 @@ public class MediaControl extends BorderPane {
 
         setUpPlaybackPlayer(this.playbackPath);
 
-
+//        setUpPane(playbackPlayer);
         setUpPane(filmPlayer);
         filmPlayer.setMute(true);
-//        setUpPane(playbackPlayer);
         //Audio related
         this.audioPlayer = audioPlayer;
         this.audioOffset = audioOffset;
@@ -143,7 +142,6 @@ public class MediaControl extends BorderPane {
         mediaView.setPreserveRatio(true);
 
         pane = new Pane();
-        mediaView.setOnMouseClicked(event -> handleClick());
 
         createAndSetSwingContent(swingNode);
         pane.getChildren().addAll(mediaView, swingNode);
@@ -153,18 +151,14 @@ public class MediaControl extends BorderPane {
 
     private void setPane() {
         pane.getChildren().clear();
-        mediaView.setOnMouseClicked(event -> handleClick());
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
     }
 
     private void createAndSetSwingContent(final SwingNode swingNode) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        SwingUtilities.invokeLater(() -> {
                 swingNode.setContent(setUpWebcamFeed());
-            }
         });
     }
 
@@ -191,6 +185,10 @@ public class MediaControl extends BorderPane {
             }
         });
 
+        filmPlayer.setOnEndOfMedia(() -> {
+            filmPlayer.stop();
+        });
+
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
                     //audioPlayer.seek(startTime.toSeconds());
@@ -214,37 +212,13 @@ public class MediaControl extends BorderPane {
         });
     }
 
-    private void handleClick() {
-        Duration duration = branchingLogic.getClickSeekTime(filmPlayer.getCurrentTime());
-        if (duration != null) {
-            seek(duration);
-        } else {
-            log.info("Clicking is not allowed at this particular time point.");
-        }
-    }
-
-    public void pause() {
-        log.info("Pause");
-        filmPlayer.pause();
-    }
-
     public void play() {
-        log.info("Play");
-//        playbackPlayer.play();
         filmPlayer.play();
-        //audioPlayer.resume();
+//        playbackPlayer.play();
     }
 
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
-        //audioPlayer.seek(duration.add(audioOffset).toSeconds());
-        //audioPlayer.resume();  // this needs to be here because the audioPlayer stops after seeking sometimes
 
-    }
-
-    public void shutdown() {
-        log.info("Shutting Down");
-        filmPlayer.stop();
-        //audioPlayer.shutdown();
     }
 }

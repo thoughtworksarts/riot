@@ -29,8 +29,6 @@ public class Main extends Application {
     public static final String DEFAULT_FILES_PATH = "src/main/resources/facialrecognitionmodels/";
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
 
-    private MediaControl mediaControl;
-
     public static void main(String... args) {
         log.info("Starting Riot...");
         launch(args);
@@ -56,17 +54,13 @@ public class Main extends Application {
         BranchingLogic branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(audioPath);
 
-
-        mediaControl = new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"), "playbacks.mp4");
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(branchingLogic, audioPlayer,startTime ,filmPath, jsonTranslator.convertToDuration("00:00.000"), "playbacks.mp4"));
         moviePlayer.initialise();
-        mediaControl.play();
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        mediaControl.shutdown();
     }
 
     private static String getEmotionSetId(ConfigRoot configRoot) {

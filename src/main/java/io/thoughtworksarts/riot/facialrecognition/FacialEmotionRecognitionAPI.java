@@ -49,7 +49,7 @@ public class FacialEmotionRecognitionAPI {
                 try {
                     ImageIO.write(image, "jpg", imageFile);
                     recordEmotionProbabilities();
-                    Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+                    Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -69,7 +69,7 @@ public class FacialEmotionRecognitionAPI {
         for(int index=0; index < emotionPrediction.length; index++){
             emotionProbabilities[index]+=emotionPrediction[index];
         }
-        printProbabilitiesToConsole();
+//        printProbabilitiesToConsole();
     }
 
     private void printProbabilitiesToConsole() {
