@@ -29,9 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class MediaControl extends BorderPane {
 
     private BranchingLogic branchingLogic;
-    private RiotAudioPlayer audioPlayer;
     private MediaPlayer filmPlayer;
-    private final Duration audioOffset;
     private static volatile boolean webcamThreadRunning;
     private MediaPlayer playbackPlayer;
     private String playbackPath;
@@ -40,7 +38,7 @@ public class MediaControl extends BorderPane {
     private Pane pane;
     final SwingNode swingNode = new SwingNode();
 
-    public MediaControl(BranchingLogic branchingLogic, RiotAudioPlayer audioPlayer, Duration videoStartTime, String filmPath, Duration audioOffset, String playbackPath) throws Exception {
+    public MediaControl(BranchingLogic branchingLogic, Duration videoStartTime, String filmPath, String playbackPath) throws Exception {
         this.branchingLogic = branchingLogic;
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
@@ -54,9 +52,6 @@ public class MediaControl extends BorderPane {
 //        setUpPane(playbackPlayer);
         setUpPane(filmPlayer);
         filmPlayer.setMute(true);
-        //Audio related
-        this.audioPlayer = audioPlayer;
-        this.audioOffset = audioOffset;
     }
 
 
@@ -131,9 +126,20 @@ public class MediaControl extends BorderPane {
 
     }
 
+    private boolean isPaused = false;
 
     private void setUpPane(MediaPlayer mediaPlayer) {
         mediaView = new MediaView(mediaPlayer);
+        mediaView.setOnMouseClicked(event -> {
+            if(isPaused) {
+                filmPlayer.play();
+                isPaused = false;
+            }
+            else {
+                isPaused = true;
+                filmPlayer.pause();
+            }
+        });
 
         final DoubleProperty width = mediaView.fitWidthProperty();
         final DoubleProperty height = mediaView.fitHeightProperty();
@@ -143,8 +149,8 @@ public class MediaControl extends BorderPane {
 
         pane = new Pane();
 
-        createAndSetSwingContent(swingNode);
-        pane.getChildren().addAll(mediaView, swingNode);
+//        createAndSetSwingContent(swingNode);
+        pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
     }
@@ -169,6 +175,8 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setAutoPlay(false);
 
+
+
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
 
@@ -185,13 +193,8 @@ public class MediaControl extends BorderPane {
             }
         });
 
-        filmPlayer.setOnEndOfMedia(() -> {
-            filmPlayer.stop();
-        });
-
         filmPlayer.setOnReady(() -> {
                     filmPlayer.seek(startTime);
-                    //audioPlayer.seek(startTime.toSeconds());
                 }
         );
     }
