@@ -47,7 +47,7 @@ public class FearJourneyTest extends Application {
         //Play the movie
         RiotAudioPlayer audioPlayer = AudioPlayerConfigurator.getConfiguredRiotAudioPlayer(root.getMedia().getAudio());
         RiotBranchingLogic branchingLogic = new RiotBranchingLogic(facialEmotionRecognitionAPI, jsonTranslator,root);
-        mediaControl = new MediaControl(branchingLogic, audioPlayer, jsonTranslator.convertToDuration("04:00.000"),videoPath, jsonTranslator.convertToDuration("00:00.000"), "");
+        mediaControl = new MediaControl(branchingLogic, jsonTranslator.convertToDuration("04:00.000"),videoPath, "");
 
 //        mediaControlSpy = Mockito.spy(mediaControl);
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
@@ -89,7 +89,6 @@ public class FearJourneyTest extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        mediaControl.shutdown();
     }
 
 }

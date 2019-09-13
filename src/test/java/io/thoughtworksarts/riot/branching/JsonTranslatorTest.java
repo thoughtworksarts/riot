@@ -35,7 +35,7 @@ class JsonTranslatorTest {
     void createLogicTreeShouldContainCorrectPathToVideoFile() throws Exception {
         String videoPath = root.getMedia().getVideo();
 
-        assertTrue(videoPath.contains(".m4v"));
+        assertTrue(videoPath.contains(".mp4"));
         File file = new File(videoPath);
 
         try{
