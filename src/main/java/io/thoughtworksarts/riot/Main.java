@@ -28,7 +28,10 @@ public class Main extends Application {
     public static final String DEFAULT_FILES_PATH = "src/main/resources/facialrecognitionmodels/";
     public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
     // TODO: Replace path with correct path to python calibration script
-    public static final String PATH_TO_CALIBRATION_SCRIPT = "src/main/java/io/thoughtworksarts/riot/utilities/test1.py";
+    public static final String PATH_TO_CALIBRATION_SCRIPT = "/Users/laurenoneal/perception-calibration/app.py";
+
+
+         //public static final String PATH_TO_CALIBRATION_SCRIPT = "src/main/java/io/thoughtworksarts/riot/utilities/test1.py";
 
     public static void main(String... args) {
         log.info("Starting Riot...");
@@ -40,7 +43,7 @@ public class Main extends Application {
         log.info("Beginning calibration...");
         try {
             log.info("Attempting calibration...");
-            ProcessBuilder pb = new ProcessBuilder("python", PATH_TO_CALIBRATION_SCRIPT);
+            ProcessBuilder pb = new ProcessBuilder("/usr/local/opt/python36/bin/python3.6", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
             Process p = pb.start();
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
