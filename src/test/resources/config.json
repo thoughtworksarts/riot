@@ -1,7 +1,7 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/perception-hi-res.mp4",
+    "video": "src/main/resources/video/perception-hi-res-test.mp4",
     "audio": "src/main/resources/audio/audio_test.wav"
   },
   "intros": [
