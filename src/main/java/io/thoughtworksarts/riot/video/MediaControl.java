@@ -10,6 +10,7 @@ import io.thoughtworksarts.riot.branching.BranchingLogic;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.embed.swing.SwingNode;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -80,7 +81,6 @@ public class MediaControl extends BorderPane {
                             webcam.setViewSize(WebcamResolution.VGA.getSize());
                         }
 
-
                         WebcamPanel panel = new WebcamPanel(webcam, true);
                         webcam.setImageTransformer(new WebcamImageTransformer() {
                             @Override
@@ -132,9 +132,29 @@ public class MediaControl extends BorderPane {
 
     }
 
+    private boolean isPaused = false;
 
     private void setUpPane(MediaPlayer mediaPlayer) {
         mediaView = new MediaView(mediaPlayer);
+
+        mediaView.setOnMouseClicked(event -> {
+            if(isPaused) {
+                filmPlayer.play();
+                isPaused = false;
+            }
+            else {
+                isPaused = true;
+                filmPlayer.pause();
+            }
+        });
+
+        // THIS IS WHERE WE SET THE EVENT HANDLER FOR WHEN SPACE BAR IS HIT AT INTRO TO BREAK OUT OF LOOP
+//
+//        mediaView.setOnKeyPressed(e -> {
+//            if (e.getCode() == KeyCode.SPACE) {
+//                filmPlayer.seek(this.branchingLogic.getStartOfIntroTwo());
+//            }
+//        });
 
         final DoubleProperty width = mediaView.fitWidthProperty();
         final DoubleProperty height = mediaView.fitHeightProperty();
@@ -196,6 +216,19 @@ public class MediaControl extends BorderPane {
                     //audioPlayer.seek(startTime.toSeconds());
                 }
         );
+
+
+        /* THIS IS A HACK TO GET THE INTRODUCTION TO LOOP. COULD BE DONE IN A BETTER WAY */
+
+        filmPlayer.setStopTime(this.branchingLogic.getEndOfIntro());
+
+        filmPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                filmPlayer.seek(Duration.ZERO);
+            }
+        });
+
     }
 
     private void setUpPlaybackPlayer(String pathToFilm) {

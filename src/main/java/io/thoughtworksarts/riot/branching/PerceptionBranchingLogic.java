@@ -170,4 +170,16 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     public Duration getClickSeekTime(Duration currentTime) {
         return null;
     }
+
+    @Override
+    public Duration getEndOfIntro() {
+        return translator.convertToDuration(intros[0].getEnd());
+    }
+
+    @Override
+    public Duration getStartOfIntroTwo() {
+        return translator.convertToDuration(intros[1].getStart());
+    }
+
+
 }

@@ -15,5 +15,9 @@ public interface BranchingLogic {
 
     Duration getCreditDuration();
 
+    Duration getEndOfIntro();
+
+    Duration getStartOfIntroTwo();
+
 
 }

@@ -207,4 +207,10 @@ public class RiotBranchingLogic implements BranchingLogic {
             emoTimes.add(currTimes);
         }
     }
+
+    public Duration getEndOfIntro() {return this.translator.convertToDuration(intros[0].getEnd());}
+
+    @Override
+    public Duration getStartOfIntroTwo() { return this.translator.convertToDuration(intros[1].getStart());}
+
 }
