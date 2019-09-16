@@ -118,11 +118,6 @@ public class RiotBranchingLogic implements BranchingLogic {
         return translator.convertToDuration(intros[1].getStart());
     }
 
-    public Duration getEndOfIntro() {
-        return translator.convertToDuration(intros[0].getEnd());
-    }
-
-
     public void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time) {
         String markerNameWithColon = nameForMarker + ":" + index;
         markers.put(markerNameWithColon, translator.convertToDuration(time));

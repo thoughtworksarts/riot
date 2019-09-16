@@ -8,6 +8,7 @@ import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,10 +68,15 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             }
             case "level": {
                 addScenePlayed(arg);
-                if(isIntro(getCurrentLevel(arg))) return getFirstLevelOfStory(getNextLevel(arg));
+                if(isIntro(getCurrentLevel(arg))) return getInteractiveMode();
                 if(isEndOfStoryOne(getCurrentLevel(arg))) return getCalibratingGraphic();
                 if(isEndOfStoryTwo(getCurrentLevel(arg))) return getVisualizationProcessing();
                 return getNextEmotionBranch(getNextLevel(arg));
+            }
+            case "interactive": {
+                facialRecognition.getDominantEmotion();
+                if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
+                else return translator.convertToDuration(levels[7].getStart());
             }
             case "calibrating": {
                 return getIntroOfStoryTwo();
@@ -90,6 +96,9 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getVisualizationProcessing() {
+        getDominantEmotion();
+        eyeTrackingClient.stopEyeTracking();
+        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
         return translator.convertToDuration(credits[1].getStart());
     }
 
@@ -107,10 +116,11 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getVisualizationPlayback() {
-        getDominantEmotion();
-//        eyeTrackingClient.stopEyeTracking();
-//        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
-        return getVisualizationProcessing();
+        File f = new File("/Users/emilio.escobedo/repos/riot/playbacks.mp4");
+        if(f.exists() && !f.isDirectory()) {
+            return null;
+        }
+        return translator.convertToDuration(credits[1].getStart());
     }
 
     private int getCurrentLevel(MediaMarkerEvent arg) {
@@ -122,17 +132,12 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     public Duration getFirstStory() {
-//        eyeTrackingClient.startEyeTracking();
+        eyeTrackingClient.startEyeTracking();
         return translator.convertToDuration(levels[0].getStart());
     }
 
     private Duration getNextEmotionBranch(Level level) {
         return translator.convertToDuration(getEmotionBranch(level));
-    }
-
-    private Duration getFirstLevelOfStory(Level level) {
-        facialRecognition.getDominantEmotion(); // this restarts the accumulating data for the emotion detection
-        return translator.convertToDuration(level.getStart());
     }
 
     private boolean isIntro(int level) {
@@ -163,9 +168,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         return translator.convertToDuration(levels[6].getStart());
     }
 
-    @Override
-    public Duration getEndOfIntro() {
-        return translator.convertToDuration(intros[0].getEnd());
+    private Duration getInteractiveMode() {
+        return translator.convertToDuration(intros[3].getStart());
     }
 
     @Override
@@ -173,9 +177,12 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "loop", String.valueOf(intros.length),
                 intros[0].getEnd());
         addMarker(markers, "intro", String.valueOf(intros.length),
+                intros[intros.length - 2].getEnd());
+        addMarker(markers, "interactive", String.valueOf(intros.length),
                 intros[intros.length - 1].getEnd());
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
+        addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
@@ -192,9 +199,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             level.getBranch().forEach((s, emotionBranch) ->
                     addMarker(markers, "level:"+String.valueOf(level.getLevel()), s, emotionBranch.getEnd()));
         }
-
-        addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
-
     }
 
     public void addMarker(Map<String, Duration> markers, String nameForMarker, String index, String time) {

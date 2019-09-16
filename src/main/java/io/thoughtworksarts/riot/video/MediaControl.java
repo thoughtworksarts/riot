@@ -45,8 +45,6 @@ public class MediaControl extends BorderPane {
         this.playbackPath = new File(String.valueOf(playbackPath)).toURI().toURL().toString();
 
         setUpFilmPlayer(pathToFilm, videoStartTime);
-
-        setUpPlaybackPlayer(this.playbackPath);
         setUpPane(filmPlayer);
         filmPlayer.setMute(true);
     }
@@ -103,8 +101,8 @@ public class MediaControl extends BorderPane {
 
             if(duration == null)
             {
+                setUpPlaybackPlayer(this.playbackPath);
                 filmPlayer.stop();
-
                 mediaView.setMediaPlayer(playbackPlayer);
                 setPane();
                 playbackPlayer.play();
@@ -118,7 +116,6 @@ public class MediaControl extends BorderPane {
                     filmPlayer.seek(startTime);
                 }
         );
-
     }
 
     private void setUpPlaybackPlayer(String pathToFilm) {
@@ -139,7 +136,6 @@ public class MediaControl extends BorderPane {
 
     public void play() {
         filmPlayer.play();
-//        playbackPlayer.play();
     }
 
     public void seek(Duration duration) {

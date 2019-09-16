@@ -17,7 +17,5 @@ public interface BranchingLogic {
 
     Duration getIntro();
 
-    Duration getEndOfIntro();
-
 
 }
