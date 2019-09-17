@@ -47,5 +47,9 @@ public class EyeTrackingClient {
         con.setRequestProperty("Content-Length", Integer.toString(query.length()));
         con.getOutputStream().write(query.getBytes("UTF8"));
     }
+
+    public void calibrate() {
+
+    }
 }
 

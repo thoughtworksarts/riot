@@ -67,9 +67,13 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "loop": {
                 return getLoop();
             }
+            case "initial-intro": {
+                eyeTrackingClient.calibrate();
+                break;
+            }
             case "intro": {
-                return getCreditDuration();
-//                return getFirstStory();
+//                return getCreditDuration();
+                return getFirstStory();
             }
             case "level": {
                 addScenePlayed(arg);
@@ -182,6 +186,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "loop", String.valueOf(intros.length),
                 intros[0].getEnd());
+        addMarker(markers, "initial-intro", String.valueOf(intros.length),
+                intros[intros.length - 3].getEnd());
         addMarker(markers, "intro", String.valueOf(intros.length),
                 intros[intros.length - 2].getEnd());
         addMarker(markers, "interactive", String.valueOf(intros.length),
@@ -189,7 +195,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
-//        addMarker(markers, "credits", String.valueOf(credits.length), credits[credits.length - 1].getEnd());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
