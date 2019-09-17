@@ -36,31 +36,6 @@ public class Main extends Application {
     }
 
     @Override
-    public void init() {
-        log.info("Beginning calibration...");
-        try {
-            log.info("Attempting calibration...");
-            ProcessBuilder pb = new ProcessBuilder("python", PATH_TO_CALIBRATION_SCRIPT);
-            Process p = pb.start();
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                try {
-                    if (line.equals("Calibration process concluded")) {
-                        log.info(line);
-                    }
-                } catch (Exception e) {
-                    log.info("Failure during calibration.");
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            log.info("Calibration failed.");
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void start(Stage primaryStage) throws Exception {
         JsonTranslator jsonTranslator = new JsonTranslator();
         ConfigRoot jsonConfiguration = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);
