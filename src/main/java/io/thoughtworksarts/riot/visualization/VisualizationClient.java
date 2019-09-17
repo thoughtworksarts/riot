@@ -34,8 +34,9 @@ public class VisualizationClient {
                     .uri(URI.create(baseUrl + "/visualization"))
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(visualizationDTO)))
                     .build();
-            log.info(objectMapper.writeValueAsString(visualizationDTO));
-            return  httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(objectMapper.writeValueAsString(visualizationDTO));
+            return (HttpResponse) httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {
             e.printStackTrace();
