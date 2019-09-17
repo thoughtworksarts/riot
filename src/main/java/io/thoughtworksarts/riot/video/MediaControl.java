@@ -7,14 +7,17 @@ import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaMarkerEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -100,10 +103,10 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setAutoPlay(false);
 
-
-
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
+
+            String category = arg.getMarker().getKey().split(":")[0];
 
             if(duration == null)
             {
@@ -112,6 +115,9 @@ public class MediaControl extends BorderPane {
                 mediaView.setMediaPlayer(playbackPlayer);
                 setPane();
                 playbackPlayer.play();
+            }
+            else if(category.equals("initial-intro")){
+                filmPlayer.pause();
             }
             else {
                 seek(duration);
