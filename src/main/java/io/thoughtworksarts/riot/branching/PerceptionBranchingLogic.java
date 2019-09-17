@@ -9,6 +9,9 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,7 +75,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 break;
             }
             case "intro": {
-//                return getCreditDuration();
                 return getFirstStory();
             }
             case "level": {
@@ -93,7 +95,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 return getNextEmotionBranch(getNextLevel(arg));
             }
             case "interactive": {
-                facialRecognition.getDominantEmotion();
+                restartFacialRecognition();
                 eyeTrackingClient.startEyeTracking();
                 if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
                 else return translator.convertToDuration(levels[7].getStart());
@@ -106,6 +108,10 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private void restartFacialRecognition() {
+        facialRecognition.getDominantEmotion();
     }
 
     public Duration getLoop() {
@@ -134,8 +140,11 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getVisualizationPlayback() {
-        File f = new File("/Users/emilio.escobedo/repos/riot/playbacks.mp4");
-        if(f.exists() && !f.isDirectory()) {
+        String firstPlaybackPath = "/Users/emilio.escobedo/repos/riot/" + actors[0] + "-playback.mp4";
+        String secondPlaybackPath = "/Users/emilio.escobedo/repos/riot/" + actors[1] + "-playback.mp4";
+        File f = new File(firstPlaybackPath);
+        File g = new File(secondPlaybackPath);
+        if(f.exists() && !f.isDirectory() && g.exists() && !g.isDirectory()) {
             return null;
         }
         return translator.convertToDuration(credits[1].getStart());

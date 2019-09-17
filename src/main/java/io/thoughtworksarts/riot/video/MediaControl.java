@@ -1,23 +1,18 @@
 package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.branching.BranchingConfigurationLoader;
-import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
+import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaMarkerEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -25,10 +20,10 @@ import java.io.File;
 @Slf4j
 public class MediaControl extends BorderPane {
 
-    private BranchingLogic branchingLogic;
+    private PerceptionBranchingLogic branchingLogic;
     private MediaPlayer filmPlayer;
     private MediaPlayer playbackPlayer;
-    private String playbackPath;
+    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     private BranchingConfigurationLoader branchingConfigurationLoader;
     private JsonTranslator jsonTranslator;
@@ -37,24 +32,24 @@ public class MediaControl extends BorderPane {
     private MediaView mediaView;
     private Pane pane;
     private MoviePlayer moviePlayer;
+    private ConfigRoot currentConfiguration;
 
-    public MediaControl(Duration videoStartTime, String filmPath, String playbackPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws Exception {
+    public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws Exception {
         this.facialRecognition = facialRecognition;
         this.jsonTranslator = jsonTranslator;
         this.branchingConfigurationLoader = new BranchingConfigurationLoader(jsonTranslator);
+        this.mediaView = new MediaView();
+        this.pane = new Pane();
 
-        //Video relate
-        String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
-        this.playbackPath = new File(String.valueOf(playbackPath)).toURI().toURL().toString();
-
-        setUpFilmPlayer(pathToFilm, videoStartTime);
-        setUpPane(filmPlayer);
+        setUpFilmPlayer(new File(filmPath).toURI().toString());
+        setUpMediaViewFor(filmPlayer);
         filmPlayer.setMute(true);
         loadNextConfiguration();
     }
 
     private void loadNextConfiguration() {
-        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, branchingConfigurationLoader.getNextConfiguration());
+        currentConfiguration = branchingConfigurationLoader.getNextConfiguration();
+        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, currentConfiguration);
         branchingLogic.recordMarkers(filmPlayer.getMedia().getMarkers());
     }
 
@@ -64,8 +59,8 @@ public class MediaControl extends BorderPane {
 
     private boolean isPaused = false;
 
-    private void setUpPane(MediaPlayer mediaPlayer) {
-        mediaView = new MediaView(mediaPlayer);
+    private void setUpMediaViewFor(MediaPlayer mediaPlayer) {
+        mediaView.setMediaPlayer(mediaPlayer);
         mediaView.setOnMouseClicked(event -> {
             if(isPaused) {
                 filmPlayer.play();
@@ -83,45 +78,23 @@ public class MediaControl extends BorderPane {
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         mediaView.setPreserveRatio(true);
 
-        pane = new Pane();
-        pane.getChildren().add(mediaView);
-        pane.setStyle("-fx-background-color: black;");
-        setCenter(pane);
-    }
-
-    private void setPane() {
         pane.getChildren().clear();
         pane.getChildren().add(mediaView);
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
+
     }
 
-    private void setUpFilmPlayer(String pathToFilm, Duration startTime) {
+    private void setUpFilmPlayer(String pathToFilm) {
         Media media = new Media(pathToFilm);
-//        branchingLogic.recordMarkers(media.getMarkers());
         filmPlayer = new MediaPlayer(media);
 
         filmPlayer.setAutoPlay(false);
 
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
-
-            String category = arg.getMarker().getKey().split(":")[0];
-
-            if(duration == null)
-            {
-                setUpPlaybackPlayer(this.playbackPath);
-                filmPlayer.stop();
-                mediaView.setMediaPlayer(playbackPlayer);
-                setPane();
-                playbackPlayer.play();
-            }
-            else if(category.equals("initial-intro")){
-                filmPlayer.pause();
-            }
-            else {
-                seek(duration);
-            }
+            if(duration == null) playFirstPlayback();
+            else seek(duration);
         });
 
         filmPlayer.setOnEndOfMedia(() -> {
@@ -130,22 +103,32 @@ public class MediaControl extends BorderPane {
             seek(branchingLogic.getLoop());
             moviePlayer.activateSpacebarEventHandler();
         });
-
-
     }
 
-    private void setUpPlaybackPlayer(String pathToFilm) {
+    private void playFirstPlayback() {
+        filmPlayer.pause();
+        MediaPlayer firstPlayback =
+                new MediaPlayer(new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[0] + "-playback.mp4").toURI().toString()));
+        firstPlayback.setOnEndOfMedia(() -> {
+            playSecondPlayback();
+        });
+        setUpMediaViewFor(firstPlayback);
+        firstPlayback.play();
+        log.info("Play on 1st playback");
+    }
 
-        Media media = new Media(pathToFilm);
-        playbackPlayer = new MediaPlayer(media);
-        //media
-        playbackPlayer.setOnEndOfMedia(() -> {
-            playbackPlayer.pause();
-            mediaView.setMediaPlayer(filmPlayer);
-            setPane();
+    private void playSecondPlayback() {
+
+        MediaPlayer secondPlayback =
+                new MediaPlayer(new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[1] + "-playback.mp4").toURI().toString()));
+        secondPlayback.setOnEndOfMedia(() -> {
+            setUpMediaViewFor(filmPlayer);
             seek(this.branchingLogic.getCreditDuration());
             filmPlayer.play();
         });
+        setUpMediaViewFor(secondPlayback);
+        secondPlayback.play();
+        log.info("Play on 2nd playback");
     }
 
     public void play() {
