@@ -1,15 +1,12 @@
 package io.thoughtworksarts.riot.video;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamImageTransformer;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
-import com.google.common.util.concurrent.Uninterruptibles;
-import io.thoughtworksarts.riot.audio.RiotAudioPlayer;
+import io.thoughtworksarts.riot.branching.BranchingConfigurationLoader;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
+import io.thoughtworksarts.riot.branching.JsonTranslator;
+import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
+import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.embed.swing.SwingNode;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -20,12 +17,7 @@ import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class MediaControl extends BorderPane {
@@ -35,11 +27,19 @@ public class MediaControl extends BorderPane {
     private MediaPlayer playbackPlayer;
     private String playbackPath;
 
+    private BranchingConfigurationLoader branchingConfigurationLoader;
+    private JsonTranslator jsonTranslator;
+    private FacialEmotionRecognitionAPI facialRecognition;
+
     private MediaView mediaView;
     private Pane pane;
+    private MoviePlayer moviePlayer;
 
-    public MediaControl(BranchingLogic branchingLogic, Duration videoStartTime, String filmPath, String playbackPath) throws Exception {
-        this.branchingLogic = branchingLogic;
+    public MediaControl(Duration videoStartTime, String filmPath, String playbackPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws Exception {
+        this.facialRecognition = facialRecognition;
+        this.jsonTranslator = jsonTranslator;
+        this.branchingConfigurationLoader = new BranchingConfigurationLoader(jsonTranslator);
+
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
         this.playbackPath = new File(String.valueOf(playbackPath)).toURI().toURL().toString();
@@ -47,6 +47,12 @@ public class MediaControl extends BorderPane {
         setUpFilmPlayer(pathToFilm, videoStartTime);
         setUpPane(filmPlayer);
         filmPlayer.setMute(true);
+        loadNextConfiguration();
+    }
+
+    private void loadNextConfiguration() {
+        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, branchingConfigurationLoader.getNextConfiguration());
+        branchingLogic.recordMarkers(filmPlayer.getMedia().getMarkers());
     }
 
     public void startExperience() {
@@ -89,7 +95,7 @@ public class MediaControl extends BorderPane {
 
     private void setUpFilmPlayer(String pathToFilm, Duration startTime) {
         Media media = new Media(pathToFilm);
-        branchingLogic.recordMarkers(media.getMarkers());
+//        branchingLogic.recordMarkers(media.getMarkers());
         filmPlayer = new MediaPlayer(media);
 
         filmPlayer.setAutoPlay(false);
@@ -112,10 +118,14 @@ public class MediaControl extends BorderPane {
             }
         });
 
-        filmPlayer.setOnReady(() -> {
-                    filmPlayer.seek(startTime);
-                }
-        );
+        filmPlayer.setOnEndOfMedia(() -> {
+            filmPlayer.getMedia().getMarkers().clear();
+            loadNextConfiguration();
+            seek(branchingLogic.getLoop());
+            moviePlayer.activateSpacebarEventHandler();
+        });
+
+
     }
 
     private void setUpPlaybackPlayer(String pathToFilm) {
@@ -124,12 +134,10 @@ public class MediaControl extends BorderPane {
         playbackPlayer = new MediaPlayer(media);
         //media
         playbackPlayer.setOnEndOfMedia(() -> {
-            playbackPlayer.stop();
-            filmPlayer.setStartTime(this.branchingLogic.getCreditDuration());
-
+            playbackPlayer.pause();
             mediaView.setMediaPlayer(filmPlayer);
-
             setPane();
+            seek(this.branchingLogic.getCreditDuration());
             filmPlayer.play();
         });
     }
@@ -141,5 +149,9 @@ public class MediaControl extends BorderPane {
     public void seek(Duration duration) {
         filmPlayer.seek(duration);
 
+    }
+
+    public void setMoviePlayer(MoviePlayer moviePlayer) {
+        this.moviePlayer = moviePlayer;
     }
 }

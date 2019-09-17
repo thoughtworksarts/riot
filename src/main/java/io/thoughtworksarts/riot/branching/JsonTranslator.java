@@ -14,13 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JsonTranslator {
 
-    @Getter private ConfigRoot root;
-
     public ConfigRoot populateModelsFromJson(String pathToConfig) throws Exception {
         String jsonConfig = JSONReader.readFile(pathToConfig);
         ObjectMapper objectMapper = new ObjectMapper();
-        root = objectMapper.readValue(jsonConfig, ConfigRoot.class);
-        return root;
+        return objectMapper.readValue(jsonConfig, ConfigRoot.class);
     }
 
     public Duration convertToDuration(String time) {

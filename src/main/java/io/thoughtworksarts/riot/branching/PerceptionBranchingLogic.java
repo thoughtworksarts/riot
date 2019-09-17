@@ -28,20 +28,24 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private EyeTrackingClient eyeTrackingClient;
     private VisualizationClient visualizationClient;
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
-    private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";;
+    private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
+        this.eyeTrackingClient = new EyeTrackingClient();
+        this.visualizationClient = new VisualizationClient();
+        this.actorIndex = 0;
+        loadConfiguration(configRoot);
+        initalizeEmotionsByActorIdMap();
+
+    }
+
+    private void loadConfiguration(ConfigRoot configRoot) {
         this.levels = configRoot.getLevels();
         this.intros = configRoot.getIntros();
         this.credits = configRoot.getCredits();
         this.actors = configRoot.getActors();
-        this.eyeTrackingClient = new EyeTrackingClient();
-        this.visualizationClient = new VisualizationClient();
-        this.actorIndex = 0;
-        initalizeEmotionsByActorIdMap();
-
     }
 
     private void initalizeEmotionsByActorIdMap() {
@@ -61,10 +65,11 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         String category = arg.getMarker().getKey().split(":")[0];
         switch (category) {
             case "loop": {
-                return translator.convertToDuration(intros[0].getStart());
+                return getLoop();
             }
             case "intro": {
-                return getFirstStory();
+                return getCreditDuration();
+//                return getFirstStory();
             }
             case "level": {
                 addScenePlayed(arg);
@@ -84,11 +89,12 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "visualization-processing": {
                 return getVisualizationPlayback();
             }
-//            case "credit": {
-//
-//            }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    public Duration getLoop() {
+        return translator.convertToDuration(intros[0].getStart());
     }
 
     private Duration getCalibratingGraphic() {
@@ -183,6 +189,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
+//        addMarker(markers, "credits", String.valueOf(credits.length), credits[credits.length - 1].getEnd());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());

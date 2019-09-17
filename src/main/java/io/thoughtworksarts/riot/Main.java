@@ -76,9 +76,9 @@ public class Main extends Application {
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
 //        BranchingLogic branchingLogic = new RiotBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
-        BranchingLogic branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator,jsonConfiguration);
+//        BranchingLogic branchingLogic = new PerceptionBranchingLogic(jsonTranslator, jsonConfiguration);
 
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(branchingLogic, startTime, filmPath, "playbacks.mp4"));
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(startTime, filmPath, "playbacks.mp4", facialRecognition, jsonTranslator));
         moviePlayer.initialise();
     }
 
