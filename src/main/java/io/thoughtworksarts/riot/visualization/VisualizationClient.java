@@ -1,6 +1,8 @@
 package io.thoughtworksarts.riot.visualization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,7 +10,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Map;
 
-
+@Slf4j
 public class VisualizationClient {
     private String baseUrl = "http://127.0.0.1:5000";
     private HttpClient httpClient;
@@ -22,18 +24,17 @@ public class VisualizationClient {
     }
 
 
-    public HttpResponse createVisualization(ArrayList<String> orderedActorIds, Map<String, Map<String, ArrayList<String>>> emotionsByActorId) {
+    public HttpResponse createVisualization(String actorId, ArrayList dominantEmotions, ArrayList scenesPlayed) {
+        log.info("Creating visualization");
+        VisualizationDTO visualizationDTO = new VisualizationDTO(actorId, dominantEmotions, scenesPlayed);
 
-        VisualizationDTO visualizationDTO = new VisualizationDTO(emotionsByActorId, orderedActorIds);
-
-        HttpRequest request = null;
-
+        HttpRequest request;
         try {
             request = HttpRequest.newBuilder()
                     .uri(URI.create(baseUrl + "/visualization"))
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(visualizationDTO)))
                     .build();
-            System.out.println(objectMapper.writeValueAsString(visualizationDTO));
+            log.info(objectMapper.writeValueAsString(visualizationDTO));
             return  httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {
@@ -41,11 +42,6 @@ public class VisualizationClient {
             throw new RuntimeException(e);
         }
 
-
-    }
-
-
-    public void playVisualization(){
 
     }
 }

@@ -21,6 +21,7 @@ public class EyeTrackingClient {
     }
 
     public void startEyeTracking() {
+        log.info("Starting eye tracking");
         String url = "http://127.0.0.1:5000/eye-tracking/start";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
@@ -34,6 +35,7 @@ public class EyeTrackingClient {
     }
 
     public void stopEyeTracking() {
+        log.info("Stopping eye tracking");
         String url = "http://127.0.0.1:5000/eye-tracking/stop";
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
@@ -44,14 +46,6 @@ public class EyeTrackingClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void setRequestBody(Object body, HttpURLConnection con) throws IOException {
-        con.setDoOutput(true);
-        con.addRequestProperty("Content-Type", "application/json");
-        String query = objectMapper.writeValueAsString(body);
-        con.setRequestProperty("Content-Length", Integer.toString(query.length()));
-        con.getOutputStream().write(query.getBytes("UTF8"));
     }
 
     public void calibrate() {
@@ -80,7 +74,7 @@ public class EyeTrackingClient {
                 e.printStackTrace();
             }
 
-        }).start();
+        });//.start();
     }
 
 

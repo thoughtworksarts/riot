@@ -21,7 +21,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private FacialEmotionRecognitionAPI facialRecognition;
     private Level[] levels;
     private Intro[] intros;
-    private Map<String, Map<String, ArrayList<String>>> emotionsByActorId;
+    private Map<String, Map<String, ArrayList>> emotionsByActorId;
     private Credits[] credits;
     private String[] actors;
     private int actorIndex;
@@ -78,12 +78,23 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "level": {
                 addScenePlayed(arg);
                 if(isIntro(getCurrentLevel(arg))) return getInteractiveMode();
-                if(isEndOfStoryOne(getCurrentLevel(arg))) return getCalibratingGraphic();
-                if(isEndOfStoryTwo(getCurrentLevel(arg))) return getVisualizationProcessing();
+                if(isEndOfStoryOne(getCurrentLevel(arg))) {
+                    getDominantEmotion();
+                    eyeTrackingClient.stopEyeTracking();
+                    visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
+                    return getCalibratingGraphic();
+                }
+                if(isEndOfStoryTwo(getCurrentLevel(arg))) {
+                    getDominantEmotion();
+                    eyeTrackingClient.stopEyeTracking();
+                    visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
+                    return getVisualizationProcessing();
+                }
                 return getNextEmotionBranch(getNextLevel(arg));
             }
             case "interactive": {
                 facialRecognition.getDominantEmotion();
+                eyeTrackingClient.startEyeTracking();
                 if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
                 else return translator.convertToDuration(levels[7].getStart());
             }
@@ -106,9 +117,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getVisualizationProcessing() {
-        getDominantEmotion();
-        eyeTrackingClient.stopEyeTracking();
-        visualizationClient.createVisualization(new ArrayList<>(Arrays.asList(actors)), emotionsByActorId);
         return translator.convertToDuration(credits[1].getStart());
     }
 
@@ -142,7 +150,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     public Duration getFirstStory() {
-        eyeTrackingClient.startEyeTracking();
         return translator.convertToDuration(levels[0].getStart());
     }
 

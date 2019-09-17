@@ -5,32 +5,25 @@ import java.util.Map;
 
 public class VisualizationDTO {
 
+    private String actorId;
+    private ArrayList dominantEmotions;
+    private ArrayList scenesPlayed;
 
-    private Map<String, Map<String, ArrayList<String>>> emotionDataByActorId;
-
-    public Map<String, Map<String, ArrayList<String>>> getEmotionDataByActorId() {
-        return emotionDataByActorId;
+    public VisualizationDTO(String actorId, ArrayList dominantEmotions, ArrayList scenesPlayed) {
+        this.actorId = actorId;
+        this.dominantEmotions = dominantEmotions;
+        this.scenesPlayed = scenesPlayed;
     }
 
-    public void setEmotionDataByActorId(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId) {
-        this.emotionDataByActorId = emotionDataByActorId;
+    public String getActorId() {
+        return actorId;
     }
 
-    public ArrayList<String> getOrderedActorId() {
-        return orderedActorId;
+    public ArrayList getDominantEmotions() {
+        return dominantEmotions;
     }
 
-    public void setOrderedActorId(ArrayList<String> orderedActorId) {
-        this.orderedActorId = orderedActorId;
+    public ArrayList getScenesPlayed() {
+        return scenesPlayed;
     }
-
-    public VisualizationDTO(Map<String, Map<String, ArrayList<String>>> emotionDataByActorId, ArrayList<String> orderedActorId) {
-        this.emotionDataByActorId = emotionDataByActorId;
-        this.orderedActorId = orderedActorId;
-    }
-
-    private ArrayList<String> orderedActorId;
-
-
-
 }
