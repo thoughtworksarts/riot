@@ -112,30 +112,29 @@ public class MediaControl extends BorderPane {
     }
     private void playFirstPlayback() {
         filmPlayer.pause();
-        MediaPlayer firstPlayback =
+        MediaPlayer mediaPlayer =
                 new MediaPlayer(new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[0] + "-playback.mp4").toURI().toString()));
-        firstPlayback.setOnEndOfMedia(() -> {
+        mediaPlayer.setOnEndOfMedia(() -> {
             playSecondPlayback();
+            mediaPlayer.dispose();
         });
-        setUpMediaViewFor(firstPlayback);
-        firstPlayback.play();
+        setUpMediaViewFor(mediaPlayer);
+        mediaPlayer.play();
         log.info("Play on 1st playback");
     }
 
     private void playSecondPlayback() {
-
         Media media = new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[1] + "-playback.mp4").toURI().toString());
-
-        MediaPlayer secondPlayback =
+        MediaPlayer mediaPlayer =
                 new MediaPlayer(media);
-        secondPlayback.setOnEndOfMedia(() -> {
+        mediaPlayer.setOnEndOfMedia(() -> {
             setUpMediaViewFor(filmPlayer);
             seek(this.branchingLogic.getCreditDuration());
             filmPlayer.play();
-
+            mediaPlayer.dispose();
         });
-        setUpMediaViewFor(secondPlayback);
-        secondPlayback.play();
+        setUpMediaViewFor(mediaPlayer);
+        mediaPlayer.play();
         log.info("Play on 2nd playback");
     }
 

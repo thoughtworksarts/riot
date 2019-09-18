@@ -106,9 +106,9 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "visualization-processing": {
                 return getVisualizationPlayback();
             }
-//            case "delete-playback": {
-//                deletePlaybackFiles();
-//            }
+            case "delete-playback": {
+                deletePlaybackFiles();
+            }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
     }
@@ -230,7 +230,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
-//        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
+        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
