@@ -40,6 +40,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         this.actorIndex = 0;
         loadConfiguration(configRoot);
         initalizeEmotionsByActorIdMap();
+        deletePlaybackFiles();
 
     }
 
@@ -77,8 +78,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 return getFirstStory();
             }
             case "level": {
-                addScenePlayed(arg);
                 if(isIntro(getCurrentLevel(arg))) return getInteractiveMode();
+                addScenePlayed(arg);
                 if(isEndOfStoryOne(getCurrentLevel(arg))) {
                     getDominantEmotion();
                     eyeTrackingClient.stopEyeTracking();
@@ -105,16 +106,20 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "visualization-processing": {
                 return getVisualizationPlayback();
             }
-            case "delete-playback": {
-                if(getFirstPlaybackFile().delete()) {
-                    log.info("Successfully deleted playback one.");
-                }
-                if(getSecondPlaybackFile().delete()) {
-                    log.info("Successfully deleted playback two.");
-                }
-            }
+//            case "delete-playback": {
+//                deletePlaybackFiles();
+//            }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private void deletePlaybackFiles() {
+        if(getFirstPlaybackFile().exists() && getFirstPlaybackFile().delete()) {
+            log.info("Successfully deleted playback one.");
+        }
+        if(getSecondPlaybackFile().exists() && getSecondPlaybackFile().delete()) {
+            log.info("Successfully deleted playback two.");
+        }
     }
 
     private File getSecondPlaybackFile() {
@@ -225,7 +230,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
-        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
+//        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
