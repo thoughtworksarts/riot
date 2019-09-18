@@ -24,8 +24,8 @@ public class MediaControl extends BorderPane {
 
     private PerceptionBranchingLogic branchingLogic;
     private MediaPlayer filmPlayer;
-    private MediaPlayer playbackPlayer;
-    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     private BranchingConfigurationLoader branchingConfigurationLoader;
     private JsonTranslator jsonTranslator;
@@ -38,7 +38,7 @@ public class MediaControl extends BorderPane {
 
     private EyeTrackingClient eyeTrackingClient;
 
-    public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws Exception {
+    public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) {
         this.facialRecognition = facialRecognition;
         this.jsonTranslator = jsonTranslator;
         this.branchingConfigurationLoader = new BranchingConfigurationLoader(jsonTranslator);
@@ -124,8 +124,10 @@ public class MediaControl extends BorderPane {
 
     private void playSecondPlayback() {
 
+        Media media = new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[1] + "-playback.mp4").toURI().toString());
+
         MediaPlayer secondPlayback =
-                new MediaPlayer(new Media(new File(PLAYBACK_BASE_PATH + currentConfiguration.getActors()[1] + "-playback.mp4").toURI().toString()));
+                new MediaPlayer(media);
         secondPlayback.setOnEndOfMedia(() -> {
             setUpMediaViewFor(filmPlayer);
             seek(this.branchingLogic.getCreditDuration());

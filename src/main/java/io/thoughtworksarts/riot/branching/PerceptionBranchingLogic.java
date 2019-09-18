@@ -9,9 +9,6 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +29,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private VisualizationClient visualizationClient;
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
+//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
@@ -107,18 +106,19 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 return getVisualizationPlayback();
             }
             case "delete-playback": {
-                File playback1 = new File("/Users/Kiosk/riot/" + actors[0] + "-playback.mp4");
-                File playback2 = new File("/Users/Kiosk/riot/" + actors[1] + "-playback.mp4");
-
-                if(playback1.delete()) {
+                if(getFirstPlaybackFile().delete()) {
                     log.info("Successfully deleted playback one.");
                 }
-                if(playback2.delete()) {
+                if(getSecondPlaybackFile().delete()) {
                     log.info("Successfully deleted playback two.");
                 }
             }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private File getSecondPlaybackFile() {
+        return new File(PLAYBACK_BASE_PATH + actors[1] + "-playback.mp4");
     }
 
     private void restartFacialRecognition() {
@@ -152,14 +152,16 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getVisualizationPlayback() {
-        String firstPlaybackPath = "/Users/Kiosk/riot/" + actors[0] + "-playback.mp4";
-        String secondPlaybackPath = "/Users/Kiosk/riot/" + actors[1] + "-playback.mp4";
-        File f = new File(firstPlaybackPath);
-        File g = new File(secondPlaybackPath);
+        File f = getFirstPlaybackFile();
+        File g = getSecondPlaybackFile();
         if(f.exists() && !f.isDirectory() && g.exists() && !g.isDirectory()) {
             return null;
         }
         return translator.convertToDuration(credits[1].getStart());
+    }
+
+    private File getFirstPlaybackFile() {
+        return new File(PLAYBACK_BASE_PATH + actors[0] + "-playback.mp4");
     }
 
     private int getCurrentLevel(MediaMarkerEvent arg) {
