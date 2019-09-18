@@ -1,8 +1,6 @@
 package io.thoughtworksarts.riot;
 
-import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
-import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworksarts.riot.facialrecognition.DeepLearningProcessor;
 import io.thoughtworksarts.riot.facialrecognition.Emotion;
@@ -15,9 +13,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +46,7 @@ public class Main extends Application {
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
 
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(startTime, filmPath, "playbacks.mp4", facialRecognition, jsonTranslator));
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(filmPath, facialRecognition, jsonTranslator));
         moviePlayer.initialise();
     }
 
