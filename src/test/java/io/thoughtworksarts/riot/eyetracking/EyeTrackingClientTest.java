@@ -12,14 +12,14 @@ class EyeTrackingClientTest {
 
     @Test
     public void test1() {
-        EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.startEyeTracking();
+//        EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
+//        eyeTrackingClient.startEyeTracking();
     }
 
     @Test
     public void test2() {
-        EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-        eyeTrackingClient.stopEyeTracking();
+//        EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
+//        eyeTrackingClient.stopEyeTracking();
     }
 
 }
