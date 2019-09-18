@@ -60,18 +60,6 @@ public class EyeTrackingClient {
         return p.isAlive();
     }
 
-//    public void waitForCalibration(){
-//       try{
-//        p.waitFor();
-//       }
-//       catch(InterruptedException e)
-//       {
-//           log.info("Process Waiting failed");
-//           e.printStackTrace();
-//       }
-//
-//    }
-
     public void calibrate() {
         mediaControl.pause();
         new Thread(() -> {
@@ -80,7 +68,7 @@ public class EyeTrackingClient {
                 log.info("Attempting calibration...");
                 ProcessBuilder pb = new ProcessBuilder();
 
-                pb.command("python", PATH_TO_CALIBRATION_SCRIPT, "--debug");
+                pb.command("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
                 log.info("Created Command");
                 p = pb.start();
                 log.info("Started Process");

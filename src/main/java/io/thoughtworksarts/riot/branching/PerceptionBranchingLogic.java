@@ -9,6 +9,9 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,7 +75,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 break;
             }
             case "intro": {
-//                return getCreditDuration();
                 return getFirstStory();
             }
             case "level": {
@@ -93,7 +95,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 return getNextEmotionBranch(getNextLevel(arg));
             }
             case "interactive": {
-                facialRecognition.getDominantEmotion();
+                restartFacialRecognition();
                 eyeTrackingClient.startEyeTracking();
                 if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
                 else return translator.convertToDuration(levels[7].getStart());
@@ -104,8 +106,23 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             case "visualization-processing": {
                 return getVisualizationPlayback();
             }
+            case "delete-playback": {
+                File playback1 = new File("/Users/Kiosk/riot/" + actors[0] + "-playback.mp4");
+                File playback2 = new File("/Users/Kiosk/riot/" + actors[1] + "-playback.mp4");
+
+                if(playback1.delete()) {
+                    log.info("Successfully deleted playback one.");
+                }
+                if(playback2.delete()) {
+                    log.info("Successfully deleted playback two.");
+                }
+            }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private void restartFacialRecognition() {
+        facialRecognition.getDominantEmotion();
     }
 
     public Duration getLoop() {
@@ -130,12 +147,16 @@ public class PerceptionBranchingLogic implements BranchingLogic {
 
     @Override
     public Duration getCreditDuration() {
+
         return translator.convertToDuration(credits[2].getStart());
     }
 
     private Duration getVisualizationPlayback() {
-        File f = new File("/Users/emilio.escobedo/repos/riot/playbacks.mp4");
-        if(f.exists() && !f.isDirectory()) {
+        String firstPlaybackPath = "/Users/Kiosk/riot/" + actors[0] + "-playback.mp4";
+        String secondPlaybackPath = "/Users/Kiosk/riot/" + actors[1] + "-playback.mp4";
+        File f = new File(firstPlaybackPath);
+        File g = new File(secondPlaybackPath);
+        if(f.exists() && !f.isDirectory() && g.exists() && !g.isDirectory()) {
             return null;
         }
         return translator.convertToDuration(credits[1].getStart());
@@ -202,6 +223,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
+        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());

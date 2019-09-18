@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class VisualizationClient {
@@ -24,7 +24,7 @@ public class VisualizationClient {
     }
 
 
-    public HttpResponse createVisualization(String actorId, ArrayList dominantEmotions, ArrayList scenesPlayed) {
+    public CompletableFuture<HttpResponse<String>> createVisualization(String actorId, ArrayList dominantEmotions, ArrayList scenesPlayed) {
         log.info("Creating visualization");
         VisualizationDTO visualizationDTO = new VisualizationDTO(actorId, dominantEmotions, scenesPlayed);
 
@@ -36,7 +36,7 @@ public class VisualizationClient {
                     .build();
 
             System.out.println(objectMapper.writeValueAsString(visualizationDTO));
-            return (HttpResponse) httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {
             e.printStackTrace();
