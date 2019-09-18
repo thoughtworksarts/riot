@@ -11,6 +11,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -24,8 +25,8 @@ public class MediaControl extends BorderPane {
 
     private PerceptionBranchingLogic branchingLogic;
     private MediaPlayer filmPlayer;
-//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+//    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     private BranchingConfigurationLoader branchingConfigurationLoader;
     private JsonTranslator jsonTranslator;
@@ -45,7 +46,7 @@ public class MediaControl extends BorderPane {
         this.eyeTrackingClient = new EyeTrackingClient(this);
 
         this.mediaView = new MediaView();
-        this.pane = new Pane();
+        this.pane = new StackPane();
 
         setUpFilmPlayer(new File(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);

@@ -29,8 +29,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private VisualizationClient visualizationClient;
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
-//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+//    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
@@ -68,7 +68,9 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         String category = arg.getMarker().getKey().split(":")[0];
         switch (category) {
             case "loop": {
-                return getLoop();
+//                return getVisualizationProcessing();
+                return getVisualizationPlayback();
+//                return getLoop();
             }
             case "initial-intro": {
                 eyeTrackingClient.calibrate();
