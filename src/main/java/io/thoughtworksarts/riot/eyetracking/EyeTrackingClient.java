@@ -1,6 +1,8 @@
 package io.thoughtworksarts.riot.eyetracking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.thoughtworksarts.riot.video.MediaControl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -14,10 +16,16 @@ public class EyeTrackingClient {
 
     private ObjectMapper objectMapper;
 
-    private static final String PATH_TO_CALIBRATION_SCRIPT = "C:/Users/laure/repos/perception-calibration/app.py";
+    private Process p;
 
-    public EyeTrackingClient() {
-         objectMapper = new ObjectMapper();
+    private static final String PATH_TO_CALIBRATION_SCRIPT = "C:/Users/Kiosk/perception-calibration/app.py";
+
+    private MediaControl mediaControl;
+
+    public EyeTrackingClient(MediaControl mediaControl) {
+
+        objectMapper = new ObjectMapper();
+        this.mediaControl = mediaControl;
     }
 
     public void startEyeTracking() {
@@ -48,33 +56,61 @@ public class EyeTrackingClient {
         }
     }
 
+    public boolean isAlive(){
+        return p.isAlive();
+    }
+
+//    public void waitForCalibration(){
+//       try{
+//        p.waitFor();
+//       }
+//       catch(InterruptedException e)
+//       {
+//           log.info("Process Waiting failed");
+//           e.printStackTrace();
+//       }
+//
+//    }
+
     public void calibrate() {
+        mediaControl.pause();
         new Thread(() -> {
             log.info("Beginning calibration...");
             try {
                 log.info("Attempting calibration...");
-                ProcessBuilder pb = new ProcessBuilder("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
-                Process p = pb.start();
-                p.waitFor();
+                ProcessBuilder pb = new ProcessBuilder();
+
+                pb.command("python", PATH_TO_CALIBRATION_SCRIPT, "--debug");
+                log.info("Created Command");
+                p = pb.start();
+                log.info("Started Process");
+                //ProcessBuilder pb = new ProcessBuilder("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
                 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                log.info("Created BufferReaders");
                 String line;
                 while ((line = in.readLine()) != null) {
-                    try {
-                        if (line.equals("Calibration process concluded")) {
-                            log.info(line);
-                        }
-                    } catch (Exception e) {
-                        log.info("Failure during calibration.");
-                        e.printStackTrace();
-                    }
+                    log.info(line);
                 }
+                while ((line = errorReader.readLine()) != null) {
+                    log.info(line);
+                }
+                int exitCode = p.waitFor();
+                log.info("Waited for Process");
+                log.info("Exited with error code: " + exitCode );
             } catch (IOException |
                     InterruptedException e) {
                 log.info("Calibration failed.");
                 e.printStackTrace();
             }
+            finally{
+                    mediaControl.play();
+            }
 
-        });//.start();
+
+
+        }).start();
+
     }
 
 

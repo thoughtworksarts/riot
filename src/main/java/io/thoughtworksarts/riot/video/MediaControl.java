@@ -1,6 +1,7 @@
 package io.thoughtworksarts.riot.video;
 
 import io.thoughtworksarts.riot.branching.BranchingConfigurationLoader;
+import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
@@ -38,11 +39,13 @@ public class MediaControl extends BorderPane {
     private Pane pane;
     private MoviePlayer moviePlayer;
 
+    private EyeTrackingClient eyeTrackingClient;
+
     public MediaControl(Duration videoStartTime, String filmPath, String playbackPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws Exception {
         this.facialRecognition = facialRecognition;
         this.jsonTranslator = jsonTranslator;
         this.branchingConfigurationLoader = new BranchingConfigurationLoader(jsonTranslator);
-
+        this.eyeTrackingClient = new EyeTrackingClient(this);
         //Video relate
         String pathToFilm = new File(String.valueOf(filmPath)).toURI().toURL().toString();
         this.playbackPath = new File(String.valueOf(playbackPath)).toURI().toURL().toString();
@@ -54,7 +57,7 @@ public class MediaControl extends BorderPane {
     }
 
     private void loadNextConfiguration() {
-        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, branchingConfigurationLoader.getNextConfiguration());
+        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, branchingConfigurationLoader.getNextConfiguration(), eyeTrackingClient);
         branchingLogic.recordMarkers(filmPlayer.getMedia().getMarkers());
     }
 
@@ -116,9 +119,7 @@ public class MediaControl extends BorderPane {
                 setPane();
                 playbackPlayer.play();
             }
-            else if(category.equals("initial-intro")){
-                filmPlayer.pause();
-            }
+
             else {
                 seek(duration);
             }
@@ -150,6 +151,9 @@ public class MediaControl extends BorderPane {
 
     public void play() {
         filmPlayer.play();
+    }
+    public void pause(){
+        filmPlayer.pause();
     }
 
     public void seek(Duration duration) {

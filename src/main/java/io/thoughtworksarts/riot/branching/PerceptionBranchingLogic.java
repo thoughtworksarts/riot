@@ -30,10 +30,10 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
 
-    public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot) {
+    public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
         this.translator = translator;
-        this.eyeTrackingClient = new EyeTrackingClient();
+        this.eyeTrackingClient = eyeTrackingClient;
         this.visualizationClient = new VisualizationClient();
         this.actorIndex = 0;
         loadConfiguration(configRoot);

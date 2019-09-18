@@ -33,7 +33,7 @@ public class RiotBranchingLogic implements BranchingLogic {
         this.credits = configRoot.getCredits();
         this.emotionsByActorId = new HashMap<>();
         this.actorId = "1";
-        this.eyeTrackingClient = new EyeTrackingClient();
+        this.eyeTrackingClient = new EyeTrackingClient(null);
 
     }
 
