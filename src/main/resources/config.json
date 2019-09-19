@@ -1,7 +1,7 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/perception-hi-res.mp4",
+    "video": "src/main/resources/video/PERCEPTIONIO_1080P.mp4",
     "audio": "src/main/resources/audio/audio.wav"
   },
   "actors": ["bad-black", "bad-white"],

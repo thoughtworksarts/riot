@@ -68,16 +68,23 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         String category = arg.getMarker().getKey().split(":")[0];
         switch (category) {
             case "loop": {
-//                return getVisualizationProcessing();
-                return getVisualizationPlayback();
-//                return getLoop();
+                return getLoop();
             }
-            case "initial-intro": {
+            case "welcome": {
                 eyeTrackingClient.calibrate();
                 break;
             }
-            case "intro": {
-                return getFirstStory();
+            case "countdown": {
+                return translator.convertToDuration(intros[3].getStart());
+            }
+            case "calibrating": {
+                return translator.convertToDuration(intros[4].getStart());
+            }
+            case "story-one": {
+                return getStoryOne();
+            }
+            case "story-two": {
+                return getStoryTwo();
             }
             case "level": {
                 if(isIntro(getCurrentLevel(arg))) return getInteractiveMode();
@@ -101,9 +108,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 eyeTrackingClient.startEyeTracking();
                 if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
                 else return translator.convertToDuration(levels[7].getStart());
-            }
-            case "calibrating": {
-                return getIntroOfStoryTwo();
             }
             case "visualization-processing": {
                 return getVisualizationPlayback();
@@ -179,7 +183,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         return translator.convertToDuration(intros[1].getStart());
     }
 
-    public Duration getFirstStory() {
+    public Duration getStoryOne() {
         return translator.convertToDuration(levels[0].getStart());
     }
 
@@ -209,28 +213,33 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         return level == 5;
     }
 
-    private Duration getIntroOfStoryTwo() {
+    private Duration getStoryTwo() {
         getDominantEmotion();
         actorIndex++;
         return translator.convertToDuration(levels[6].getStart());
     }
 
     private Duration getInteractiveMode() {
-        return translator.convertToDuration(intros[3].getStart());
+        return translator.convertToDuration(intros[5].getStart());
     }
 
     @Override
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "loop", String.valueOf(intros.length),
                 intros[0].getEnd());
-        addMarker(markers, "initial-intro", String.valueOf(intros.length),
-                intros[intros.length - 3].getEnd());
-        addMarker(markers, "intro", String.valueOf(intros.length),
-                intros[intros.length - 2].getEnd());
+        addMarker(markers, "welcome", String.valueOf(intros.length),
+                intros[1].getEnd());
+        addMarker(markers, "countdown", String.valueOf(intros.length),
+                intros[2].getEnd());
+        addMarker(markers, "story-one", String.valueOf(intros.length),
+                intros[3].getEnd());
+        addMarker(markers, "story-two", String.valueOf(intros.length),
+                intros[4].getEnd());
         addMarker(markers, "interactive", String.valueOf(intros.length),
-                intros[intros.length - 1].getEnd());
+                intros[5].getEnd());
         addMarker(markers, "visualization-processing", String.valueOf(credits.length),
                 credits[1].getEnd());
+
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
         addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
 
