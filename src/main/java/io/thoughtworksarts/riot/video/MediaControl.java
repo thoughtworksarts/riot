@@ -25,8 +25,8 @@ public class MediaControl extends BorderPane {
 
     private PerceptionBranchingLogic branchingLogic;
     private MediaPlayer filmPlayer;
-    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-//    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     private BranchingConfigurationLoader branchingConfigurationLoader;
     private JsonTranslator jsonTranslator;

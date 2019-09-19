@@ -16,9 +16,9 @@ public class BranchingConfigurationLoader {
         this.jsonTranslator = jsonTranslator;
         paths = new ArrayList<>();
         paths.add("config-badbw.json");
-//        paths.add("config-badwb.json");
-//        paths.add("config-goodbw.json");
-//        paths.add("config-goodwb.json");
+        paths.add("config-badwb.json");
+        paths.add("config-goodbw.json");
+        paths.add("config-goodwb.json");
         Collections.shuffle(paths);
     }
 

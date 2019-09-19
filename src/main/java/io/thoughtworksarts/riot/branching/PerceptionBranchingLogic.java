@@ -29,8 +29,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private VisualizationClient visualizationClient;
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
-    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-//    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+//    final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
+    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
@@ -88,7 +88,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             }
             case "level": {
                 if(isIntro(getCurrentLevel(arg))) return getInteractiveMode();
-                addScenePlayed(arg);
+                else if (isFirstLevel(getCurrentLevel(arg))) addScenePlayed(arg);
+
                 if(isEndOfStoryOne(getCurrentLevel(arg))) {
                     getDominantEmotion();
                     eyeTrackingClient.stopEyeTracking();
@@ -117,6 +118,10 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             }
         }
         return new Duration(arg.getMarker().getValue().toMillis() + 1);
+    }
+
+    private boolean isFirstLevel(int level) {
+        return !(level == 1 || level == 7);
     }
 
     private void deletePlaybackFiles() {
@@ -153,7 +158,13 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private void addScenePlayed(MediaMarkerEvent arg) {
-        emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY).add(arg.getMarker().getKey());
+        emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY).add(getSceneName(arg));
+    }
+
+    private String getSceneName(MediaMarkerEvent arg) {
+        String[] keys = arg.getMarker().getKey().split(":");
+        log.info(keys[0] + ":" + String.valueOf(Integer.parseInt(keys[1])%6) + ":" + keys[2]);
+        return keys[0] + ":" + String.valueOf(Integer.parseInt(keys[1])%6) + ":" + keys[2];
     }
 
     @Override
