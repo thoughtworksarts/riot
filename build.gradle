@@ -87,10 +87,13 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.0.13'
 
     compile 'com.github.sarxos:webcam-capture:0.3.11'
-    compile 'org.deeplearning4j:deeplearning4j-core:0.9.1'
-    compile 'org.deeplearning4j:deeplearning4j-modelimport:0.9.1'
-    compile 'org.nd4j:nd4j-native-platform:0.9.1'
-    compile 'org.nd4j:nd4j-api:0.9.1'
+    compile 'org.deeplearning4j:deeplearning4j-core:1.0.0-beta4'
+//    compile group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: '1.0.0-beta5'
+//    compile group: 'org.deeplearning4j', name: 'deeplearning4j-zoo', version: '1.0.0-beta5'
+
+    compile 'org.deeplearning4j:deeplearning4j-modelimport:1.0.0-beta4'
+    compile 'org.nd4j:nd4j-native-platform:1.0.0-beta4'
+    compile 'org.nd4j:nd4j-api:1.0.0-beta4'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'

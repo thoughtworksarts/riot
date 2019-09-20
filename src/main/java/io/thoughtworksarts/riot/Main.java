@@ -10,7 +10,6 @@ import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -36,14 +35,12 @@ public class Main extends Application {
         ConfigRoot jsonConfiguration = jsonTranslator.populateModelsFromJson(PATH_TO_CONFIG);
 
         String emotionsSetId= getEmotionSetId(jsonConfiguration);
-        String pathToWeightsFile = String.format( "%sconv_weights_%s.h5",DEFAULT_FILES_PATH, emotionsSetId);
-        String pathToModelFile = String.format("%sconv_model_%s.json",DEFAULT_FILES_PATH, emotionsSetId);
-        String pathToEmotionMapFile = String.format("%sconv_emotion_map_%s.json", DEFAULT_FILES_PATH, emotionsSetId);
+        String pathToWeightsFile = String.format( "%sconv_weights_perception.h5",DEFAULT_FILES_PATH);
+        String pathToEmotionMapFile = String.format("%sconv_emotion_map_perception.json", DEFAULT_FILES_PATH, emotionsSetId);
         String filmPath = jsonConfiguration.getMedia().getVideo();
-        Duration startTime = jsonTranslator.convertToDuration(jsonConfiguration.getIntros()[0].getStart());
 
         ImageProcessor imageProcessor = new ImageProcessor();
-        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToModelFile, pathToWeightsFile);
+        DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
 
         MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(filmPath, facialRecognition, jsonTranslator));

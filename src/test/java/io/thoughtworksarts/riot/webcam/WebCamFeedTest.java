@@ -3,6 +3,7 @@ package io.thoughtworksarts.riot.webcam;
 import com.github.sarxos.webcam.Webcam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
@@ -30,7 +31,7 @@ public class WebCamFeedTest {
 
     }
     
-    @Test
+    @Test @Disabled
     public void shouldGetHighestResolutionAvailable() {
 
         // given
@@ -48,7 +49,7 @@ public class WebCamFeedTest {
         assertThat(isHighestResolution).isTrue();
     }
 
-    @Test
+    @Test @Disabled
     public void shouldCreatePictureFileWithProperResolution() throws Exception {
         // given
         WebcamFeed webcamFeed = new WebcamFeed();

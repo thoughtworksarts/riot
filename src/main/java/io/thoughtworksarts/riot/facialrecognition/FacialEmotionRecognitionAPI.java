@@ -5,12 +5,17 @@ import com.github.sarxos.webcam.Webcam;
 import com.google.common.util.concurrent.Uninterruptibles;
 import io.thoughtworksarts.riot.utilities.JSONReader;
 import org.nd4j.linalg.api.ndarray.INDArray;
+//import org.nd4j.shade.guava.util.concurrent.Uninterruptibles;
+//import org.nd4j.shade.guava.util.concurrent.Uninterruptibles;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class FacialEmotionRecognitionAPI {
@@ -69,7 +74,7 @@ public class FacialEmotionRecognitionAPI {
         for(int index=0; index < emotionPrediction.length; index++){
             emotionProbabilities[index]+=emotionPrediction[index];
         }
-//        printProbabilitiesToConsole();
+        printProbabilitiesToConsole();
     }
 
     private void printProbabilitiesToConsole() {
