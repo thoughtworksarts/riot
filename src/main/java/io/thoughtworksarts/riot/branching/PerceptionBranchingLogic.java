@@ -163,7 +163,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
 
     private String getSceneName(MediaMarkerEvent arg) {
         String[] keys = arg.getMarker().getKey().split(":");
-        log.info(keys[0] + ":" + String.valueOf(Integer.parseInt(keys[1])%6) + ":" + keys[2]);
         return keys[0] + ":" + String.valueOf(Integer.parseInt(keys[1])%6) + ":" + keys[2];
     }
 

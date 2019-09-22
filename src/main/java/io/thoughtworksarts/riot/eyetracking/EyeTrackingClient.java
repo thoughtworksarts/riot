@@ -68,11 +68,11 @@ public class EyeTrackingClient {
                 log.info("Attempting calibration...");
                 ProcessBuilder pb = new ProcessBuilder();
 
-                pb.command("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
+                pb.command("python", PATH_TO_CALIBRATION_SCRIPT);
+//                pb.command("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-tobii");
                 log.info("Created Command");
                 p = pb.start();
                 log.info("Started Process");
-                //ProcessBuilder pb = new ProcessBuilder("python", PATH_TO_CALIBRATION_SCRIPT, "--simulate-success");
                 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                 log.info("Created BufferReaders");

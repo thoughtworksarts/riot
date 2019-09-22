@@ -50,13 +50,14 @@ public class MediaControl extends BorderPane {
 
         setUpFilmPlayer(new File(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);
-        filmPlayer.setMute(true);
+//        filmPlayer.setMute(true);
         loadNextConfiguration();
     }
 
     private void loadNextConfiguration() {
         currentConfiguration = branchingConfigurationLoader.getNextConfiguration();
         branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, currentConfiguration, eyeTrackingClient);
+        filmPlayer.getMedia().getMarkers().clear();
         branchingLogic.recordMarkers(filmPlayer.getMedia().getMarkers());
     }
 
