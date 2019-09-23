@@ -1,7 +1,7 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/PERCEPTIONIO_1080P.mp4",
+    "video": "src/main/resources/video/final-film.m4v",
     "audio": "src/main/resources/audio/audio.wav"
   },
   "actors": ["good-black", "good-white"],
@@ -19,22 +19,22 @@
     {
       "intro": 3,
       "start": "00:39.734",
-      "end": "00:45.734"
+      "end": "00:45.234"
     },
     {
       "intro": 4,
-      "start": "00:45.767",
-      "end": "00:47.334"
+      "start": "00:45.240",
+      "end": "00:48.100"
     },
     {
       "intro": 5,
-      "start": "00:47.367",
-      "end": "00:49.034"
+      "start": "00:49.200",
+      "end": "00:51.000"
     },
     {
       "intro": 6,
-      "start": "00:49.067",
-      "end": "00:51.934"
+      "start": "18:06.000",
+      "end": "18:09.000"
     }
   ],
   "credits": [
@@ -157,7 +157,7 @@
     },
     {
       "level": 6,
-      "start": "13:52.367",
+      "start": "13:54.367",
       "end": "14:21.867",
       "branch": {}
     },

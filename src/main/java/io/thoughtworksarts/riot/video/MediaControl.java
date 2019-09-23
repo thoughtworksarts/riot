@@ -98,6 +98,7 @@ public class MediaControl extends BorderPane {
     private void setUpFilmPlayer(String pathToFilm) {
         Media media = new Media(pathToFilm);
         filmPlayer = new MediaPlayer(media);
+        filmPlayer.setMute(true);
 
         filmPlayer.setAutoPlay(false);
 
