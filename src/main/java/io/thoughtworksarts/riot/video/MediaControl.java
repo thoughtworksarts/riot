@@ -1,11 +1,13 @@
 package io.thoughtworksarts.riot.video;
 
+import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.branching.BranchingConfigurationLoader;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
+import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -26,7 +28,7 @@ public class MediaControl extends BorderPane {
     private PerceptionBranchingLogic branchingLogic;
     private MediaPlayer filmPlayer;
     final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-//    final static private String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+    private FeatureToggle featureToggle;
 
     private BranchingConfigurationLoader branchingConfigurationLoader;
     private JsonTranslator jsonTranslator;
@@ -47,10 +49,10 @@ public class MediaControl extends BorderPane {
 
         this.mediaView = new MediaView();
         this.pane = new StackPane();
+        this.featureToggle = new FeatureToggle();
 
         setUpFilmPlayer(new File(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);
-//        filmPlayer.setMute(true);
         loadNextConfiguration();
     }
 
@@ -101,7 +103,7 @@ public class MediaControl extends BorderPane {
 
         filmPlayer.setOnMarker(arg -> {
             Duration duration = branchingLogic.branchOnMediaEvent(arg);
-            if(duration == null) playFirstPlayback();
+            if(duration == null && featureToggle.eyeTrackingOn()) playFirstPlayback();
             else seek(duration);
         });
 

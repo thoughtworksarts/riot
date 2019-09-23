@@ -1,5 +1,6 @@
 package io.thoughtworksarts.riot.branching;
 
+import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
@@ -30,7 +31,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private static final String SCENES_PLAYED_KEY = "scenesPlayed";
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
     final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
-//    private static final String PLAYBACK_BASE_PATH = "/Users/emilio.escobedo/repos/riot/";
+    private FeatureToggle featureToggle;
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
@@ -38,6 +39,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         this.eyeTrackingClient = eyeTrackingClient;
         this.visualizationClient = new VisualizationClient();
         this.actorIndex = 0;
+        this.featureToggle = new FeatureToggle();
+
         loadConfiguration(configRoot);
         initalizeEmotionsByActorIdMap();
         deletePlaybackFiles();
@@ -92,21 +95,42 @@ public class PerceptionBranchingLogic implements BranchingLogic {
 
                 if(isEndOfStoryOne(getCurrentLevel(arg))) {
                     getDominantEmotion();
-                    eyeTrackingClient.stopEyeTracking();
-                    visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
+
+                    if(featureToggle.eyeTrackingOn()) {
+                        eyeTrackingClient.stopEyeTracking();
+                        visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
+                    }
+
                     return getCalibratingGraphic();
                 }
+
                 if(isEndOfStoryTwo(getCurrentLevel(arg))) {
                     getDominantEmotion();
-                    eyeTrackingClient.stopEyeTracking();
-                    visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
-                    return getVisualizationProcessing();
+
+                    if(featureToggle.eyeTrackingOn()) {
+                        eyeTrackingClient.stopEyeTracking();
+                        visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
+                    }
+
+
+                    if(featureToggle.eyeTrackingOn()) {
+                        return getVisualizationProcessing();
+                    }
+                    else {
+                        return translator.convertToDuration(credits[2].getStart());
+                    }
+
                 }
+
                 return getNextEmotionBranch(getNextLevel(arg));
             }
             case "interactive": {
                 restartFacialRecognition();
-                eyeTrackingClient.startEyeTracking();
+
+                if(featureToggle.eyeTrackingOn()) {
+                    eyeTrackingClient.startEyeTracking();
+                }
+
                 if(actorIndex == 0) return translator.convertToDuration(levels[1].getStart());
                 else return translator.convertToDuration(levels[7].getStart());
             }
@@ -237,8 +261,11 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     public void recordMarkers(Map<String, Duration> markers) {
         addMarker(markers, "loop", String.valueOf(intros.length),
                 intros[0].getEnd());
-        addMarker(markers, "welcome", String.valueOf(intros.length),
-                intros[1].getEnd());
+
+        if(featureToggle.eyeTrackingOn()) {
+            addMarker(markers, "welcome", String.valueOf(intros.length), intros[1].getEnd());
+        }
+
         addMarker(markers, "countdown", String.valueOf(intros.length),
                 intros[2].getEnd());
         addMarker(markers, "story-one", String.valueOf(intros.length),
@@ -247,11 +274,16 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 intros[4].getEnd());
         addMarker(markers, "interactive", String.valueOf(intros.length),
                 intros[5].getEnd());
-        addMarker(markers, "visualization-processing", String.valueOf(credits.length),
-                credits[1].getEnd());
+
+        if(featureToggle.eyeTrackingOn()) {
+            addMarker(markers, "visualization-processing", String.valueOf(credits.length),
+                    credits[1].getEnd());
+
+
+            addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
+        }
 
         addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
-        addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
