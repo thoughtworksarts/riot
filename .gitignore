@@ -26,3 +26,6 @@ bin/
 
 # OSX
 .DS_Store
+
+# Log files
+logs.txt
