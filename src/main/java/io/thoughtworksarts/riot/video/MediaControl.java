@@ -11,6 +11,8 @@ import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableNumberValue;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -91,24 +93,45 @@ public class MediaControl extends BorderPane {
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         mediaView.setPreserveRatio(true);
 
-        Text debugText = new Text("0.0");
-        debugText.setFont(Font.font ("Verdana", 50));
-        debugText.setFill(Color.RED);
-        mediaPlayer.currentRateProperty().addListener(
-                (observable, oldvalue, newvalue) -> {
-                    debugText.setText("Current Rate: " + newvalue);
-                }
-        );
 
-
+        //StackPane debugPane = new StackPane();
 
         pane.getChildren().clear();
-        pane.getChildren().add(mediaView);
+        pane.getChildren().addAll(mediaView,
+                addNumericDebugText(mediaPlayer.currentRateProperty(), "Current Rate"),
+                addDurationDebugText(mediaPlayer.currentTimeProperty(), "Current Time"));
 
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
-        setBottom(debugText);
+        //setBottom(debugPane);
 
+    }
+
+    private Text addNumericDebugText(ObservableNumberValue property, String label) {
+        Text debugText = getDebugText();
+        property.addListener(
+                (observable, oldvalue, newvalue) -> {
+                    debugText.setText(label + ": " + newvalue);
+                }
+        );
+        return debugText;
+    }
+
+    private Text addDurationDebugText(ObservableValue<Duration> property, String label) {
+        Text debugText = getDebugText();
+        property.addListener(
+                (observable, oldvalue, newvalue) -> {
+                    debugText.setText(label + ": " + newvalue);
+                }
+        );
+        return debugText;
+    }
+
+    private Text getDebugText(){
+        Text debugText = new Text();
+        debugText.setFont(Font.font ("Verdana", 50));
+        debugText.setFill(Color.RED);
+        return debugText;
     }
 
     private void setUpFilmPlayer(String pathToFilm) {
