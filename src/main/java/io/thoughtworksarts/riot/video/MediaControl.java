@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -94,16 +95,19 @@ public class MediaControl extends BorderPane {
         mediaView.setPreserveRatio(true);
 
 
-        //StackPane debugPane = new StackPane();
+       // StackPane debugPane = new StackPane();
+        VBox debugPane = new VBox();
+        debugPane.getChildren().addAll(
+                addNumericDebugText(mediaPlayer.currentRateProperty(), "Current Rate"),
+                addDurationDebugText(mediaPlayer.currentTimeProperty(), "Current Time"),
+                addStatusDebugText(mediaPlayer.statusProperty(), "Status"));
 
         pane.getChildren().clear();
-        pane.getChildren().addAll(mediaView,
-                addNumericDebugText(mediaPlayer.currentRateProperty(), "Current Rate"),
-                addDurationDebugText(mediaPlayer.currentTimeProperty(), "Current Time"));
+        pane.getChildren().addAll(mediaView);
 
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
-        //setBottom(debugPane);
+        setBottom(debugPane);
 
     }
 
@@ -118,6 +122,16 @@ public class MediaControl extends BorderPane {
     }
 
     private Text addDurationDebugText(ObservableValue<Duration> property, String label) {
+        Text debugText = getDebugText();
+        property.addListener(
+                (observable, oldvalue, newvalue) -> {
+                    debugText.setText(label + ": " + newvalue);
+                }
+        );
+        return debugText;
+    }
+
+    private Text addStatusDebugText(ObservableValue<MediaPlayer.Status> property, String label){
         Text debugText = getDebugText();
         property.addListener(
                 (observable, oldvalue, newvalue) -> {
