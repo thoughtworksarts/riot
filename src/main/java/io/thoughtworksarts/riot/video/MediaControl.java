@@ -17,6 +17,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,10 +91,23 @@ public class MediaControl extends BorderPane {
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         mediaView.setPreserveRatio(true);
 
+        Text debugText = new Text("0.0");
+        debugText.setFont(Font.font ("Verdana", 50));
+        debugText.setFill(Color.RED);
+        mediaPlayer.currentRateProperty().addListener(
+                (observable, oldvalue, newvalue) -> {
+                    debugText.setText("Current Rate: " + newvalue);
+                }
+        );
+
+
+
         pane.getChildren().clear();
         pane.getChildren().add(mediaView);
+
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
+        setBottom(debugText);
 
     }
 
