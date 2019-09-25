@@ -94,64 +94,19 @@ public class MediaControl extends BorderPane {
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         mediaView.setPreserveRatio(true);
 
-
-       // StackPane debugPane = new StackPane();
-        VBox debugPane = new VBox();
-        debugPane.getChildren().addAll(
-                addNumericDebugText(mediaPlayer.currentRateProperty(), "Current Rate"),
-                addDurationDebugText(mediaPlayer.currentTimeProperty(), "Current Time"),
-                addStatusDebugText(mediaPlayer.statusProperty(), "Status"));
-
         pane.getChildren().clear();
         pane.getChildren().addAll(mediaView);
 
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
-        setBottom(debugPane);
 
-    }
-
-    private Text addNumericDebugText(ObservableNumberValue property, String label) {
-        Text debugText = getDebugText();
-        property.addListener(
-                (observable, oldvalue, newvalue) -> {
-                    debugText.setText(label + ": " + newvalue);
-                }
-        );
-        return debugText;
-    }
-
-    private Text addDurationDebugText(ObservableValue<Duration> property, String label) {
-        Text debugText = getDebugText();
-        property.addListener(
-                (observable, oldvalue, newvalue) -> {
-                    debugText.setText(label + ": " + newvalue);
-                }
-        );
-        return debugText;
-    }
-
-    private Text addStatusDebugText(ObservableValue<MediaPlayer.Status> property, String label){
-        Text debugText = getDebugText();
-        property.addListener(
-                (observable, oldvalue, newvalue) -> {
-                    debugText.setText(label + ": " + newvalue);
-                }
-        );
-        return debugText;
-    }
-
-    private Text getDebugText(){
-        Text debugText = new Text();
-        debugText.setFont(Font.font ("Verdana", 50));
-        debugText.setFill(Color.RED);
-        return debugText;
+        DebugConsole debugConsole = new DebugConsole(mediaPlayer);
+        setBottom(debugConsole.getPane());
     }
 
     private void setUpFilmPlayer(String pathToFilm) {
         Media media = new Media(pathToFilm);
         filmPlayer = new MediaPlayer(media);
-
 
         filmPlayer.setAutoPlay(false);
 
