@@ -100,8 +100,10 @@ public class MediaControl extends BorderPane {
         pane.setStyle("-fx-background-color: black;");
         setCenter(pane);
 
-        DebugConsole debugConsole = new DebugConsole(mediaPlayer);
-        setBottom(debugConsole.getPane());
+        if(featureToggle.debugConsoleOn()){
+            DebugConsole debugConsole = new DebugConsole(mediaPlayer);
+            setBottom(debugConsole.getPane());
+        }
     }
 
     private void setUpFilmPlayer(String pathToFilm) {
