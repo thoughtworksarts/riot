@@ -30,27 +30,26 @@ repositories {
 
 javafx {
     version = "12"
-    modules = [ 'javafx.controls', 'javafx.media', 'javafx.swing']
+    modules = ['javafx.controls', 'javafx.media', 'javafx.swing']
 }
-
 
 
 import de.undercouch.gradle.tasks.download.Download
 
 def downloads = [
         [name: 'AsioHost', dest: 'asio/JAsioHost.jar',
-            url: 'https://github.com/mhroth/jasiohost/raw/master/JAsioHost.jar' ],
+         url : 'https://github.com/mhroth/jasiohost/raw/master/JAsioHost.jar'],
         [name: 'AsioHostDll', dest: 'asio/jasiohost64.dll',
-            url: 'https://github.com/mhroth/jasiohost/raw/master/jasiohost64.dll' ],
+         url : 'https://github.com/mhroth/jasiohost/raw/master/jasiohost64.dll'],
         [name: 'AsioForAllInstaller', dest: 'asio/ASIO4ALL_2_13_English.exe',
-            url: 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe' ]
+         url : 'http://tippach.business.t-online.de/asio4all/downloads_11/ASIO4ALL_2_13_English.exe']
 ]
 
 downloads.each {
     def file = it.get('name')
     def url = it.get('url')
     def destination = it.get('dest')
-    
+
     task "download$file"(type: Download) {
         src url
         dest destination
@@ -88,8 +87,6 @@ dependencies {
 
     compile 'com.github.sarxos:webcam-capture:0.3.11'
     compile 'org.deeplearning4j:deeplearning4j-core:1.0.0-beta4'
-//    compile group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: '1.0.0-beta5'
-//    compile group: 'org.deeplearning4j', name: 'deeplearning4j-zoo', version: '1.0.0-beta5'
 
     compile 'org.deeplearning4j:deeplearning4j-modelimport:1.0.0-beta4'
     compile 'org.nd4j:nd4j-native-platform:1.0.0-beta4'
