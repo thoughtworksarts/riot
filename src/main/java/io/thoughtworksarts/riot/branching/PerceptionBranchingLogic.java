@@ -78,7 +78,10 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             logger.log(java.util.logging.Level.INFO, "branchOnMediaEvent",
                     "Branching event occurred",
                     new String[]{"Loop Marker: " + arg.getMarker(),
-                            "Current Event Category: " + arg.getMarker().getKey()});
+                            "Current Event Category: " + arg.getMarker().getKey(),
+                            "Current Timestamp: " + arg.getMarker().getValue().toMinutes(),
+                            "ActorId: " + actors[actorIndex],
+                            "EmotionsByActorId: " + this.emotionsByActorId.get(actors[actorIndex])});
         }
         String category = arg.getMarker().getKey().split(":")[0];
         switch (category) {

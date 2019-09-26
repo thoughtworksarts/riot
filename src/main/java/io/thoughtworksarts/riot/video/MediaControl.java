@@ -84,10 +84,16 @@ public class MediaControl extends BorderPane {
             if(isPaused) {
                 filmPlayer.play();
                 isPaused = false;
+                if(featureToggle.loggingOn()){
+                    logger.log(Level.INFO, "play", "Playing Film", null);
+                }
             }
             else {
                 isPaused = true;
                 filmPlayer.pause();
+                if(featureToggle.loggingOn()){
+                    logger.log(Level.INFO, "pause", "Pausing Film", null);
+                }
             }
         });
 
@@ -157,6 +163,10 @@ public class MediaControl extends BorderPane {
 
     public void play() {
         filmPlayer.play();
+        if(featureToggle.loggingOn()){
+            logger.log(Level.INFO, "play", "Initially Playing Film", null);
+        }
+
     }
     public void pause(){
         filmPlayer.pause();
