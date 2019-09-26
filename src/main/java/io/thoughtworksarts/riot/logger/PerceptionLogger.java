@@ -28,22 +28,29 @@ public class PerceptionLogger {
             File logDir = new File("./logs/");
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
-            if( !(logDir.exists()) )
+            if (!(logDir.exists()))
                 logDir.mkdir();
             String logFileName = String.format("%s_perception.log", dateFormat.format(date));
-            FileHandler fileHandler = new FileHandler("logs/"+logFileName, true);
+            FileHandler fileHandler = new FileHandler("logs/" + logFileName, true);
             fileHandler.setFormatter(this.fileFormatter);
             logger.addHandler(fileHandler);
-            StringBuilder messageBuilder = new StringBuilder(message);
-            for (String additionalMessage: additionalMessages) {
-                messageBuilder.append("::").append(additionalMessage);
+            if (additionalMessages != null) {
+                message = buildMessageWithOptionalMessages(message, additionalMessages);
             }
-            message = messageBuilder.toString();
             logger.logp(level, classLogged, methodLogged, message);
             LogManager.getLogManager().reset();
         } catch (java.io.IOException exception) {
             System.out.println(exception);
         }
 
+    }
+
+    private String buildMessageWithOptionalMessages(String message, String[] additionalMessages) {
+        StringBuilder messageBuilder = new StringBuilder(message);
+        for (String additionalMessage : additionalMessages) {
+            messageBuilder.append("::").append(additionalMessage);
+        }
+        message = messageBuilder.toString();
+        return message;
     }
 }
