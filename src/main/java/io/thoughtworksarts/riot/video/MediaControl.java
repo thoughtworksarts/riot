@@ -67,6 +67,8 @@ public class MediaControl extends BorderPane {
         filmPlayer.seek(branchingLogic.getIntro());
     }
 
+    public void startLooping() { filmPlayer.seek(branchingLogic.getLoop()); }
+
     private boolean isPaused = false;
 
     private void setUpMediaViewFor(MediaPlayer mediaPlayer) {
