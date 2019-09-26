@@ -29,7 +29,7 @@ public class PerceptionLogger {
             Date date = new Date();
             if( !(logDir.exists()) )
                 logDir.mkdir();
-            String logFileName = String.format("%s_log", dateFormat.format(date));
+            String logFileName = String.format("%s_perception.log", dateFormat.format(date));
             FileHandler fileHandler = new FileHandler("logs/"+logFileName, true);
             fileHandler.setFormatter(this.fileFormatter);
             logger.addHandler(fileHandler);
