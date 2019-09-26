@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 
@@ -39,6 +40,7 @@ public class PerceptionLogger {
             }
             message = messageBuilder.toString();
             logger.logp(level, classLogged, methodLogged, message);
+            LogManager.getLogManager().reset();
         } catch (java.io.IOException exception) {
             System.out.println(exception);
         }
