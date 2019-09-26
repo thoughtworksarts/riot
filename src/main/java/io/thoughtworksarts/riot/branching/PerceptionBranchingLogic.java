@@ -4,6 +4,7 @@ import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.branching.model.*;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import io.thoughtworksarts.riot.visualization.VisualizationClient;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
@@ -32,6 +33,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     private static final String DOMINANT_EMOTIONS_KEY = "dominantEmotions";
     final static private String PLAYBACK_BASE_PATH = "/Users/Kiosk/riot/";
     private FeatureToggle featureToggle;
+    private PerceptionLogger logger;
 
     public PerceptionBranchingLogic(FacialEmotionRecognitionAPI facialRecognition, JsonTranslator translator, ConfigRoot configRoot, EyeTrackingClient eyeTrackingClient) {
         this.facialRecognition = facialRecognition;
@@ -68,6 +70,13 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     @Override
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
         log.info(arg.getMarker().getKey());
+        if (featureToggle.loggingOn()) {
+            logger = new PerceptionLogger("PerceptionBranchingLogic");
+            logger.log(java.util.logging.Level.INFO, "branchOnMediaEvent",
+                    "Branching event occurred",
+                    new String[]{"Loop Marker: " + arg.getMarker(),
+                            "Current Event Category: " + arg.getMarker().getKey()});
+        }
         String category = arg.getMarker().getKey().split(":")[0];
         switch (category) {
             case "loop": {
