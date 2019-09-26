@@ -47,6 +47,10 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         initalizeEmotionsByActorIdMap();
         deletePlaybackFiles();
 
+        if (featureToggle.loggingOn()) {
+            this.logger = new PerceptionLogger("PerceptionBranchingLogic");
+        }
+
     }
 
     private void loadConfiguration(ConfigRoot configRoot) {
@@ -71,7 +75,6 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
         log.info(arg.getMarker().getKey());
         if (featureToggle.loggingOn()) {
-            logger = new PerceptionLogger("PerceptionBranchingLogic");
             logger.log(java.util.logging.Level.INFO, "branchOnMediaEvent",
                     "Branching event occurred",
                     new String[]{"Loop Marker: " + arg.getMarker(),
