@@ -34,10 +34,15 @@ public class MoviePlayer {
         primaryStage.setFullScreen(true);
         primaryStage.show();
         mediaControl.play();
+
         scene.addEventHandler((KeyEvent.KEY_PRESSED), (key) -> {
             if (key.getCode() == KeyCode.SPACE && isLooping) {
                 isLooping = false;
                 mediaControl.startExperience();
+            }
+            else if(key.getCode() == KeyCode.SPACE && !isLooping) {
+                mediaControl.startLooping();
+                isLooping = true;
             }
         });
     }

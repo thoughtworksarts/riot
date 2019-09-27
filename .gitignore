@@ -1,5 +1,6 @@
 # ASIO Files
 asio/
+/logs
 
 # Media files
 trainingModels/

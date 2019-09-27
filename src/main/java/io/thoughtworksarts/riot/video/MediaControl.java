@@ -9,6 +9,7 @@ import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
+import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.layout.BorderPane;
@@ -21,6 +22,7 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.logging.Level;
 
 @Slf4j
 public class MediaControl extends BorderPane {
@@ -40,6 +42,7 @@ public class MediaControl extends BorderPane {
     private ConfigRoot currentConfiguration;
 
     private EyeTrackingClient eyeTrackingClient;
+    private PerceptionLogger logger;
 
     public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) {
         this.facialRecognition = facialRecognition;
@@ -50,6 +53,10 @@ public class MediaControl extends BorderPane {
         this.mediaView = new MediaView();
         this.pane = new StackPane();
         this.featureToggle = new FeatureToggle();
+
+        if(featureToggle.loggingOn()) {
+            logger = new PerceptionLogger("MediaControl");
+        }
 
         setUpFilmPlayer(new File(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);
@@ -67,6 +74,8 @@ public class MediaControl extends BorderPane {
         filmPlayer.seek(branchingLogic.getIntro());
     }
 
+    public void startLooping() { filmPlayer.seek(branchingLogic.getLoop()); }
+
     private boolean isPaused = false;
 
     private void setUpMediaViewFor(MediaPlayer mediaPlayer) {
@@ -75,10 +84,16 @@ public class MediaControl extends BorderPane {
             if(isPaused) {
                 filmPlayer.play();
                 isPaused = false;
+                if(featureToggle.loggingOn()){
+                    logger.log(Level.INFO, "play", "Playing Film", null);
+                }
             }
             else {
                 isPaused = true;
                 filmPlayer.pause();
+                if(featureToggle.loggingOn()){
+                    logger.log(Level.INFO, "pause", "Pausing Film", null);
+                }
             }
         });
 
@@ -96,6 +111,9 @@ public class MediaControl extends BorderPane {
     }
 
     private void setUpFilmPlayer(String pathToFilm) {
+        if(featureToggle.loggingOn()) {
+            logger.log(Level.INFO, "setUpFilmPlayer", "Starting film player setup", null);
+        }
         Media media = new Media(pathToFilm);
         filmPlayer = new MediaPlayer(media);
 
@@ -145,6 +163,10 @@ public class MediaControl extends BorderPane {
 
     public void play() {
         filmPlayer.play();
+        if(featureToggle.loggingOn()){
+            logger.log(Level.INFO, "play", "Initially Playing Film", null);
+        }
+
     }
     public void pause(){
         filmPlayer.pause();
