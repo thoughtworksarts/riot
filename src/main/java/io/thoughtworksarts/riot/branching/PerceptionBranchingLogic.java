@@ -116,7 +116,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                         visualizationClient.createVisualization(actors[actorIndex], emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY), emotionsByActorId.get(actors[actorIndex]).get(SCENES_PLAYED_KEY));
                     }
 
-                    return getCalibratingGraphic();
+                    return getSecondStoryIntro();
                 }
 
                 if (isEndOfStoryTwo(getCurrentLevel(arg))) {
@@ -183,8 +183,8 @@ public class PerceptionBranchingLogic implements BranchingLogic {
         return translator.convertToDuration(intros[0].getStart());
     }
 
-    private Duration getCalibratingGraphic() {
-        return translator.convertToDuration(credits[0].getStart());
+    private Duration getSecondStoryIntro() {
+        return translator.convertToDuration(intros[4].getStart());
     }
 
     private Duration getVisualizationProcessing() {
