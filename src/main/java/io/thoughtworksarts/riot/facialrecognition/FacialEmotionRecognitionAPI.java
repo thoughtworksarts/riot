@@ -3,6 +3,7 @@ package io.thoughtworksarts.riot.facialrecognition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
 import com.google.common.util.concurrent.Uninterruptibles;
+import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import io.thoughtworksarts.riot.utilities.JSONReader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 //import org.nd4j.shade.guava.util.concurrent.Uninterruptibles;
@@ -17,11 +18,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class FacialEmotionRecognitionAPI {
 
     private final int[] dataShape = new int[]{1, 1, 48, 48};
     private final String mode;
+    private PerceptionLogger logger;
     private float[] emotionProbabilities;
     private DeepLearningProcessor deepLearningProcessor;
     private ImageProcessor imageProcessor;
@@ -33,6 +36,7 @@ public class FacialEmotionRecognitionAPI {
     public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile, String mode) {
         validateMode(mode);
         this.imageProcessor = imageProcessor;
+        this.logger = new PerceptionLogger("FacialEmotionRecognitionAPI");
         this.deepLearningProcessor = deepLearningProcessor;
         this.emotionMap = loadEmotionMap(emotionMapFile);
         this.mode = mode;
@@ -111,6 +115,7 @@ public class FacialEmotionRecognitionAPI {
             emotionStringMap = new ObjectMapper().readValue(JSONReader.readFile(emotionMapFile), HashMap.class);
             emotionStringMap.forEach( (key,value) -> enumEmotionMap.put(Emotion.valueOf(key.toUpperCase()),value));
         } catch (IOException e) {
+            logger.log(Level.INFO, "loadEmotionMap", e.getMessage(), null);
             e.printStackTrace();
         }
         return enumEmotionMap;

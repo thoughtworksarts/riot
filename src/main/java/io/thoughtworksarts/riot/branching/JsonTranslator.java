@@ -2,6 +2,7 @@ package io.thoughtworksarts.riot.branching;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
+import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import io.thoughtworksarts.riot.utilities.JSONReader;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -9,10 +10,18 @@ import lombok.Getter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import java.util.logging.Level;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JsonTranslator {
+
+    private PerceptionLogger logger;
+
+    public JsonTranslator(){
+        this.logger = new PerceptionLogger("JsonTranslator");
+    }
 
     public ConfigRoot populateModelsFromJson(String pathToConfig) throws Exception {
         String jsonConfig = JSONReader.readFile(pathToConfig);
@@ -27,6 +36,7 @@ public class JsonTranslator {
         try {
             parsedTime = format.parse(time).getTime();
         } catch (ParseException e) {
+            logger.log(Level.INFO, "convertToDuration", e.getMessage(), null);
             e.printStackTrace();
         }
         return new Duration(parsedTime);

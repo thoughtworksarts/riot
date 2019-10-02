@@ -54,9 +54,7 @@ public class MediaControl extends BorderPane {
         this.pane = new StackPane();
         this.featureToggle = new FeatureToggle();
 
-        if(featureToggle.loggingOn()) {
-            logger = new PerceptionLogger("MediaControl");
-        }
+        logger = new PerceptionLogger("MediaControl");
 
         setUpFilmPlayer(new File(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);
@@ -84,16 +82,12 @@ public class MediaControl extends BorderPane {
             if(isPaused) {
                 filmPlayer.play();
                 isPaused = false;
-                if(featureToggle.loggingOn()){
-                    logger.log(Level.INFO, "play", "Playing Film", null);
-                }
+                logger.log(Level.INFO, "play", "Playing Film", null);
             }
             else {
                 isPaused = true;
                 filmPlayer.pause();
-                if(featureToggle.loggingOn()){
-                    logger.log(Level.INFO, "pause", "Pausing Film", null);
-                }
+                logger.log(Level.INFO, "pause", "Pausing Film", null);
             }
         });
 
@@ -111,9 +105,7 @@ public class MediaControl extends BorderPane {
     }
 
     private void setUpFilmPlayer(String pathToFilm) {
-        if(featureToggle.loggingOn()) {
-            logger.log(Level.INFO, "setUpFilmPlayer", "Starting film player setup", null);
-        }
+        logger.log(Level.INFO, "setUpFilmPlayer", "Starting film player setup", null);
         Media media = new Media(pathToFilm);
         filmPlayer = new MediaPlayer(media);
 
@@ -163,9 +155,8 @@ public class MediaControl extends BorderPane {
 
     public void play() {
         filmPlayer.play();
-        if(featureToggle.loggingOn()){
-            logger.log(Level.INFO, "play", "Initially Playing Film", null);
-        }
+        logger.log(Level.INFO, "play", "Initially Playing Film", null);
+
 
     }
     public void pause(){

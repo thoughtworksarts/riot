@@ -1,6 +1,7 @@
 package io.thoughtworksarts.riot.facialrecognition;
 
 import com.github.sarxos.webcam.Webcam;
+import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import org.datavec.image.loader.ImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -10,9 +11,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class ImageProcessor {
 
+    private PerceptionLogger logger;
+
+    public ImageProcessor(){
+        this.logger = new PerceptionLogger("ImageProcessor");
+    }
     public INDArray prepareImageForNet(File imageFile, int[] targetDataShape) {
         BufferedImage image = loadImage(imageFile);
         image = convertImageToGrayscale(image);
@@ -44,6 +51,7 @@ public class ImageProcessor {
         try {
             colorImageData = imageLoader.fromFile(imageFile);
         } catch (IOException e) {
+            logger.log(Level.INFO, "loadImage", e.getMessage(), null);
             System.out.println("Unable to read data from test image file.");
             e.printStackTrace();
         }
