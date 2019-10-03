@@ -293,7 +293,9 @@ public class PerceptionBranchingLogic implements BranchingLogic {
             addMarker(markers, "delete-playback", String.valueOf(3), credits[2].getStart());
         }
 
-        addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
+        if(featureToggle.eyeTrackingOn()) {
+            addMarker(markers, "calibrating", String.valueOf(1), credits[0].getEnd());
+        }
 
         addMarker(markers, "level", String.valueOf(levels[0].getLevel()), levels[0].getEnd());
         addMarker(markers, "level", String.valueOf(levels[1].getLevel()), levels[1].getEnd());
