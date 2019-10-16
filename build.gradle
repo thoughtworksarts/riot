@@ -117,13 +117,36 @@ runtime {
     }
 }
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+jpackageImage {
+    doLast {
+        def newFile = project.layout.buildDirectory.file("jpackage/riot.app/Contents/Info.plist.new").get().asFile
+        def existingFile = project.layout.buildDirectory.file("jpackage/riot.app/Contents/Info.plist").get().asFile
+        newFile.withWriter { w ->
+            existingFile.eachLine { line ->
+
+                if (line.contains("NSHighResolutionCapable")) {
+                    w << "  <key>NSCameraUsageDescription</key>\n"
+                    w << "  <string>Perception.io uses the camera to analyze your emotions</string>\n"
+                }
+
+                w << line + "\n"
+            }
+        }
+
+        Files.move(newFile.toPath(), existingFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
 String[] getJPackageCoordinates() {
-    if(os.macOsX) return [
+    if (os.macOsX) return [
             'https://download.java.net/java/early_access/jpackage/1/openjdk-14-jpackage+1-49_osx-x64_bin.tar.gz',
             'tar.gz',
             'jdk-14.jdk/Contents/Home'
     ]
-    if(os.windows) return [
+    if (os.windows) return [
             'https://download.java.net/java/early_access/jpackage/1/openjdk-14-jpackage+1-49_windows-x64_bin.zip',
             'zip',
             'jdk-14'
@@ -140,7 +163,7 @@ String downloadJPackage() {
     def downloadDir = "$buildDir/download"
     tasks.jpackageImage.doFirst {
         def execExt = os.windows ? '.exe' : ''
-        if(!file("$downloadDir/$directory/bin/jpackage$execExt").file) {
+        if (!file("$downloadDir/$directory/bin/jpackage$execExt").file) {
             def jdkArchivePath = "$downloadDir/jdk-jpackage.$extension"
             download {
                 src url
@@ -148,7 +171,7 @@ String downloadJPackage() {
                 overwrite false
             }
             copy {
-                from ((extension == 'tar.gz') ? tarTree(resources.gzip(jdkArchivePath)) : zipTree(jdkArchivePath))
+                from((extension == 'tar.gz') ? tarTree(resources.gzip(jdkArchivePath)) : zipTree(jdkArchivePath))
                 into downloadDir
             }
         }

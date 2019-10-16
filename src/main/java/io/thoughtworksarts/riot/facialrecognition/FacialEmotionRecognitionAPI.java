@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,8 +33,15 @@ public class FacialEmotionRecognitionAPI {
     private File imageFile;
     private volatile boolean webcamThreadRunning;
     private final ArrayList<String> VALID_APP_MODES = getValidAppModes();
+    private String imagePath;
 
     public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile, String mode) {
+        this(imageProcessor, deepLearningProcessor, emotionMapFile, mode,
+                Paths.get(System.getProperty("user.home"), "Desktop/perception.io/image.jpg").toString());
+    }
+
+    public FacialEmotionRecognitionAPI(ImageProcessor imageProcessor, DeepLearningProcessor deepLearningProcessor, String emotionMapFile, String mode, String imagePath) {
+        this.imagePath = imagePath;
         validateMode(mode);
         this.imageProcessor = imageProcessor;
         this.logger = new PerceptionLogger("FacialEmotionRecognitionAPI");
@@ -54,7 +62,7 @@ public class FacialEmotionRecognitionAPI {
             System.out.println("Webcam initialized");
             while (webcamThreadRunning) {
                 BufferedImage image = webcam.getImage();
-                imageFile = new File("./image.jpg");
+                imageFile = new File(imagePath);
                 try {
                     ImageIO.write(image, "jpg", imageFile);
                     recordEmotionProbabilities();
@@ -75,8 +83,8 @@ public class FacialEmotionRecognitionAPI {
         INDArray imageData = imageProcessor.prepareImageForNet(imageFile, dataShape);
         float[] emotionPrediction = deepLearningProcessor.getEmotionPrediction(imageData);
 
-        for(int index=0; index < emotionPrediction.length; index++){
-            emotionProbabilities[index]+=emotionPrediction[index];
+        for (int index = 0; index < emotionPrediction.length; index++) {
+            emotionProbabilities[index] += emotionPrediction[index];
         }
         printProbabilitiesToConsole();
     }
@@ -88,18 +96,18 @@ public class FacialEmotionRecognitionAPI {
         System.out.println();
     }
 
-    public Emotion getDominantEmotion(){
+    public Emotion getDominantEmotion() {
 
-        if (mode.contains("test"))  {
+        if (mode.contains("test")) {
             String testingEmotion = mode.split("-")[0];
             return Emotion.valueOf(testingEmotion.toUpperCase());
         }
 
         Map.Entry<Emotion, Integer> maxEmotionEntry = null;
-        for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()){
-            if(maxEmotionEntry == null){
+        for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()) {
+            if (maxEmotionEntry == null) {
                 maxEmotionEntry = entry;
-            } else if (emotionProbabilities[maxEmotionEntry.getValue()] < emotionProbabilities[entry.getValue()]){
+            } else if (emotionProbabilities[maxEmotionEntry.getValue()] < emotionProbabilities[entry.getValue()]) {
                 maxEmotionEntry = entry;
             }
         }
@@ -109,11 +117,11 @@ public class FacialEmotionRecognitionAPI {
     }
 
     public Map<Emotion, Integer> loadEmotionMap(String emotionMapFile) {
-        Map<String,Integer> emotionStringMap;
+        Map<String, Integer> emotionStringMap;
         Map<Emotion, Integer> enumEmotionMap = new HashMap<>();
         try {
             emotionStringMap = new ObjectMapper().readValue(JSONReader.readFile(emotionMapFile), HashMap.class);
-            emotionStringMap.forEach( (key,value) -> enumEmotionMap.put(Emotion.valueOf(key.toUpperCase()),value));
+            emotionStringMap.forEach((key, value) -> enumEmotionMap.put(Emotion.valueOf(key.toUpperCase()), value));
         } catch (IOException e) {
             logger.log(Level.INFO, "loadEmotionMap", e.getMessage(), null);
             e.printStackTrace();
@@ -136,7 +144,7 @@ public class FacialEmotionRecognitionAPI {
     public ArrayList<String> getValidAppModes() {
         ArrayList<String> validAppModes = new ArrayList<>();
         validAppModes.add("installation");
-        for (Emotion emotion: Emotion.values()) {
+        for (Emotion emotion : Emotion.values()) {
             validAppModes.add(emotion.name().toLowerCase() + "-test");
         }
         return validAppModes;

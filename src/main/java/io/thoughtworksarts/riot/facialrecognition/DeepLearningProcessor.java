@@ -27,13 +27,7 @@ public class DeepLearningProcessor {
     private void initModel() {
         try {
             model = KerasModelImport.importKerasSequentialModelAndWeights(modelConfigFile);
-        } catch (IOException e) {
-            logger.log(Level.INFO, "initModel", e.getMessage(), null);
-            e.printStackTrace();
-        } catch (InvalidKerasConfigurationException e) {
-            logger.log(Level.INFO, "initModel", e.getMessage(), null);
-            e.printStackTrace();
-        } catch (UnsupportedKerasConfigurationException e) {
+        } catch (IOException | InvalidKerasConfigurationException | UnsupportedKerasConfigurationException e) {
             logger.log(Level.INFO, "initModel", e.getMessage(), null);
             e.printStackTrace();
         }

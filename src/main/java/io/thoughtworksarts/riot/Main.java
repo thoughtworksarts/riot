@@ -12,17 +12,14 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 public class Main extends Application {
 
-    public static final String DEFAULT_FILES_PATH = "/facialrecognitionmodels/";
-    public static final String PATH_TO_CONFIG = "/config.json";
-    // TODO: Replace path with correct path to python calibration script
-    public static final String PATH_TO_CALIBRATION_SCRIPT = "src/main/java/io/thoughtworksarts/riot/utilities/test1.py";
+    private static final String DEFAULT_FILES_PATH = "/facialrecognitionmodels/";
+    private static final String PATH_TO_CONFIG = "/config.json";
 
     public static void main(String... args) {
         log.info("Starting Riot...");
@@ -54,13 +51,12 @@ public class Main extends Application {
 
     private static String getEmotionSetId(ConfigRoot configRoot) {
         return Stream.of(configRoot.getLevels())
-                .flatMap(level -> level.getBranch().entrySet().stream()
-                        .map(Map.Entry::getKey))
+                .flatMap(level -> level.getBranch().keySet().stream())
                 .collect(Collectors.toSet()) //Unique emotions in config.json
                 .stream()
                 .map(emotion -> Emotion.valueOf(emotion.toUpperCase()).getNumber())
                 .sorted()
-                .map(number -> number.toString())
+                .map(Object::toString)
                 .collect(Collectors.joining());
     }
 }
