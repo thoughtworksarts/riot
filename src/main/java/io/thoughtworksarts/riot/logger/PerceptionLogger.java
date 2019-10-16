@@ -2,6 +2,8 @@ package io.thoughtworksarts.riot.logger;
 
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,24 +16,30 @@ import java.util.logging.Logger;
 public class PerceptionLogger {
 
     private static Logger logger;
+    private final String logDirectory;
     private String classLogged;
     private FileFormatter fileFormatter;
 
     public PerceptionLogger(String classLogged) {
+        this(classLogged, Paths.get(System.getProperty("user.home"), "Desktop/perception.io/logs").toString());
+    }
+
+    public PerceptionLogger(String classLogged, String rootLogPath) {
         this.classLogged = classLogged;
         logger = Logger.getLogger(classLogged);
         this.fileFormatter = new FileFormatter();
+        this.logDirectory = rootLogPath;
     }
 
     public void log(Level level, String methodLogged, String message, String[] additionalMessages) {
         try {
-            File logDir = new File("./logs/");
+            File logDir = new File(logDirectory);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
             if (!(logDir.exists()))
-                logDir.mkdir();
+                logDir.mkdirs();
             String logFileName = String.format("%s_perception.log", dateFormat.format(date));
-            FileHandler fileHandler = new FileHandler("logs/" + logFileName, true);
+            FileHandler fileHandler = new FileHandler(Paths.get(logDir.toString(), logFileName).toString(), true);
             fileHandler.setFormatter(this.fileFormatter);
             logger.addHandler(fileHandler);
             if (additionalMessages != null) {
