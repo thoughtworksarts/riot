@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -57,11 +58,16 @@ public class FacialEmotionRecognitionAPI {
     private void startImageCapture() {
         new Thread(() -> {
             System.out.println();
-            Webcam webcam = Webcam.getDefault();
-            webcam.open();
+            Webcam webcamToUse = Webcam
+                    .getWebcams()
+                    .stream()
+                    .filter(wc -> !wc.getName().toLowerCase().contains("facetime"))
+                    .findFirst()
+                    .orElse(Webcam.getDefault());
+            webcamToUse.open();
             System.out.println("Webcam initialized");
             while (webcamThreadRunning) {
-                BufferedImage image = webcam.getImage();
+                BufferedImage image = webcamToUse.getImage();
                 imageFile = new File(imagePath);
                 try {
                     ImageIO.write(image, "jpg", imageFile);
@@ -71,7 +77,7 @@ public class FacialEmotionRecognitionAPI {
                     e.printStackTrace();
                 }
             }
-            webcam.close();
+            webcamToUse.close();
         }).start();
     }
 
