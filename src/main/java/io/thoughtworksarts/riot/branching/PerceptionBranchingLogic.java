@@ -8,6 +8,7 @@ import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import io.thoughtworksarts.riot.visualization.VisualizationClient;
 import javafx.scene.media.MediaMarkerEvent;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
