@@ -54,7 +54,7 @@ public class FacialEmotionRecognitionAPI {
             System.out.println("Webcam initialized");
             while (webcamThreadRunning) {
                 BufferedImage image = webcam.getImage();
-                imageFile = new File("image.jpg");
+                imageFile = new File("./image.jpg");
                 try {
                     ImageIO.write(image, "jpg", imageFile);
                     recordEmotionProbabilities();

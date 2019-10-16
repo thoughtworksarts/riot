@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 @Slf4j
 public class Main extends Application {
 
-    public static final String DEFAULT_FILES_PATH = "src/main/resources/facialrecognitionmodels/";
-    public static final String PATH_TO_CONFIG = "src/main/resources/config.json";
+    public static final String DEFAULT_FILES_PATH = "/facialrecognitionmodels/";
+    public static final String PATH_TO_CONFIG = "/config.json";
     // TODO: Replace path with correct path to python calibration script
     public static final String PATH_TO_CALIBRATION_SCRIPT = "src/main/java/io/thoughtworksarts/riot/utilities/test1.py";
 

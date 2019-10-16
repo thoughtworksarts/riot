@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class BranchingConfigurationLoader {
-    public static final String PATH_TO_CONFIG = "src/main/resources/";
+    public static final String PATH_TO_CONFIG = "/";
     private List<String> paths;
     private JsonTranslator jsonTranslator;
     private PerceptionLogger logger;

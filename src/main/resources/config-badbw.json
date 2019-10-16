@@ -1,8 +1,8 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/final-film.m4v",
-    "audio": "src/main/resources/audio/audio.wav"
+    "video": "/video/film_with_credits.m4v",
+    "audio": "/audio/audio.wav"
   },
   "actors": ["bad-black", "bad-white"],
   "intros": [

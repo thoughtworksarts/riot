@@ -19,7 +19,7 @@ public class FacialEmotionRecognitionAPITest {
 
     FacialEmotionRecognitionAPI facialRecognition;
     Set<String> enabledEmotions;
-    private String PATH_TO_EMOTION_MAP_FILE = "src/test/resources/conv2d_emotion_map.json";
+    private String PATH_TO_EMOTION_MAP_FILE = "/conv2d_emotion_map.json";
     private String INSTALLATION_MODE = "installation";
     private String CALM_TEST_MODE = "calm-test";
     private String FEAR_TEST_MODE = "fear-test";
