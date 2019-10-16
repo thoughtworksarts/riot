@@ -9,15 +9,16 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 
 public class DeepLearningProcessor {
 
-    private final String modelConfigFile;
+    private final InputStream modelConfigFile;
     private MultiLayerNetwork model;
     private PerceptionLogger logger;
     public DeepLearningProcessor(String modelConfigFile) {
-        this.modelConfigFile = modelConfigFile;
+        this.modelConfigFile = this.getClass().getResourceAsStream(modelConfigFile);
         this.logger = new PerceptionLogger("DeepLearningProcessor");
 
         initModel();

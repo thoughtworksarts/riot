@@ -21,7 +21,7 @@ class JsonTranslatorTest {
     @BeforeEach
     void setUp() throws Exception {
         jsonTranslator = new JsonTranslator();
-        String configFile = "src/test/resources/config.json";
+        String configFile = "/config.json";
         root = jsonTranslator.populateModelsFromJson(configFile);
     }
 

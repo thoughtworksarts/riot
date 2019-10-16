@@ -22,6 +22,7 @@ import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class MediaControl extends BorderPane {
     private EyeTrackingClient eyeTrackingClient;
     private PerceptionLogger logger;
 
-    public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) {
+    public MediaControl(String filmPath, FacialEmotionRecognitionAPI facialRecognition, JsonTranslator jsonTranslator) throws URISyntaxException {
         this.facialRecognition = facialRecognition;
         this.jsonTranslator = jsonTranslator;
         this.branchingConfigurationLoader = new BranchingConfigurationLoader(jsonTranslator);
@@ -56,7 +57,7 @@ public class MediaControl extends BorderPane {
 
         logger = new PerceptionLogger("MediaControl");
 
-        setUpFilmPlayer(new File(filmPath).toURI().toString());
+        setUpFilmPlayer(this.getClass().getResource(filmPath).toURI().toString());
         setUpMediaViewFor(filmPlayer);
         loadNextConfiguration();
     }
