@@ -25,6 +25,8 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 
+import static java.util.logging.Level.INFO;
+
 @Slf4j
 public class MediaControl extends BorderPane {
 
@@ -71,9 +73,13 @@ public class MediaControl extends BorderPane {
 
     public void startExperience() {
         filmPlayer.seek(branchingLogic.getIntro());
+        logger.log(Level.INFO, "startExperience", "Starting the experience", null);
     }
 
-    public void startLooping() { filmPlayer.seek(branchingLogic.getLoop()); }
+    public void startLooping() {
+        filmPlayer.seek(branchingLogic.getLoop());
+        logger.log(Level.INFO, "startLooping", "Stopping the experience, going back to intro loop", null);
+    }
 
     private boolean isPaused = false;
 
@@ -122,6 +128,7 @@ public class MediaControl extends BorderPane {
         filmPlayer.setOnEndOfMedia(() -> {
             filmPlayer.getMedia().getMarkers().clear();
             loadNextConfiguration();
+            logger.log(INFO, "setOnEndOfMedia callback", "Reached end of experience", null);
             seek(branchingLogic.getLoop());
             moviePlayer.activateSpacebarEventHandler();
         });

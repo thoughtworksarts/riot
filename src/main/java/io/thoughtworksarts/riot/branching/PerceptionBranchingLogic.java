@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.logging.Level.*;
+
 @Slf4j
 public class PerceptionBranchingLogic implements BranchingLogic {
 
@@ -71,16 +73,21 @@ public class PerceptionBranchingLogic implements BranchingLogic {
 
     @Override
     public Duration branchOnMediaEvent(MediaMarkerEvent arg) {
-        log.info(arg.getMarker().getKey());
-        logger.log(java.util.logging.Level.INFO, "branchOnMediaEvent",
+        final Pair<String, Duration> marker = arg.getMarker();
+        log.info(marker.getKey());
+
+        int minutes = (int) (marker.getValue().toSeconds() / 60);
+        double seconds = marker.getValue().toSeconds() % 60;
+
+        logger.log(INFO, "branchOnMediaEvent",
                     "Branching event occurred",
-                    new String[]{"Loop Marker: " + arg.getMarker(),
-                            "Current Event Category: " + arg.getMarker().getKey(),
-                            "Current Timestamp: " + arg.getMarker().getValue().toMinutes(),
+                    new String[]{"Loop Marker: " + marker,
+                            "Current Event Category: " + marker.getKey(),
+                            "Current Timestamp: " + String.format("%s:%s", minutes, seconds),
                             "ActorId: " + actors[actorIndex],
                             "EmotionsByActorId: " + this.emotionsByActorId.get(actors[actorIndex])});
 
-        String category = arg.getMarker().getKey().split(":")[0];
+        String category = marker.getKey().split(":")[0];
         switch (category) {
             case "loop": {
                 return getLoop();
@@ -152,7 +159,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 deletePlaybackFiles();
             }
         }
-        return new Duration(arg.getMarker().getValue().toMillis() + 1);
+        return new Duration(marker.getValue().toMillis() + 1);
     }
 
     private boolean isFirstLevel(int level) {
