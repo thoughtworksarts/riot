@@ -7,27 +7,27 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PerceptionLoggerTest {
-    private Path temporaryFolder;
+    private static Path temporaryFolder;
 
     @BeforeAll
-    public void setUp() throws IOException {
-        temporaryFolder = Files.createTempDirectory(this.getClass().getName());
+    public static void setUp() throws IOException {
+        temporaryFolder = Files.createTempDirectory(PerceptionLoggerTest.class.getName());
     }
 
     @Test
     public void shouldCreateDirectoryAndWriteToLogFile() throws IOException {
-        new PerceptionLogger("class", temporaryFolder.toString())
+        new PerceptionLogger("class", temporaryFolder.toString() + "/logs")
                 .log(Level.INFO, "method", "message", new String[]{"additional", "entries"});
 
 
@@ -43,7 +43,7 @@ class PerceptionLoggerTest {
     }
 
     @AfterAll
-    public void tearDown() throws IOException {
+    public static void tearDown() throws IOException {
         FileUtils.deleteDirectory(temporaryFolder.toFile());
     }
 }
