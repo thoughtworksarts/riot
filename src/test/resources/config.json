@@ -1,8 +1,8 @@
 {
   "mode": "installation",
   "media": {
-    "video": "src/main/resources/video/perception-hi-res-test.mp4",
-    "audio": "src/main/resources/audio/audio_test.wav"
+    "video": "/video/film_with_credits.m4v",
+    "audio": "/audio/audio_test.wav"
   },
   "intros": [
     {"intro": 1,
