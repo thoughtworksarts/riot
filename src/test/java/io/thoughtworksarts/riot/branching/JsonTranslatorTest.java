@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class JsonTranslatorTest {
 
@@ -35,13 +36,14 @@ class JsonTranslatorTest {
     void createLogicTreeShouldContainCorrectPathToVideoFile() throws Exception {
         String videoPath = root.getMedia().getVideo();
 
-        assertTrue(videoPath.contains(".mp4"));
-        File file = new File(videoPath);
+        assertTrue(videoPath.contains(".m4v"));
+
+        File file = new File(this.getClass().getResource(videoPath).getFile());
 
         try{
             new FileInputStream(file);
         } catch (Exception e) {
-            assertTrue(false, e.getMessage());
+            fail(e.getMessage());
         }
     }
 
@@ -50,12 +52,12 @@ class JsonTranslatorTest {
         String audioPath = root.getMedia().getAudio();
 
         assertTrue(audioPath.contains(".wav"));
-        File file = new File(audioPath);
+        File file = new File(this.getClass().getResource(audioPath).getFile());
 
         try{
             new FileInputStream(file);
         } catch (Exception e) {
-            assertTrue(false, e.getMessage());
+            fail(e.getMessage());
         }
     }
 

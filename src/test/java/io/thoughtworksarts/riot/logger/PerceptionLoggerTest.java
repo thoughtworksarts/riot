@@ -31,7 +31,7 @@ class PerceptionLoggerTest {
                 .log(Level.INFO, "method", "message", new String[]{"additional", "entries"});
 
 
-        final File[] files = temporaryFolder.toFile().listFiles();
+        final File[] files = temporaryFolder.resolve("logs").toFile().listFiles();
 
         assertNotNull(files);
         assertEquals(1, files.length);
