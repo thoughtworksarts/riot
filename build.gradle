@@ -113,6 +113,9 @@ runtime {
             jpackageHome = downloadJPackage()
         }
         mainJar = "riot.jar"
+        imageName = "Perception.io"
+        imageOptions = ["--verbose", "--icon", project.layout.projectDirectory.file("src/main/resources/Icon.icns").toString() ]
+        installerName = "Perception.io"
         installerOptions += '--verbose'
     }
 }
@@ -122,8 +125,8 @@ import java.nio.file.StandardCopyOption
 
 jpackageImage {
     doLast {
-        def newFile = project.layout.buildDirectory.file("jpackage/riot.app/Contents/Info.plist.new").get().asFile
-        def existingFile = project.layout.buildDirectory.file("jpackage/riot.app/Contents/Info.plist").get().asFile
+        def newFile = project.layout.buildDirectory.file("jpackage/Perception.io.app/Contents/Info.plist.new").get().asFile
+        def existingFile = project.layout.buildDirectory.file("jpackage/Perception.io.app/Contents/Info.plist").get().asFile
         newFile.withWriter { w ->
             existingFile.eachLine { line ->
 

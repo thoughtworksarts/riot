@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 public class DeepLearningProcessorTest {
 
     private DeepLearningProcessor deepLearningProcessor;
@@ -37,7 +38,7 @@ public class DeepLearningProcessorTest {
 //    }
 
     @Test @Disabled
-    void shouldOutputSamePredictionValuesAsInPythonWhenGivenSameImage() {
+    public void shouldOutputSamePredictionValuesAsInPythonWhenGivenSameImage() {
         float[] expectedPrediction = new float[]{0.0f, 0.24070886f, 0.0920638f};
 
         int[] dataShape = new int[]{1, 1, 64, 64};
