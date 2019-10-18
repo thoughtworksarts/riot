@@ -9,6 +9,8 @@ import io.thoughtworksarts.riot.facialrecognition.ImageProcessor;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +42,7 @@ public class Main extends Application {
         DeepLearningProcessor deepLearningProcessor = new DeepLearningProcessor(pathToWeightsFile);
         FacialEmotionRecognitionAPI facialRecognition = new FacialEmotionRecognitionAPI(imageProcessor, deepLearningProcessor, pathToEmotionMapFile, jsonConfiguration.getMode());
 
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(filmPath, facialRecognition, jsonTranslator));
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, new MediaControl(filmPath, facialRecognition, jsonTranslator), new Scene(new Group(), 1200, 800));
         moviePlayer.initialise();
     }
 

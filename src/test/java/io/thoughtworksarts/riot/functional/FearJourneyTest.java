@@ -11,6 +11,8 @@ import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import io.thoughtworksarts.riot.video.MediaControl;
 import io.thoughtworksarts.riot.video.MoviePlayer;
 import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ public class FearJourneyTest extends Application {
         mediaControl = new MediaControl("", facialEmotionRecognitionAPI, jsonTranslator);
 
 //        mediaControlSpy = Mockito.spy(mediaControl);
-        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl);
+        MoviePlayer moviePlayer = new MoviePlayer(primaryStage, mediaControl, new Scene(new Group(), 1200, 800));
         moviePlayer.initialise();
         mediaControl.play();
 
