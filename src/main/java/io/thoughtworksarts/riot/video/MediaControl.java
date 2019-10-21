@@ -1,13 +1,12 @@
 package io.thoughtworksarts.riot.video;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.branching.BranchingConfigurationLoader;
 import io.thoughtworksarts.riot.eyetracking.EyeTrackingClient;
-import io.thoughtworksarts.riot.branching.BranchingLogic;
 import io.thoughtworksarts.riot.branching.JsonTranslator;
 import io.thoughtworksarts.riot.branching.PerceptionBranchingLogic;
 import io.thoughtworksarts.riot.branching.model.ConfigRoot;
-import io.thoughtworks.riot.featuretoggle.FeatureToggle;
 import io.thoughtworksarts.riot.facialrecognition.FacialEmotionRecognitionAPI;
 import io.thoughtworksarts.riot.logger.PerceptionLogger;
 import javafx.beans.binding.Bindings;
@@ -77,6 +76,7 @@ public class MediaControl extends BorderPane {
     }
 
     public void startLooping() {
+        branchingLogic = new PerceptionBranchingLogic(facialRecognition, jsonTranslator, currentConfiguration, eyeTrackingClient);
         filmPlayer.seek(branchingLogic.getLoop());
         logger.log(Level.INFO, "startLooping", "Stopping the experience, going back to intro loop", null);
     }
@@ -177,5 +177,15 @@ public class MediaControl extends BorderPane {
 
     public void setMoviePlayer(MoviePlayer moviePlayer) {
         this.moviePlayer = moviePlayer;
+    }
+
+    @VisibleForTesting
+    PerceptionBranchingLogic getBranchingLogic() {
+        return branchingLogic;
+    }
+
+    @VisibleForTesting
+    MediaPlayer getFilmPlayer() {
+        return filmPlayer;
     }
 }

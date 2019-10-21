@@ -39,7 +39,7 @@ class PerceptionLoggerTest {
         String firstLine = new BufferedReader(new FileReader(files[0])).readLine();
 
         assertTrue(firstLine.endsWith("::message::additional::entries"));
-        assertTrue(firstLine.startsWith("1::class::method::"));
+        assertTrue(firstLine.contains("::class::method::"));
     }
 
     @AfterAll

@@ -1,7 +1,7 @@
 {
   "mode": "installation",
   "media": {
-    "video": "/video/film_with_credits.m4v",
+    "video": "/video/final-film.m4v",
     "audio": "/audio/audio_test.wav"
   },
   "intros": [

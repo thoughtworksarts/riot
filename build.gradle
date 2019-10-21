@@ -3,10 +3,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
         classpath 'org.apache.ivy:ivy:2.3.0'
     }
 }
+
 plugins {
     id 'java'
     id 'application'
@@ -16,8 +16,6 @@ plugins {
     id 'org.beryx.runtime' version '1.7.0'
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
-
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceCompatibility = "1.12"
 targetCompatibility = "1.12"
@@ -37,6 +35,11 @@ javafx {
     modules = ['javafx.controls', 'javafx.media', 'javafx.swing']
 }
 
+test {
+    useJUnitPlatform()
+    def canonicalPathToLib = new File('asio/').getCanonicalPath();
+    systemProperty 'java.library.path', "$canonicalPathToLib"
+}
 
 import de.undercouch.gradle.tasks.download.Download
 
@@ -62,11 +65,6 @@ downloads.each {
 }
 
 compileJava.dependsOn tasks.withType(Download)
-
-junitPlatformTest {
-    def canonicalPathToLib = new File('asio/').getCanonicalPath();
-    systemProperty 'java.library.path', "$canonicalPathToLib"
-}
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
