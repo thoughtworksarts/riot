@@ -126,7 +126,7 @@ public class FacialEmotionRecognitionAPI {
         Map<String, Integer> emotionStringMap;
         Map<Emotion, Integer> enumEmotionMap = new HashMap<>();
         try {
-            emotionStringMap = new ObjectMapper().readValue(new File(emotionMapFile), HashMap.class);
+            emotionStringMap = new ObjectMapper().readValue(JSONReader.readFile(emotionMapFile), HashMap.class);
             emotionStringMap.forEach((key, value) -> enumEmotionMap.put(Emotion.valueOf(key.toUpperCase()), value));
         } catch (IOException e) {
             logger.log(Level.INFO, "loadEmotionMap", e.getMessage(), null);
