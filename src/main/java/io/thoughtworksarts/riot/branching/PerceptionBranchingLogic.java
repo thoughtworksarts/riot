@@ -113,7 +113,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 else if (isFirstLevel(getCurrentLevel(arg))) addScenePlayed(arg);
 
                 if (isEndOfStoryOne(getCurrentLevel(arg))) {
-                    getDominantEmotion();
+                    getCurrentEmotion();
 
                     if (featureToggle.eyeTrackingOn()) {
                         eyeTrackingClient.stopEyeTracking();
@@ -124,7 +124,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
                 }
 
                 if (isEndOfStoryTwo(getCurrentLevel(arg))) {
-                    getDominantEmotion();
+                    getCurrentEmotion();
 
                     if (featureToggle.eyeTrackingOn()) {
                         eyeTrackingClient.stopEyeTracking();
@@ -180,7 +180,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private void restartFacialRecognition() {
-        facialRecognition.getDominantEmotion();
+        facialRecognition.getCurrentEmotion();
     }
 
     public Duration getLoop() {
@@ -248,13 +248,18 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private String getEmotionBranch(Level level) {
-        return level.getBranch().get(getDominantEmotion()).getStart();
+        return level.getBranch().get(getCurrentEmotion()).getStart();
     }
 
     private String getDominantEmotion() {
         String dominantEmotion = facialRecognition.getDominantEmotion().name().toLowerCase();
         emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY).add(dominantEmotion);
         return dominantEmotion;
+    }
+    private String getCurrentEmotion() {
+        String currentEmotion = facialRecognition.getCurrentEmotion().name().toLowerCase();
+        emotionsByActorId.get(actors[actorIndex]).get(DOMINANT_EMOTIONS_KEY).add(currentEmotion);
+        return currentEmotion;
     }
 
     private boolean isEndOfStoryTwo(int level) {
@@ -266,7 +271,7 @@ public class PerceptionBranchingLogic implements BranchingLogic {
     }
 
     private Duration getStoryTwo() {
-        getDominantEmotion();
+        getCurrentEmotion();
         actorIndex++;
         return translator.convertToDuration(levels[6].getStart());
     }

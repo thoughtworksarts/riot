@@ -122,6 +122,24 @@ public class FacialEmotionRecognitionAPI {
         return maxEmotionEntry.getKey();
     }
 
+    public Emotion getCurrentEmotion() {
+
+        float highestProbability = new Float(0.0);
+        Emotion currentEmotion = null;
+
+        for (Map.Entry<Emotion, Integer> entry : emotionMap.entrySet()) {
+            if(emotionProbabilities[entry.getValue()] > highestProbability) {
+                highestProbability = emotionProbabilities[entry.getValue()];
+                currentEmotion = entry.getKey();
+            }
+        }
+
+        emotionProbabilities = new float[Emotion.values().length];
+        Arrays.fill(emotionProbabilities, 0);
+
+        return currentEmotion;
+    }
+
     public Map<Emotion, Integer> loadEmotionMap(String emotionMapFile) {
         Map<String, Integer> emotionStringMap;
         Map<Emotion, Integer> enumEmotionMap = new HashMap<>();
