@@ -23,8 +23,8 @@ This application is sensitive to the operating system of the mac, hence why ther
 
 #### Installation steps to set up the computer:
 1. Install IntelliJ, iTerm (if you want), Java 12, Cursorcer (http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/)
-1. download latest resources zip file
-1. download the current version of the movie
+1. download latest resources zip file (ask team members)
+1. download the current version of the movie (ask team members)
 1. Pull the code from github and git clone into your repo
     1. You may have to install XCode tools, click yes
 1. Open the project in IntelliJ by selecting Import Project and selecting the `build.gradle` file from the repository you just cloned
