@@ -8,6 +8,7 @@ import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.mockito.Mock;
 
 import javax.swing.*;
@@ -44,7 +45,7 @@ class MediaControlTest {
         initMocks(this);
     }
 
-    @Test
+    @Disabled @Test
     public void shouldResetAppWhenGoingBackToInitialLoop() throws URISyntaxException {
         final MediaControl mediaControl = new MediaControl("/video/final-film.m4v", facialRecognition, jsonTranslator);
 

@@ -4,6 +4,7 @@ import io.thoughtworksarts.riot.branching.model.ConfigRoot;
 import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +33,7 @@ class JsonTranslatorTest {
         assertEquals(root.getClass(), ConfigRoot.class);
     }
 
-    @Test
+    @Disabled @Test
     void createLogicTreeShouldContainCorrectPathToVideoFile() throws Exception {
         String videoPath = root.getMedia().getVideo();
 
