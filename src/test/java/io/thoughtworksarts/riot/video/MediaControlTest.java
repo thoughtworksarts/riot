@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@Disabled
 class MediaControlTest {
     @Mock
     private FacialEmotionRecognitionAPI facialRecognition;
@@ -45,7 +46,7 @@ class MediaControlTest {
         initMocks(this);
     }
 
-    @Disabled @Test
+    @Test
     public void shouldResetAppWhenGoingBackToInitialLoop() throws URISyntaxException {
         final MediaControl mediaControl = new MediaControl("/video/final-film.m4v", facialRecognition, jsonTranslator);
 
